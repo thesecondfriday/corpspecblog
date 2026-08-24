@@ -5,3 +5,10 @@ dist/
 .env.production
 .DS_Store
 npm-debug.log*
+
+# Local env: contains the Sanity project id, dataset, and a viewer token.
+.env.local
+.env.*.local
+
+# Sanity
+.sanity/
