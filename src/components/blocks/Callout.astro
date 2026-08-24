@@ -1,0 +1,83 @@
+---
+/*
+ * Component Spec §4.6 — callout. tone: tip | caution.
+ *
+ * The TOP RULE is the tone signal — colour alone never carries it. The
+ * non-colour cue is the label text ("Tip" / "Watch out").
+ * Both tones: no icon, no left border, no rounding.
+ *
+ * Absent label: the default is used. An EMPTY STRING suppresses the label row
+ * entirely — so the check below is for `undefined`, not for falsiness.
+ */
+interface Props {
+  tone: "tip" | "caution";
+  label?: string;
+  /** Paragraphs. Lists and links are allowed in the CMS schema; no nested blocks. */
+  body: string[];
+}
+
+const { tone, label, body } = Astro.props;
+const resolvedLabel = label === undefined ? (tone === "tip" ? "Tip" : "Watch out") : label;
+---
+
+<aside class:list={["block", "callout", `callout--${tone}`]}>
+  {resolvedLabel !== "" && <span class="callout__label">{resolvedLabel}</span>}
+  {body.map((paragraph) => <p class="callout__body" set:html={paragraph} />)}
+</aside>
+
+<style>
+  .callout {
+    padding: clamp(18px, 2.2cqw, 26px);
+    border-radius: var(--radius-0);
+  }
+
+  .callout--tip {
+    background: var(--surface-accent-soft);
+    border-top: 2px solid var(--brand-green);
+  }
+
+  .callout--caution {
+    background: var(--surface-warn);
+    border-top: 2px solid var(--accent);
+  }
+
+  .callout__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+  }
+
+  .callout--tip .callout__label {
+    color: var(--brand-green);
+  }
+
+  .callout--caution .callout__label {
+    color: var(--accent-hover);
+  }
+
+  .callout__body {
+    margin: 0;
+    font-size: var(--type-body-sm-size);
+    line-height: var(--type-body-sm-lh);
+    color: var(--text-body);
+    /* §4.6 — body capped at --measure-narrow. */
+    max-width: var(--measure-narrow);
+  }
+
+  .callout__body + .callout__body {
+    margin-top: var(--space-3);
+  }
+
+  /* §4.6 Mobile — padding 18px, full measure width, block spacing 32px.
+     Never side-by-side with text. */
+  @media (max-width: 599px) {
+    .callout {
+      padding: 18px;
+      margin-block: 32px;
+    }
+  }
+</style>

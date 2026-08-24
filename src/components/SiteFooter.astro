@@ -1,0 +1,169 @@
+---
+/*
+ * Component Spec §3.11 — SiteFooter.
+ *
+ * PLACEHOLDER (§6): the footer columns are invented to prove the module. The
+ * five categories in the first column are real; Resources and Company are not.
+ * The "9,400 buyers" proof line is illustrative — wire it to a real number.
+ */
+import type { Category } from "../lib/types";
+import { SITE, categoryHref } from "../lib/site";
+import NewsletterSignup from "./NewsletterSignup.astro";
+
+interface Props {
+  categories: Category[];
+}
+
+const { categories } = Astro.props;
+
+const columns = [
+  {
+    heading: "Categories",
+    links: categories.map((c) => ({ label: c.title, url: categoryHref(c.slug) })),
+  },
+  {
+    heading: "Resources",
+    links: [
+      { label: "Evergreen guides", url: "/guides" },
+      { label: "Gift guide PDFs", url: "/resources" },
+      { label: "Lead time tracker", url: "/lead-times" },
+      { label: "Decoration glossary", url: "/glossary" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "Shop products", url: SITE.productsHref },
+      { label: SITE.strategistLabel, url: SITE.strategistHref },
+      { label: `About ${SITE.organisation}`, url: "/about" },
+      { label: "Contact", url: "/contact" },
+    ],
+  },
+];
+
+const legalLinks = [
+  { label: "Privacy", url: "/privacy" },
+  { label: "Terms", url: "/terms" },
+  { label: "Accessibility", url: "/accessibility" },
+];
+---
+
+<footer class="footer on-inverse">
+  <div class="container footer__inner">
+    <div class="footer__newsletter">
+      <NewsletterSignup
+        placement="footer"
+        heading="The Swag Desk, every other Tuesday"
+        body="One idea, one product worth knowing, one lead-time warning."
+        proofLine="Read by 9,400 buyers"
+        listId="swag-desk-weekly"
+      />
+    </div>
+
+    {
+      columns.map((column) => (
+        <nav class="footer__col" aria-label={column.heading}>
+          <h2 class="footer__heading">{column.heading}</h2>
+          <ul>
+            {column.links.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+
+  <div class="footer__legal">
+    <div class="container footer__legal-inner">
+      <span>© {new Date().getFullYear()} {SITE.organisation}</span>
+      <span class="footer__legal-links">
+        {legalLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+      </span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--surface-inverse-deep);
+    color: var(--text-on-inverse-link);
+  }
+
+  /*
+   * §3.11 Responsive — 1 column mobile → 2 tablet → 4 desktop. auto-fit gives
+   * exactly that ramp; the newsletter column is first and stays full-width
+   * eligible because its content is the widest.
+   */
+  .footer__inner {
+    padding-block: clamp(32px, 4cqw, 64px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: clamp(28px, 4cqw, 56px);
+  }
+
+  .footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .footer__heading {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--text-on-inverse-muted);
+  }
+
+  .footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .footer a {
+    font-size: var(--type-ui-size);
+    color: var(--text-on-inverse-link);
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .footer a:hover {
+    color: var(--accent);
+  }
+
+  .footer__legal {
+    border-top: 1px solid var(--border-inverse-input);
+  }
+
+  .footer__legal-inner {
+    padding-block: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--type-meta-size);
+    letter-spacing: var(--type-meta-ls);
+    color: var(--text-on-inverse-legal);
+  }
+
+  .footer__legal-links {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .footer__legal a {
+    font-family: var(--font-mono);
+    font-size: var(--type-meta-size);
+    color: var(--text-on-inverse-legal);
+  }
+</style>

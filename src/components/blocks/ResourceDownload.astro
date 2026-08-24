@@ -1,0 +1,287 @@
+---
+/*
+ * Component Spec §4.7 — resourceDownload. gated: true | false.
+ *
+ * ungated: 1px --border row, 54×68 sage "PDF" plate left, title + format line,
+ *   and a text-link "Download ↓" with the accent underline — deliberately
+ *   quieter than the gated variant.
+ * gated: --surface-accent-soft field with --border-accent, two columns (pitch
+ *   left in --type-serif-lg, form right), accent-filled submit, reassurance in
+ *   mono under it.
+ *
+ * Gating is EMAIL-ONLY per the brief: one field, no company, no phone.
+ * On success the form is replaced in place AND the file downloads immediately,
+ * rather than only by email.
+ */
+interface Props {
+  title: string;
+  file: string;
+  pageCount?: number;
+  description?: string;
+  gated: boolean;
+  formatLabel?: string;
+  submitLabel?: string;
+  listId?: string;
+  reassurance?: string;
+}
+
+const {
+  title,
+  file,
+  pageCount,
+  description,
+  gated,
+  formatLabel,
+  submitLabel = "Send me the PDF",
+  listId,
+  reassurance = "Email only. No follow-up sequence.",
+} = Astro.props;
+
+if (gated && !listId) {
+  throw new Error(`resourceDownload: listId is required when gated (§4.7). Missing on "${title}".`);
+}
+
+/** Default derived: "PDF · {n} pages". */
+const format = formatLabel ?? (pageCount ? `PDF · ${pageCount} pages` : "PDF");
+const fieldId = `resource-${listId ?? title.replace(/\W+/g, "-").toLowerCase()}`;
+---
+
+{
+  gated ? (
+    <aside class="block resource resource--gated">
+      <div class="resource__pitch">
+        <span class="resource__format resource__format--gated">Free download · {format}</span>
+        <h4 class="resource__title resource__title--serif">{title}</h4>
+        {description && <p class="resource__desc">{description}</p>}
+      </div>
+
+      <form class="resource__form" data-resource-form data-file={file} action="/api/resource" method="post">
+        <input type="hidden" name="listId" value={listId} />
+        <input type="hidden" name="resource" value={title} />
+        <label class="visually-hidden" for={fieldId}>
+          Work email
+        </label>
+        <input
+          id={fieldId}
+          class="field field--on-accent"
+          type="email"
+          name="email"
+          required
+          placeholder="Work email"
+          autocomplete="email"
+        />
+        <button class="btn btn--primary resource__submit" type="submit">
+          {submitLabel}
+        </button>
+        <span class="resource__reassurance">{reassurance}</span>
+        <p class="resource__message" data-message role="status" aria-live="polite" hidden />
+      </form>
+    </aside>
+  ) : (
+    <aside class="block resource resource--ungated">
+      {/* When no thumbnail is supplied the ungated variant shows the sage "PDF" plate. */}
+      <span class="resource__plate" aria-hidden="true">
+        PDF
+      </span>
+      <div class="resource__row-text">
+        <h4 class="resource__title">{title}</h4>
+        <span class="resource__format">{format}</span>
+        {description && <p class="resource__desc">{description}</p>}
+      </div>
+      <a class="resource__download" href={file} download>
+        Download ↓
+      </a>
+    </aside>
+  )
+}
+
+<script>
+  /*
+   * §4.7 — success and error follow the §3.10 form states: the form is replaced
+   * in place, and the file downloads immediately rather than only by email.
+   */
+  document.querySelectorAll<HTMLFormElement>("form[data-resource-form]").forEach((form) => {
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+    const message = form.querySelector<HTMLParagraphElement>("[data-message]");
+    const file = form.dataset.file;
+    const restLabel = button?.textContent?.trim() ?? "Send me the PDF";
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!button || !message) return;
+
+      button.disabled = true;
+      button.textContent = "Sending…";
+      form.dataset.state = "submitting";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error(String(response.status));
+
+        form.dataset.state = "success";
+        message.hidden = false;
+        message.textContent = "Check your inbox — the PDF is on its way.";
+        form.querySelectorAll("input, button, .resource__reassurance").forEach((el) => el.remove());
+
+        if (file) {
+          const anchor = document.createElement("a");
+          anchor.href = file;
+          anchor.download = "";
+          document.body.appendChild(anchor);
+          anchor.click();
+          anchor.remove();
+        }
+      } catch {
+        form.dataset.state = "error";
+        button.disabled = false;
+        button.textContent = restLabel;
+        message.hidden = false;
+        message.textContent = "That didn't send. Try again in a moment.";
+      }
+    });
+  });
+</script>
+
+<style>
+  /* ---- gated ------------------------------------------------------------- */
+  .resource--gated {
+    background: var(--surface-accent-soft);
+    border: 1px solid var(--border-accent);
+    padding: clamp(20px, 2.6cqw, 30px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: clamp(18px, 2.6cqw, 32px);
+    align-items: center;
+  }
+
+  .resource__pitch {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .resource__format {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  .resource__format--gated {
+    color: var(--brand-green);
+  }
+
+  .resource__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--type-card-sm-size);
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--text-primary);
+  }
+
+  .resource__title--serif {
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 2.2cqw, 26px);
+    line-height: 1.2;
+    font-weight: var(--type-serif-lg-weight);
+  }
+
+  .resource__desc {
+    margin: 0;
+    font-size: var(--type-ui-size);
+    line-height: 1.6;
+    color: var(--text-on-accent-body);
+  }
+
+  .resource__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .resource__submit {
+    padding: 14px 18px;
+  }
+
+  .resource__reassurance,
+  .resource__message {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    color: var(--text-on-accent-muted);
+    margin: 0;
+  }
+
+  .resource__form[data-state="submitting"] .btn {
+    opacity: 0.7;
+  }
+
+  /* ---- ungated ----------------------------------------------------------- */
+  .resource--ungated {
+    border: 1px solid var(--border);
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .resource__plate {
+    width: 54px;
+    height: 68px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-accent);
+    color: var(--brand-green);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  .resource__row-text {
+    flex: 1 1 200px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  /* A text-link, deliberately quieter than the gated variant's filled button. */
+  .resource__download {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: var(--space-1);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .resource__download:hover {
+    color: var(--accent);
+  }
+
+  /* §4.7 Mobile — both stack to one column; the gated form is full-width with a
+     48px button. The PDF plate stays inline with the title (it is only 54px). */
+  @media (max-width: 599px) {
+    .resource--gated {
+      grid-template-columns: 1fr;
+    }
+
+    .resource__submit {
+      min-height: 48px;
+    }
+  }
+</style>

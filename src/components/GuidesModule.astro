@@ -1,0 +1,165 @@
+---
+/*
+ * Component Spec §3.9 — GuidesModule.
+ *
+ * --surface-inverse band, two columns: pitch left, list right. Numbered rows
+ * (01–04) with title + "Updated {month} · {readTime}". Deliberately image-free
+ * so it reads as a reference shelf, not a feed.
+ *
+ * OPEN QUESTION (§7b): whether the Guides module needs its own landing page at
+ * /guides. `allHref` assumes it does.
+ */
+import type { Post } from "../lib/types";
+import { formatMonth, getReadTime } from "../lib/derive";
+import { postHref } from "../lib/site";
+
+interface Props {
+  guides: Post[];
+  heading: string;
+  blurb: string;
+  allHref: string;
+  allCount: number;
+}
+
+const { guides, heading, blurb, allHref, allCount } = Astro.props;
+---
+
+<section class="guides on-inverse">
+  <div class="container guides__inner">
+    <div class="guides__pitch">
+      <span class="guides__eyebrow">Evergreen guides</span>
+      <h2 class="guides__heading">{heading}</h2>
+      <p class="guides__blurb">{blurb}</p>
+      <a class="link-underline" href={allHref}>All {allCount} guides →</a>
+    </div>
+
+    <ol class="guides__list">
+      {
+        guides.map((guide, index) => (
+          <li>
+            <a class="guides__row" href={postHref(guide.category.slug, guide.slug)}>
+              <span class="guides__num" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span class="guides__row-text">
+                <span class="guides__title">{guide.title}</span>
+                <span class="guides__meta">
+                  Updated {formatMonth(guide.updatedAt ?? guide.publishedAt)} · {getReadTime(guide)} min
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .guides {
+    background: var(--surface-inverse);
+    color: var(--text-on-inverse);
+  }
+
+  .guides__inner {
+    padding-block: var(--section-y);
+    display: grid;
+    gap: clamp(28px, 4cqw, 56px);
+  }
+
+  .guides__pitch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+
+  .guides__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--type-eyebrow-size);
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--text-on-inverse-eyebrow);
+  }
+
+  .guides__heading {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--type-serif-lg-size);
+    line-height: 1.1;
+    font-weight: var(--type-serif-lg-weight);
+    color: var(--text-on-inverse);
+  }
+
+  .guides__blurb {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-on-inverse-muted);
+    max-width: 34ch;
+  }
+
+  .guides__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .guides__row {
+    display: flex;
+    gap: 18px;
+    padding: 18px 0;
+    /* EXCEPTION (§3.9): --border-on-inverse — no inverse border role existed.
+       Promote it to a real role if a second inverse block ever needs one. */
+    border-top: 1px solid var(--border-on-inverse);
+    color: var(--text-on-inverse);
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .guides__list li:last-child .guides__row {
+    border-bottom: 1px solid var(--border-on-inverse);
+  }
+
+  .guides__row:hover .guides__title {
+    color: var(--accent);
+  }
+
+  .guides__num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-on-inverse-meta);
+    padding-top: var(--space-1);
+  }
+
+  .guides__row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .guides__title {
+    font-size: clamp(16px, 1.7cqw, 19px);
+    font-weight: 700;
+    line-height: 1.3;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .guides__meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-on-inverse-meta);
+  }
+
+  /* §3.9 Responsive — stacks to one column below 900px, pitch first. */
+  @media (min-width: 900px) {
+    .guides__inner {
+      grid-template-columns: repeat(2, minmax(270px, 1fr));
+    }
+  }
+</style>

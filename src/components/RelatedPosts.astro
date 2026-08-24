@@ -1,0 +1,27 @@
+---
+/*
+ * Component Spec §3.9 — RelatedPosts.
+ *
+ * Renders standard PostCards — there is no RelatedCard (§3.1). If fewer than 3
+ * exist, render what exists; if 0, omit the section entirely.
+ */
+import type { Post } from "../lib/types";
+import PostGrid from "./PostGrid.astro";
+
+interface Props {
+  posts: Post[];
+  eyebrow?: string;
+}
+
+const { posts, eyebrow = "Keep reading" } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="container section-y">
+      {/* §3.9 Responsive — 1 / 2 / 3 up. A 2-item set lands in a 2-col grid on
+          its own because auto-fill stops at the number of children. */}
+      <PostGrid posts={posts} label={eyebrow} cardVariant="standard" related min="250px" />
+    </section>
+  )
+}

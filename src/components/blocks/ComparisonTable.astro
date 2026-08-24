@@ -1,0 +1,149 @@
+---
+/*
+ * Component Spec §4.5 — comparisonTable.
+ *
+ * A real <table> with <thead> and scope="col", wrapped in a 1px --border frame.
+ *
+ * CALL MADE (§7): on mobile this scrolls horizontally inside the frame rather
+ * than restacking. Card-per-row loses the comparison, which is the block's only
+ * purpose. The first column is deliberately NOT frozen — a frozen column at
+ * 390px leaves 120px of data. The frame edge is the scroll affordance; the
+ * scroller carries aria-label and tabindex="0" so it is keyboard-reachable.
+ *
+ * Absent footnote: nothing renders; no "Source: —".
+ * Ragged rows render empty cells rather than shifting.
+ */
+interface Props {
+  /** Eyebrow, e.g. "Compare · best drinkware for remote kits". */
+  label?: string;
+  /** 3–5 header strings — validate the max; 6 columns cannot be read on mobile. */
+  columns: string[];
+  rows: string[][];
+  footnote?: string;
+  /** Index into rows → an editor's pick. */
+  highlightRow?: number;
+}
+
+const { label, columns, rows, footnote, highlightRow } = Astro.props;
+
+if (columns.length < 3 || columns.length > 5) {
+  throw new Error(
+    `comparisonTable: 3–5 columns required (§4.5), got ${columns.length}. Enforce this in Sanity validation.`,
+  );
+}
+---
+
+<div class="block comparison">
+  {label && <span class="comparison__label">{label}</span>}
+
+  <div
+    class="comparison__scroller scroll-x"
+    tabindex="0"
+    role="region"
+    aria-label={label ?? "Comparison table"}
+  >
+    <table itemscope itemtype="https://schema.org/Table">
+      <thead>
+        <tr>
+          {columns.map((column) => <th scope="col">{column}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row, rowIndex) => (
+            <tr class:list={[rowIndex === highlightRow && "is-highlight"]}>
+              {columns.map((_, cellIndex) =>
+                cellIndex === 0 ? (
+                  <th scope="row">{row[0] ?? ""}</th>
+                ) : (
+                  /* Ragged rows render empty cells rather than shifting. */
+                  <td>{row[cellIndex] ?? ""}</td>
+                ),
+              )}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  {footnote && <p class="comparison__footnote">{footnote}</p>}
+</div>
+
+<style>
+  .comparison__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: 10px;
+  }
+
+  .comparison__scroller {
+    border: 1px solid var(--border);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    /* §4.5 Mobile — horizontal scroll inside the frame. */
+    min-width: 460px;
+    font-size: 14px;
+  }
+
+  thead tr {
+    background: var(--surface-sunken);
+  }
+
+  th[scope="col"] {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-on-accent-body);
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Row label: weight 700 in --text-primary. */
+  th[scope="row"] {
+    text-align: left;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding: 14px;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  td {
+    color: var(--text-on-accent-body);
+    padding: 14px;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  /* Zebra on --surface-raised. */
+  tbody tr:nth-child(even) {
+    background: var(--surface-raised);
+  }
+
+  /* highlightRow — an editor's pick. */
+  tbody tr.is-highlight,
+  tbody tr.is-highlight:nth-child(even) {
+    background: var(--surface-accent-soft);
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .comparison__footnote {
+    margin: var(--space-2) 0 0;
+    font-size: 12.5px;
+    line-height: var(--type-caption-lh);
+    color: var(--text-subtle);
+  }
+</style>

@@ -1,0 +1,203 @@
+---
+/*
+ * Component Spec §3.1 — PostCard.
+ *
+ * MERGED: previously three separate treatments (large featured / standard with
+ * image / compact text-only). Now one component; `variant` is the only prop
+ * that differs. The post-page "related" card and the index feed card are the
+ * same `standard` variant — there is deliberately no RelatedCard.
+ *
+ * A11y: one anchor wrapping the title, stretched over the card surface with a
+ * pseudo-element, so the category label can stay a separate link to the archive.
+ */
+import type { CardVariant, Post } from "../lib/types";
+import { metaParts } from "../lib/derive";
+import { categoryHref, postHref } from "../lib/site";
+import Chip from "./Chip.astro";
+import ImageWell from "./ImageWell.astro";
+
+interface Props {
+  post: Post;
+  variant?: CardVariant;
+  /** §3.9 — related cards drop the title a step so they don't out-shout the article. */
+  related?: boolean;
+  loading?: "lazy" | "eager";
+}
+
+const { post, variant = "standard", related = false, loading = "lazy" } = Astro.props;
+
+const href = postHref(post.category.slug, post.slug);
+// §3.1 Byline: featured shows author + date + readTime; standard and compact
+// show date + readTime. Absent fields drop out of the array entirely, so the
+// separators are gaps between spans rather than glyphs in a string.
+const meta = metaParts(post, { withAuthor: variant === "featured", short: variant !== "featured" });
+// §3.1 Excerpt: shown on featured (2-line clamp); hidden on standard and compact.
+const showExcerpt = variant === "featured" && Boolean(post.excerpt);
+---
+
+<article class:list={["card", `card--${variant}`, related && "card--related", "is-card"]}>
+  {
+    /* compact never carries an image (§3.1 Variants). */
+    variant !== "compact" && (
+      <ImageWell
+        image={post.heroImage}
+        ratio="var(--ratio-card)"
+        monogram={related ? "34px" : "40px"}
+        loading={loading}
+      />
+    )
+  }
+
+  <Chip title={post.category.title} href={categoryHref(post.category.slug)} kind="category" class="card__category" />
+
+  <h3 class="card__title">
+    <a class="card__link" href={href}>{post.title}</a>
+  </h3>
+
+  {showExcerpt && <p class="card__excerpt">{post.excerpt}</p>}
+
+  <p class="card__meta meta">
+    {meta.map((part) => <span>{part}</span>)}
+  </p>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* §3.1 Container: standard is borderless with a --space-3 gap. */
+    gap: var(--space-3);
+  }
+
+  /* featured — borderless, --space-4 internal gap. */
+  .card--featured {
+    gap: var(--space-4);
+  }
+
+  /* compact — stacked list rows divided by --border, no image ever. */
+  .card--compact {
+    gap: 7px;
+    padding-block: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    color: var(--text-primary);
+    /* §3.1 Long titles: never hyphenate. */
+    hyphens: none;
+    text-wrap: pretty;
+    /* Clamp past the reserved lines with an ellipsis. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card--featured .card__title {
+    font-size: var(--type-card-lg-size);
+    line-height: var(--type-card-lg-lh);
+    letter-spacing: var(--type-card-lg-ls);
+    /* 3 lines, no reserve. */
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .card--standard .card__title {
+    font-size: var(--type-card-size);
+    line-height: var(--type-card-lh);
+    letter-spacing: var(--type-card-ls);
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    /*
+     * §3.1 Long titles — standard RESERVES three lines via min-height so a
+     * one-line and a three-line card align in the same row. 3 × 1.24 = 3.72em.
+     * Test string: "17 Corporate Gift Ideas Your Remote Team Will Actually Use".
+     */
+    min-height: 3.72em;
+  }
+
+  .card--compact .card__title {
+    font-size: var(--type-card-sm-size);
+    line-height: var(--type-card-sm-lh);
+    letter-spacing: 0;
+    font-weight: var(--type-card-sm-weight);
+    /* 2 lines, no reserve. */
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* §3.9 exception — a related card never out-shouts the article it follows. */
+  .card--related .card__title {
+    font-size: var(--type-card-related-size);
+    line-height: 1.26;
+    min-height: 3.78em;
+  }
+
+  .card__link {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+
+  /* Stretched link: the whole card is the target, the category chip stays separate. */
+  .card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .card__category {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* §3.1 States — hover: title → --accent. Nothing lifts or shadows. */
+  .card:hover .card__link {
+    color: var(--accent);
+  }
+
+  /* Active: title --accent-hover. Visited: no change. */
+  .card__link:active {
+    color: var(--accent-hover);
+  }
+
+  /* §3.1 Focus-visible: ring on the card bounding box, not the title alone. */
+  .card__link:focus-visible {
+    outline: none;
+  }
+
+  .card:has(.card__link:focus-visible) {
+    outline: var(--focus-ring-width) solid var(--accent);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .card__excerpt {
+    margin: 0;
+    font-size: var(--type-ui-size);
+    line-height: 1.6;
+    color: var(--text-muted);
+    /* 2-line clamp (§3.1 Variants). */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .card__meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+  }
+
+  /*
+   * §3.1 Responsive: card internals never reflow — only the grid does. The one
+   * change is the featured title floor at 23px on mobile, which the clamp in
+   * --type-card-lg-size already carries.
+   */
+</style>

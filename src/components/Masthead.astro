@@ -1,0 +1,166 @@
+---
+/*
+ * Component Spec §3.11 — Masthead.
+ *
+ * PLACEHOLDER (§6): the "CS" monogram lockup is a type-set stand-in for the
+ * real logo asset — swap for the supplied SVG.
+ *
+ * PLACEHOLDER (§6): the search field is a visual stand-in with no behaviour
+ * specced. "Either wire it to storefront search or remove it — a dead search
+ * field is worse than none." It is rendered here as a real GET form pointed at
+ * SITE.searchAction so it is not dead, but that endpoint does not exist yet.
+ */
+import { SITE } from "../lib/site";
+---
+
+<header class="masthead">
+  <div class="container masthead__inner">
+    <a class="masthead__logo" href={SITE.blogBase} aria-label={`${SITE.organisation} — ${SITE.hubName}`}>
+      <span class="masthead__mark" aria-hidden="true">CS</span>
+      <span class="masthead__wordmark" aria-hidden="true">
+        <span class="masthead__word-1">Corporate</span>
+        <span class="masthead__word-2">specialties</span>
+      </span>
+    </a>
+
+    <span class="masthead__hub">{SITE.hubName}</span>
+
+    <form class="masthead__search" role="search" action={SITE.searchAction} method="get">
+      <label class="visually-hidden" for="masthead-q">Search articles &amp; guides</label>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M20 20l-4.2-4.2"></path>
+      </svg>
+      <input id="masthead-q" name="q" type="search" placeholder="Search articles & guides" />
+    </form>
+
+    <a class="btn btn--primary masthead__cta" href={SITE.strategistHref}>
+      <span class="masthead__cta-full">{SITE.strategistLabel}</span>
+      <span class="masthead__cta-short">Quote</span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .masthead {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .masthead__inner {
+    padding-block: 18px;
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 3cqw, 36px);
+    flex-wrap: wrap;
+  }
+
+  .masthead__logo {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  .masthead__mark {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .masthead__wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .masthead__word-1 {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--brand-green);
+    text-transform: uppercase;
+  }
+
+  .masthead__word-2 {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--accent);
+    margin-top: 1px;
+  }
+
+  .masthead__hub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    border-left: 1px solid var(--border);
+    padding-left: 14px;
+    flex-shrink: 0;
+  }
+
+  .masthead__search {
+    flex: 1 1 160px;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: var(--radius-pill);
+    padding: 9px 16px;
+    color: var(--field-placeholder);
+  }
+
+  .masthead__search input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    color: var(--text-primary);
+  }
+
+  .masthead__search input::placeholder {
+    color: var(--field-placeholder);
+  }
+
+  .masthead__search:focus-within {
+    border-color: var(--accent);
+  }
+
+  .masthead__cta {
+    flex-shrink: 0;
+    padding: 12px 18px;
+  }
+
+  .masthead__cta-short {
+    display: none;
+  }
+
+  /*
+   * §3.11 Responsive — mobile: logo + search + CTA reduced to "Quote"; the
+   * hub-name divider hides below --bp-mobile (600px). Tablet+: full row with
+   * the search field expanded.
+   */
+  @media (max-width: 599px) {
+    .masthead__hub {
+      display: none;
+    }
+
+    .masthead__cta-full {
+      display: none;
+    }
+
+    .masthead__cta-short {
+      display: inline;
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" role="img" aria-label="Merino crew sock, sole-marked">
+  <rect width="1000" height="1000" fill="#F2F0E8"/>
+  <g fill="none" stroke="#DAD6C9" stroke-width="3">
+    <path d="M0 0 L1000 1000"/><path d="M1000 0 L0 1000"/>
+  </g>
+  <rect x="60" y="60" width="880" height="880" fill="none" stroke="#DAD6C9" stroke-width="3"/>
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono, monospace" font-size="56" letter-spacing="2" fill="#8C9084">PLACEHOLDER · MERINO CREW SOCK, SOLE-MARKED</text>
+</svg>

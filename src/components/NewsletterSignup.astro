@@ -1,0 +1,205 @@
+---
+/*
+ * Component Spec §3.10 — NewsletterSignup.
+ *
+ * MERGED with the footer form: one component, `placement` prop.
+ *
+ * OPEN QUESTION (§7d): the ESP behind the form is undecided, which determines
+ * the submission path. The form posts to /api/subscribe and progressively
+ * enhances to fetch(); point both at the ESP endpoint when it is chosen.
+ */
+interface Props {
+  heading: string;
+  body?: string;
+  placeholder?: string;
+  submitLabel?: string;
+  /** e.g. a subscriber count. PLACEHOLDER copy per §6. */
+  proofLine?: string;
+  /** ESP list. */
+  listId: string;
+  placement?: "inline" | "footer";
+}
+
+const {
+  heading,
+  body,
+  placeholder = "Work email",
+  submitLabel = "Subscribe",
+  proofLine,
+  listId,
+  placement = "inline",
+} = Astro.props;
+
+const inverse = placement === "footer";
+---
+
+<div class:list={["news", `news--${placement}`]}>
+  <div class="news__copy">
+    <span class="news__eyebrow">Newsletter</span>
+    <h3 class="news__heading">{heading}</h3>
+    {body && <p class="news__body">{body}</p>}
+    {proofLine && <p class="news__proof meta">{proofLine}</p>}
+  </div>
+
+  <form class="news__form" data-newsletter action="/api/subscribe" method="post">
+    <input type="hidden" name="listId" value={listId} />
+    <label class="visually-hidden" for={`news-${listId}`}>{placeholder}</label>
+    <input
+      id={`news-${listId}`}
+      class:list={["field", inverse && "field--on-inverse"]}
+      type="email"
+      name="email"
+      required
+      placeholder={placeholder}
+      autocomplete="email"
+    />
+    <button class="btn btn--primary news__submit" type="submit">{submitLabel}</button>
+    {/* §3.10 Form states — invalid message renders here, never a toast. */}
+    <p class="news__message" data-message role="status" aria-live="polite" hidden></p>
+  </form>
+</div>
+
+<script>
+  /*
+   * §3.10 Form states: submitting → label "Sending…", disabled, opacity .7.
+   * Success → the form is replaced in place by a mono confirmation line inside
+   * the same block; no modal, no redirect. Error → same slot, message plus a
+   * retry link. Without JS the form still posts normally.
+   */
+  document.querySelectorAll<HTMLFormElement>("form[data-newsletter]").forEach((form) => {
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+    const message = form.querySelector<HTMLParagraphElement>("[data-message]");
+    const restLabel = button?.textContent ?? "Subscribe";
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!button || !message) return;
+
+      button.disabled = true;
+      button.textContent = "Sending…";
+      form.dataset.state = "submitting";
+      message.hidden = true;
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.dataset.state = "success";
+        message.hidden = false;
+        message.textContent = "You're on the list — check your inbox to confirm.";
+        form.querySelectorAll("input, button").forEach((el) => el.remove());
+      } catch {
+        form.dataset.state = "error";
+        button.disabled = false;
+        button.textContent = restLabel;
+        message.hidden = false;
+        message.textContent = "That didn't go through. Try again in a moment.";
+      }
+    });
+  });
+</script>
+
+<style>
+  .news {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .news__copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .news__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  .news__heading {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(22px, 2.5cqw, 30px);
+    line-height: 1.15;
+    font-weight: var(--type-serif-lg-weight);
+    color: var(--text-primary);
+  }
+
+  .news__body {
+    margin: 0;
+    font-size: var(--type-ui-size);
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 38ch;
+  }
+
+  .news__proof {
+    margin: 0;
+  }
+
+  .news__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+  }
+
+  .news__form .field {
+    flex: 1 1 160px;
+    min-width: 0;
+    padding: 12px 14px;
+  }
+
+  .news__submit {
+    white-space: nowrap;
+    padding: 13px 18px;
+  }
+
+  .news__message {
+    flex: 1 1 100%;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--type-meta-size);
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+
+  .news__form[data-state="submitting"] .btn {
+    opacity: 0.7;
+  }
+
+  /* footer placement sits on --surface-inverse-deep. */
+  .news--footer .news__eyebrow {
+    color: var(--text-on-inverse-muted);
+  }
+
+  .news--footer .news__heading {
+    color: var(--text-on-inverse);
+  }
+
+  .news--footer .news__body,
+  .news--footer .news__proof,
+  .news--footer .news__message {
+    color: var(--text-on-inverse-muted);
+  }
+
+  /* §3.10 Responsive — mobile: field and button stack full-width, button 48px. */
+  @media (max-width: 599px) {
+    .news__form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .news__submit {
+      min-height: 48px;
+    }
+  }
+</style>

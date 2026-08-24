@@ -1,0 +1,81 @@
+---
+/*
+ * Component Spec §4.3 — inlineImage.
+ *
+ * Image in a --surface-sunken well at a fixed ratio, object-fit: cover,
+ * --radius-0. Caption 10px below, preceded by a 2px --border-accent vertical
+ * flag so it can't be misread as body copy. The --accent flag is reserved for
+ * the hero (§3.7). Credit appends to the caption after an em dash.
+ *
+ * Absent caption: no caption row and no rule; the image's bottom margin does
+ * not change. An image block with no alt fails validation — the one hard block.
+ */
+import type { ImageRef } from "../../lib/types";
+
+interface Props {
+  image: ImageRef;
+  caption?: string;
+  credit?: string;
+  /** `wide` breaks 120px past the measure on each side, desktop only. */
+  width?: "measure" | "wide";
+  ratio?: "3/2" | "4/5" | "1/1";
+}
+
+const { image, caption, credit, width = "measure", ratio = "3/2" } = Astro.props;
+
+if (!image.alt) {
+  throw new Error(
+    `inlineImage: alt is required (§4.3). Missing on ${image.src}. This should be caught by Sanity validation before it reaches the build.`,
+  );
+}
+
+const text = [caption, credit].filter(Boolean).join(" — ");
+---
+
+<figure class:list={["block", width === "wide" && "block--wide", "inline-image"]}>
+  <div class="inline-image__well" style={`--img-ratio: ${ratio.replace("/", " / ")}`}>
+    <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+  </div>
+  {
+    text && (
+      <figcaption class="inline-image__caption">
+        <span class="inline-image__flag" aria-hidden="true" />
+        <span>{text}</span>
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .inline-image {
+    margin-inline: 0;
+  }
+
+  .inline-image__well {
+    aspect-ratio: var(--img-ratio);
+    background: var(--surface-sunken);
+    border-radius: var(--radius-0);
+    overflow: hidden;
+  }
+
+  .inline-image__well img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .inline-image__caption {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-lh);
+    color: var(--text-caption);
+  }
+
+  .inline-image__flag {
+    width: 2px;
+    flex-shrink: 0;
+    background: var(--border-accent);
+  }
+</style>

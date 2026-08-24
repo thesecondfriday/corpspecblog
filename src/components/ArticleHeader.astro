@@ -1,0 +1,235 @@
+---
+/*
+ * Component Spec §3.7 — ArticleHeader + HeroFigure.
+ *
+ * Absent avatar → a 46px --surface-accent circle with the author's initials.
+ * Absent heroImage → skip the figure entirely; do NOT substitute the fallback
+ * tile at hero scale — the header's white space carries it.
+ * Absent caption → no caption row, no rule.
+ * Absent readTime/reviewedBy → those meta items disappear. Separators are gaps,
+ * not glyphs, so nothing dangles.
+ */
+import type { Post } from "../lib/types";
+import { formatDate, getReadTime, initials } from "../lib/derive";
+import { categoryHref } from "../lib/site";
+import Chip from "./Chip.astro";
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const readTime = getReadTime(post);
+const hero = post.heroImage;
+const caption = [hero?.caption, hero?.credit && `Photo: ${hero.credit}.`].filter(Boolean).join(" ");
+---
+
+<header class="container art-head">
+  <div class="art-head__titleblock">
+    <Chip
+      title={post.category.title}
+      href={categoryHref(post.category.slug)}
+      kind="category"
+      style="framed"
+    />
+    <h1 class="art-head__title" itemprop="headline">{post.title}</h1>
+  </div>
+
+  <p class="art-head__dek" itemprop="description">{post.dek}</p>
+
+  <div class="art-head__meta">
+    <div class="art-head__byline">
+      {
+        post.author.avatar ? (
+          <img
+            class="art-head__avatar"
+            src={post.author.avatar.src}
+            alt={post.author.avatar.alt}
+            width="46"
+            height="46"
+          />
+        ) : (
+          <span class="art-head__avatar art-head__avatar--initials" aria-hidden="true">
+            {initials(post.author.name)}
+          </span>
+        )
+      }
+      <span class="art-head__author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+        <span class="art-head__author-name" itemprop="name">{post.author.name}</span>
+        {post.author.role && <span class="art-head__author-role" itemprop="jobTitle">{post.author.role}</span>}
+      </span>
+    </div>
+
+    <time class="art-head__meta-item" itemprop="datePublished" datetime={post.publishedAt}>
+      {formatDate(post.publishedAt)}
+    </time>
+    {readTime && <span class="art-head__meta-item">{readTime} min read</span>}
+    {post.reviewedBy && <span class="art-head__meta-item">Reviewed by {post.reviewedBy}</span>}
+  </div>
+</header>
+
+{
+  hero && (
+    <figure class="hero" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+      <div class="hero__well">
+        <img src={hero.src} alt={hero.alt} itemprop="contentUrl" fetchpriority="high" decoding="async" />
+      </div>
+      {caption && (
+        <figcaption class="container hero__caption">
+          <span class="hero__flag" aria-hidden="true" />
+          <span itemprop="caption">{caption}</span>
+        </figcaption>
+      )}
+    </figure>
+  )
+}
+
+<style>
+  .art-head {
+    padding-top: clamp(28px, 3.6cqw, 56px);
+    padding-bottom: clamp(22px, 2.6cqw, 34px);
+  }
+
+  .art-head__titleblock {
+    /* §3.7 — title capped at 44ch for a 2–3 line ragged block, not centred. */
+    max-width: 44ch;
+  }
+
+  .art-head__title {
+    margin: var(--space-5) 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--type-display-size);
+    line-height: var(--type-display-lh);
+    letter-spacing: var(--type-display-ls);
+    font-weight: var(--type-display-weight);
+    color: var(--text-primary);
+    text-wrap: balance;
+  }
+
+  .art-head__dek {
+    margin: var(--space-5) 0 0;
+    font-size: var(--type-dek-size);
+    line-height: var(--type-dek-lh);
+    font-weight: 400;
+    color: var(--text-on-accent-body);
+    /* §3.7 — dek at 52ch. */
+    max-width: 52ch;
+  }
+
+  /* Meta row divided from the dek by a 1px --border rule. */
+  .art-head__meta {
+    margin-top: 28px;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 26px;
+  }
+
+  .art-head__byline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .art-head__avatar {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: var(--radius-round);
+    object-fit: cover;
+    background: var(--surface-sunken);
+  }
+
+  .art-head__avatar--initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-accent);
+    color: var(--brand-green);
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+
+  .art-head__author {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .art-head__author-name {
+    font-size: var(--type-ui-size);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .art-head__author-role,
+  .art-head__meta-item {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: var(--type-meta-ls);
+    text-transform: uppercase;
+    color: var(--text-on-accent-muted);
+  }
+
+  .art-head__meta-item {
+    font-size: 11px;
+  }
+
+  /* ---- Hero figure ------------------------------------------------------ */
+  .hero {
+    margin: 0 0 clamp(28px, 3.4cqw, 48px);
+  }
+
+  .hero__well {
+    /* §3.7 Responsive / §7 — mobile relaxes to 3/2 with a 200px min-height. */
+    aspect-ratio: var(--ratio-hero-mobile);
+    min-height: 200px;
+    background: var(--surface-sunken);
+    overflow: hidden;
+  }
+
+  .hero__well img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Caption sits back inside the container with a 2px --accent flag. The accent
+     flag is reserved for the hero; inline images use --border-accent (§4.3). */
+  .hero__caption {
+    margin-top: var(--space-3);
+    display: flex;
+    gap: 10px;
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-lh);
+    color: var(--text-caption);
+  }
+
+  .hero__flag {
+    width: 2px;
+    flex-shrink: 0;
+    background: var(--accent);
+  }
+
+  /* §3.7 Responsive — tablet: hero 16/9. */
+  @media (min-width: 600px) {
+    .hero__well {
+      aspect-ratio: var(--ratio-hero-tablet);
+    }
+  }
+
+  /* desktop+: hero 21/9, meta on one line. */
+  @media (min-width: 900px) {
+    .hero__well {
+      aspect-ratio: var(--ratio-hero);
+    }
+
+    .art-head__meta {
+      flex-wrap: nowrap;
+    }
+  }
+</style>

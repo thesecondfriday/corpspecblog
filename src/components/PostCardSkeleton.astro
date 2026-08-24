@@ -1,0 +1,60 @@
+---
+/*
+ * Component Spec §3.3 — the loading skeleton.
+ *
+ * Mirrors the standard card exactly: --surface-sunken block at 3/2, then a
+ * 10px bar at 40% (category), two 14px bars at 100%/70% (title), one 10px bar
+ * at 30% (meta) — all --surface-sunken, --radius-0.
+ *
+ * CALL MADE (§3.3, §7): specced but conditional. Astro's static output means
+ * paginating and filtering by URL never shows a loading state, so this file is
+ * unused by the current pages. Wire it up only if filtering goes client-side;
+ * otherwise it is dead code and should be deleted rather than kept warm.
+ */
+---
+
+<div class="skeleton" aria-hidden="true">
+  <div class="skeleton__well"></div>
+  <div class="skeleton__bar" style="width: 40%; height: 10px;"></div>
+  <div class="skeleton__bar" style="width: 100%; height: 14px;"></div>
+  <div class="skeleton__bar" style="width: 70%; height: 14px;"></div>
+  <div class="skeleton__bar" style="width: 30%; height: 10px;"></div>
+</div>
+
+<style>
+  .skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    animation: skeleton-pulse 1.4s var(--ease) infinite;
+  }
+
+  .skeleton__well {
+    aspect-ratio: var(--ratio-card);
+    background: var(--surface-sunken);
+    border-radius: var(--radius-0);
+  }
+
+  .skeleton__bar {
+    background: var(--surface-sunken);
+    border-radius: var(--radius-0);
+  }
+
+  @keyframes skeleton-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+
+  /* §3.3 — prefers-reduced-motion holds it static at 0.7. */
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton {
+      animation: none;
+      opacity: 0.7;
+    }
+  }
+</style>

@@ -1,0 +1,206 @@
+---
+/*
+ * Component Spec §3.4 — Pagination. Real numbered links, no infinite scroll.
+ *
+ * URLs are {basePath}/page/{n}, page 1 canonical at {basePath}. rel prev/next
+ * are emitted by the page head (see BaseLayout `prev`/`next` props).
+ *
+ * Window: first, last, current ±1, ellipsis elsewhere (never a link).
+ */
+import { pageHref } from "../lib/site";
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+}
+
+const { currentPage, totalPages, basePath } = Astro.props;
+
+function window(current: number, total: number): Array<number | "gap"> {
+  const wanted = new Set<number>([1, total, current - 1, current, current + 1]);
+  const pages = [...wanted].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+
+  const out: Array<number | "gap"> = [];
+  let previous = 0;
+  for (const page of pages) {
+    if (previous && page - previous > 1) out.push("gap");
+    out.push(page);
+    previous = page;
+  }
+  return out;
+}
+
+const items = window(currentPage, totalPages);
+const hasPrev = currentPage > 1;
+const hasNext = currentPage < totalPages;
+---
+
+{
+  totalPages > 1 && (
+    <nav class="pagination" aria-label="Pagination">
+      {/*
+       * §3.4 Page 1: "← Prev" renders as text in --text-subtle, not a link,
+       * aria-disabled, no border. Page 2+: it becomes a live link in
+       * --text-primary with a 2px --accent bottom rule, same as Next.
+       */}
+      {hasPrev ? (
+        <a class="pagination__arrow" href={pageHref(basePath, currentPage - 1)} rel="prev">
+          ← Prev
+        </a>
+      ) : (
+        <span class="pagination__arrow pagination__arrow--off" aria-disabled="true">
+          ← Prev
+        </span>
+      )}
+
+      {/* §7: numbered links stay in the HTML below 600px — visually hidden, not removed. */}
+      <ol class="pagination__numbers">
+        {items.map((item) =>
+          item === "gap" ? (
+            <li>
+              <span class="pagination__gap" aria-hidden="true">
+                …
+              </span>
+            </li>
+          ) : item === currentPage ? (
+            <li>
+              <span class="pagination__page pagination__page--current" aria-current="page">
+                {item}
+              </span>
+            </li>
+          ) : (
+            <li>
+              <a class="pagination__page" href={pageHref(basePath, item)}>
+                {item}
+              </a>
+            </li>
+          ),
+        )}
+      </ol>
+
+      {/* §3.4 Responsive: below 600px this replaces the numbered set. */}
+      <span class="pagination__status meta">
+        Page {currentPage} of {totalPages}
+      </span>
+
+      {hasNext ? (
+        <a class="pagination__arrow" href={pageHref(basePath, currentPage + 1)} rel="next">
+          Next →
+        </a>
+      ) : (
+        <span class="pagination__arrow pagination__arrow--off" aria-disabled="true">
+          Next →
+        </span>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    margin-top: clamp(32px, 4cqw, 56px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .pagination__numbers {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pagination__arrow,
+  .pagination__page,
+  .pagination__gap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    text-decoration: none;
+    /* §3.4 Responsive — 44px tall targets at every width. */
+    min-height: 44px;
+  }
+
+  .pagination__arrow {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--accent);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .pagination__arrow:hover {
+    color: var(--accent);
+  }
+
+  .pagination__arrow--off {
+    color: var(--text-subtle);
+    border-bottom: 0;
+  }
+
+  .pagination__page {
+    font-size: 13px;
+    color: var(--text-primary);
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    transition: color var(--dur) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+
+  .pagination__page:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Current page: --text-primary fill, inverse label, no hover. */
+  .pagination__page--current {
+    background: var(--text-primary);
+    color: var(--text-on-inverse);
+    border-color: var(--text-primary);
+  }
+
+  .pagination__gap {
+    font-size: 13px;
+    color: var(--text-subtle);
+    padding: 10px var(--space-1);
+  }
+
+  /* Desktop and tablet show the numbers; the status line is redundant there. */
+  .pagination__status {
+    display: none;
+  }
+
+  /*
+   * §3.4 / §7 — below --bp-mobile (600px) the numbered links are the first
+   * thing to break the row, so they are visually hidden (still crawlable) and
+   * replaced by "Page n of m".
+   */
+  @media (max-width: 599px) {
+    .pagination__numbers {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .pagination__status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding-inline: var(--space-2);
+      color: var(--text-primary);
+    }
+  }
+</style>

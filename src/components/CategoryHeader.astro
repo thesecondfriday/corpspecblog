@@ -1,0 +1,160 @@
+---
+/*
+ * Component Spec §3.5 — CategoryHeader.
+ *
+ * --surface-accent band, full bleed, bottom 1px --border-accent. No image,
+ * ever — the sage field is the identity. On page 2+ the header is unchanged;
+ * it is not a page-specific element.
+ */
+import type { Category } from "../lib/types";
+import { SITE } from "../lib/site";
+
+interface Props {
+  category: Category;
+  postCount: number;
+}
+
+const { category, postCount } = Astro.props;
+---
+
+<div class="cat-header">
+  <div class="container cat-header__inner">
+    <div class="cat-header__text">
+      <nav class="cat-header__crumbs" aria-label="Breadcrumb">
+        <a href={SITE.blogBase}>All stories</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{category.title}</span>
+      </nav>
+      <h1 class="cat-header__title">{category.title}</h1>
+      {/*
+       * §3.5 — absent description should be prevented by validation. If it is
+       * missing the title block still renders and the count moves up into the
+       * left column.
+       */}
+      {category.description && <p class="cat-header__desc">{category.description}</p>}
+    </div>
+
+    <p class:list={["cat-header__count", !category.description && "cat-header__count--inline"]}>
+      <span class="cat-header__number">{postCount}</span>
+      <span class="cat-header__caption">Articles in this category</span>
+    </p>
+  </div>
+</div>
+
+<style>
+  .cat-header {
+    background: var(--surface-accent);
+    border-bottom: 1px solid var(--border-accent);
+  }
+
+  .cat-header__inner {
+    padding-block: var(--section-y);
+    display: grid;
+    gap: var(--space-5) clamp(20px, 3cqw, 48px);
+    align-items: end;
+  }
+
+  .cat-header__text {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cat-header__crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .cat-header__crumbs a {
+    color: var(--text-on-accent-muted);
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .cat-header__crumbs a:hover {
+    color: var(--accent);
+  }
+
+  .cat-header__crumbs span[aria-current] {
+    color: var(--brand-green);
+    font-weight: 600;
+  }
+
+  .cat-header__crumbs span[aria-hidden] {
+    color: var(--monogram);
+  }
+
+  .cat-header__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--type-page-title-size);
+    line-height: var(--type-page-title-lh);
+    letter-spacing: var(--type-page-title-ls);
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .cat-header__desc {
+    margin: 0;
+    font-size: clamp(15px, 1.5cqw, 18px);
+    line-height: 1.62;
+    color: var(--text-on-accent-body);
+    /* §3.5 — description capped at 56ch. */
+    max-width: 56ch;
+  }
+
+  .cat-header__count {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .cat-header__number {
+    font-family: var(--font-serif);
+    font-size: var(--type-serif-lg-size);
+    line-height: 1;
+    color: var(--brand-green);
+  }
+
+  .cat-header__caption {
+    font-family: var(--font-mono);
+    font-size: var(--type-meta-size);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-on-accent-muted);
+  }
+
+  /*
+   * §3.5 Responsive — mobile/tablet: single column, count drops below the
+   * description and sits inline (numeral + caption on one line).
+   * desktop+ (--bp-desktop, 900px): two columns, count right-aligned.
+   */
+  @media (max-width: 899px) {
+    .cat-header__count {
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--space-3);
+    }
+
+    .cat-header__number {
+      font-size: 38px;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .cat-header__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .cat-header__count {
+      text-align: right;
+      align-items: flex-end;
+    }
+  }
+</style>

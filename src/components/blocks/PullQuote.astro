@@ -1,0 +1,61 @@
+---
+/*
+ * Component Spec §4.2 — pullQuote.
+ *
+ * A display element, NOT a <blockquote> of body copy: the same words should
+ * not also appear in the running text. No quotation-mark graphic — typographic
+ * quotes live in the text itself.
+ *
+ * Absent attribution: the footer line and its space are omitted; quote alone
+ * is valid.
+ */
+interface Props {
+  /** ≤220 chars — validate; longer defeats the type size. */
+  quote: string;
+  attribution?: string;
+  attributionDetail?: string;
+}
+
+const { quote, attribution, attributionDetail } = Astro.props;
+const credit = [attribution, attributionDetail].filter(Boolean).join(" · ");
+---
+
+<figure class="block pullquote">
+  <p class="pullquote__text">“{quote}”</p>
+  {credit && <figcaption class="pullquote__credit">{credit}</figcaption>}
+</figure>
+
+<style>
+  .pullquote {
+    margin-inline: 0;
+    padding: 0 0 0 var(--space-6);
+    /* 3px --accent left rule, 26px inset. */
+    border-left: 3px solid var(--accent);
+  }
+
+  .pullquote__text {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--type-quote-size);
+    line-height: var(--type-quote-lh);
+    color: var(--text-primary);
+  }
+
+  .pullquote__credit {
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: var(--type-meta-size);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-on-accent-muted);
+  }
+
+  /* §4.2 Mobile — inset drops to 18px, size to 21px; the rule stays 3px. The
+     size floor is already the bottom of --type-quote-size's clamp. */
+  @media (max-width: 599px) {
+    .pullquote {
+      padding-left: 18px;
+    }
+  }
+</style>

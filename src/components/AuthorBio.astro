@@ -1,0 +1,141 @@
+---
+/*
+ * Component Spec §3.9 — AuthorBio.
+ *
+ * If `bio` is absent the WHOLE BLOCK is omitted — no "no bio yet" placeholder.
+ * The caller renders <AuthorBio> unconditionally; the guard lives here.
+ */
+import type { Author } from "../lib/types";
+import { initials } from "../lib/derive";
+import { authorHref } from "../lib/site";
+
+interface Props {
+  author: Author;
+}
+
+const { author } = Astro.props;
+---
+
+{
+  author.bio && (
+    <div class="bio">
+      {author.avatar ? (
+        <img class="bio__avatar" src={author.avatar.src} alt={author.avatar.alt} width="72" height="72" />
+      ) : (
+        <span class="bio__avatar bio__avatar--initials" aria-hidden="true">
+          {initials(author.name)}
+        </span>
+      )}
+
+      <div class="bio__text">
+        <span class="bio__eyebrow">Written by</span>
+        <span class="bio__name">{author.name}</span>
+        <p class="bio__body">{author.bio}</p>
+        <div class="bio__links">
+          {/*
+           * OPEN QUESTION (§7c): whether author pages exist. These links assume
+           * they do — /authors/{slug}. Drop this link if they don't.
+           */}
+          {author.postCount !== undefined && (
+            <a href={authorHref(author.slug)}>All {author.postCount} articles</a>
+          )}
+          {(author.links ?? []).map((link) => (
+            <a href={link.url} rel="noopener noreferrer">
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .bio {
+    margin: clamp(38px, 4cqw, 56px) 0 0;
+    padding-top: 28px;
+    /* §3.9 — top 1px rule inside the prose measure. */
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .bio__avatar {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    border-radius: var(--radius-round);
+    object-fit: cover;
+    background: var(--surface-sunken);
+  }
+
+  .bio__avatar--initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-accent);
+    color: var(--brand-green);
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 22px;
+  }
+
+  /* §3.9 Responsive — avatar and text stay side by side at every width; it
+     wraps only under 320px, which flex-basis handles on its own. */
+  .bio__text {
+    flex: 1 1 240px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .bio__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  .bio__name {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .bio__body {
+    margin: 0;
+    font-size: var(--type-ui-size);
+    line-height: 1.7;
+    color: var(--text-muted);
+    /* §3.9 — text at 58ch. */
+    max-width: 58ch;
+  }
+
+  .bio__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 2px;
+  }
+
+  /* §3.9 States — links use the standard text-link treatment (§5). */
+  .bio__links a {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+
+  .bio__links a:hover {
+    color: var(--accent-hover);
+    text-decoration-thickness: 2px;
+  }
+</style>

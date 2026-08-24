@@ -1,0 +1,411 @@
+---
+/*
+ * Component Spec §3.8 — TableOfContents. mode: sidebar | bar.
+ *
+ * Markup is SHARED; only the shell swaps, so headings and slugs exist once.
+ * Anchors are real <a href="#slug"> links in both modes — crawlable, and marked
+ * up as SiteNavigationElement (name + url per item).
+ *
+ *   < 900px  → `bar`: a collapsed sticky bar at the TOP OF THE ARTICLE. Not a
+ *              bottom sheet, not hidden (§7). Carries the reading-progress rule,
+ *              which is the only progress indicator on the site.
+ *   ≥ 900px  → `sidebar`: 210–260px sticky column left of the prose. The
+ *              progress rule is dropped — the sidebar's active state does that job.
+ *
+ * Renders only when there are ≥4 H2s (see shouldRenderToc); below that, no TOC
+ * and no empty shell. The caller enforces this.
+ *
+ * PLACEHOLDER (§6): the Share group is placeholder glyphs. "Needs real icons
+ * and a copy-link behaviour, or cut." Copy-link is wired below; the LinkedIn
+ * and email items are still stand-ins.
+ */
+import type { Heading } from "../lib/types";
+
+interface Props {
+  headings: Heading[];
+  /** Absolute URL of the article, for the share group. */
+  shareUrl: string;
+  shareTitle: string;
+}
+
+const { headings, shareUrl, shareTitle } = Astro.props;
+const sectionCount = headings.filter((h) => h.level === 2).length;
+---
+
+<div class="toc" data-toc>
+  {/* bar shell — the button is only visible below 900px, but stays in source order. */}
+  <button class="toc__bar" type="button" aria-expanded="false" aria-controls="toc-list" data-toc-toggle>
+    <span class="toc__bar-label">Contents · {sectionCount} sections</span>
+    <span class="toc__bar-glyph" aria-hidden="true" data-toc-glyph>+</span>
+  </button>
+
+  {/* sidebar shell heading — hidden below 900px. */}
+  <span class="toc__heading">Contents</span>
+
+  <nav
+    class="toc__nav"
+    id="toc-list"
+    itemscope
+    itemtype="https://schema.org/SiteNavigationElement"
+    aria-label="Table of contents"
+    hidden
+  >
+    {
+      headings.map((heading) => (
+        <a
+          class:list={["toc__row", heading.level === 3 && "toc__row--sub"]}
+          href={`#${heading.slug}`}
+          itemprop="url"
+          data-toc-link={heading.slug}
+        >
+          <span itemprop="name">{heading.text}</span>
+        </a>
+      ))
+    }
+  </nav>
+
+  {/* 2px reading-progress rule, under the bar. Dropped at ≥900px. */}
+  <div class="toc__progress" aria-hidden="true">
+    <div class="toc__progress-fill" data-toc-progress></div>
+  </div>
+
+  <div class="toc__share">
+    <span class="toc__share-label">Share</span>
+    <div class="toc__share-items">
+      <button class="toc__share-item" type="button" data-copy-link={shareUrl}>Link</button>
+      <a
+        class="toc__share-item"
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+        rel="noopener noreferrer"
+        target="_blank">in</a
+      >
+      <a
+        class="toc__share-item"
+        href={`mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareUrl)}`}
+        aria-label="Share by email">✉</a
+      >
+    </div>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-toc]");
+  if (root) {
+    const toggle = root.querySelector<HTMLButtonElement>("[data-toc-toggle]");
+    const glyph = root.querySelector<HTMLElement>("[data-toc-glyph]");
+    const nav = root.querySelector<HTMLElement>("#toc-list");
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
+    const progress = root.querySelector<HTMLElement>("[data-toc-progress]");
+    const article = document.querySelector<HTMLElement>("[data-article-body]");
+
+    const isBarMode = () => window.matchMedia("(max-width: 899px)").matches;
+
+    /*
+     * The list is `hidden` in the HTML so a no-JS mobile reader gets the
+     * collapsed bar rather than a permanently open list. In sidebar mode it is
+     * always open, so unhide it as soon as we know the mode.
+     */
+    const applyMode = () => {
+      if (!nav) return;
+      if (isBarMode()) {
+        const expanded = toggle?.getAttribute("aria-expanded") === "true";
+        nav.hidden = !expanded;
+      } else {
+        nav.hidden = false;
+      }
+    };
+
+    applyMode();
+    window.matchMedia("(max-width: 899px)").addEventListener("change", applyMode);
+
+    toggle?.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!expanded));
+      if (nav) nav.hidden = expanded;
+      if (glyph) glyph.textContent = expanded ? "+" : "−";
+    });
+
+    /* §3.8 — the bar auto-collapses on anchor selection. */
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (!isBarMode()) return;
+        toggle?.setAttribute("aria-expanded", "false");
+        if (nav) nav.hidden = true;
+        if (glyph) glyph.textContent = "+";
+      });
+    });
+
+    /*
+     * §3.8 — active section via IntersectionObserver, rootMargin −40% 0 −55%.
+     * One active at a time, no scroll-spy jitter: the observer reports which
+     * headings are inside the band and we take the first in document order.
+     */
+    const headings = links
+      .map((link) => document.getElementById(link.dataset.tocLink ?? ""))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    if (headings.length > 0) {
+      const visible = new Set<string>();
+
+      const setActive = (id: string | null) => {
+        links.forEach((link) => {
+          const on = link.dataset.tocLink === id;
+          link.classList.toggle("toc__row--active", on);
+          if (on) link.setAttribute("aria-current", "true");
+          else link.removeAttribute("aria-current");
+        });
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) visible.add(entry.target.id);
+            else visible.delete(entry.target.id);
+          }
+          const first = headings.find((h) => visible.has(h.id));
+          if (first) setActive(first.id);
+        },
+        { rootMargin: "-40% 0px -55% 0px" },
+      );
+
+      headings.forEach((heading) => observer.observe(heading));
+      setActive(headings[0].id);
+    }
+
+    /* §3.8 — reading progress, bar mode only. */
+    if (progress && article) {
+      const update = () => {
+        if (!isBarMode()) return;
+        const rect = article.getBoundingClientRect();
+        const total = rect.height - window.innerHeight;
+        const scrolled = total <= 0 ? 1 : Math.min(1, Math.max(0, -rect.top / total));
+        progress.style.width = `${scrolled * 100}%`;
+      };
+      update();
+      window.addEventListener("scroll", update, { passive: true });
+      window.addEventListener("resize", update);
+    }
+
+    /* §6 — the Share "Link" item, made real rather than left as a glyph. */
+    const copyButton = root.querySelector<HTMLButtonElement>("[data-copy-link]");
+    copyButton?.addEventListener("click", async () => {
+      const url = copyButton.dataset.copyLink ?? location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = copyButton.textContent;
+        copyButton.textContent = "Copied";
+        setTimeout(() => {
+          copyButton.textContent = original;
+        }, 1600);
+      } catch {
+        /* Clipboard blocked — the link is in the address bar anyway. */
+      }
+    });
+  }
+</script>
+
+<style>
+  .toc {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toc__row {
+    display: block;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: color var(--dur) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+
+  .toc__row:hover {
+    color: var(--accent);
+  }
+
+  /* ---- bar mode: < 900px ------------------------------------------------- */
+  @media (max-width: 899px) {
+    .toc {
+      position: sticky;
+      /* §3.8 — sticks under the category nav. */
+      top: 52px;
+      z-index: 30;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding-block: 10px;
+      margin-bottom: var(--space-5);
+    }
+
+    .toc__heading {
+      display: none;
+    }
+
+    .toc__bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      background: var(--surface-sunken);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-1);
+      padding: var(--space-3) 14px;
+      min-height: 44px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .toc__bar-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .toc__bar-glyph {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    /* Expands in place into a full-width list, 44px rows. */
+    .toc__nav {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-top: 0;
+      background: var(--surface);
+    }
+
+    .toc__row {
+      font-size: 14px;
+      padding: var(--space-3) 14px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .toc__row:last-child {
+      border-bottom: 0;
+    }
+
+    .toc__row--sub {
+      padding-left: 26px;
+    }
+
+    .toc__row--active {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .toc__progress {
+      height: 2px;
+      background: var(--toc-rest-rule);
+      margin-top: 10px;
+    }
+
+    .toc__progress-fill {
+      height: 2px;
+      width: 0;
+      background: var(--accent);
+    }
+
+    /* The share group belongs to the sidebar shell. */
+    .toc__share {
+      display: none;
+    }
+  }
+
+  /* ---- sidebar mode: ≥ 900px --------------------------------------------- */
+  @media (min-width: 900px) {
+    .toc {
+      /* §3.8 — clears the sticky category nav. */
+      position: sticky;
+      top: 74px;
+      align-self: start;
+    }
+
+    .toc__bar {
+      display: none;
+    }
+
+    /* The progress rule is dropped — the active state does that job. */
+    .toc__progress {
+      display: none;
+    }
+
+    .toc__heading {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: var(--type-eyebrow-ls);
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toc__nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toc__row {
+      font-size: var(--type-card-sm-size);
+      line-height: 1.4;
+      padding: 11px 0 11px var(--space-3);
+      border-left: 2px solid var(--toc-rest-rule);
+    }
+
+    .toc__row--sub {
+      /* H3s indent 24px at 13px. */
+      padding-left: 24px;
+      font-size: 13px;
+    }
+
+    .toc__row--active {
+      color: var(--text-primary);
+      font-weight: 700;
+      border-left-color: var(--accent);
+    }
+
+    .toc__share {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .toc__share-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .toc__share-items {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    .toc__share-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-on-accent-body);
+      border: 1px solid var(--border);
+      background: transparent;
+      padding: 7px 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color var(--dur-fast) var(--ease), color var(--dur) var(--ease);
+    }
+
+    .toc__share-item:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  }
+</style>

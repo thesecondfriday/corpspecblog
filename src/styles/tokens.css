@@ -1,0 +1,192 @@
+/*
+ * Component Spec §1 — Tokens.
+ * Defined once, referenced everywhere. Colours are named by role, not hue.
+ * The system is rule-based rather than shadow-based: borders and flat fields
+ * do the separating work, which is why the shadow scale is nearly empty.
+ *
+ * Do not add a raw hex or px value to a component. If a component genuinely
+ * needs a one-off, add it here as a documented exception token (see §1.6).
+ */
+
+:root {
+  /* ---- 1.1 Colour roles ------------------------------------------------ */
+  --surface: #fcfbf8; /* Page background, every page */
+  --surface-raised: #fbfaf6; /* Bordered block fill, table zebra rows */
+  --surface-sunken: #f2f0e8; /* Image wells, table headers, mobile TOC bar */
+  --surface-accent: #dde5d6; /* Sage field: hero panel, category header, inline CTA, no-image fallback */
+  --surface-accent-soft: #edf1e8; /* Neutral callout, gated resource, framed category chip */
+  --surface-warn: #fbefe8; /* Cautionary callout only */
+  --surface-inverse: #253a22; /* Guides module, end-of-article CTA */
+  --surface-inverse-deep: #14170f; /* Footer */
+
+  --text-primary: #1c211c; /* Headlines, card titles, table row labels */
+  --text-body: #262b25; /* Article body prose (warmer than headline ink) */
+  --text-muted: #5c6157; /* Deks, excerpts, secondary prose */
+  --text-subtle: #8c9084; /* Meta lines, captions, counts */
+  --text-on-inverse: #fcfbf8; /* Text on inverse surfaces */
+  --text-on-inverse-muted: #c3cfbc; /* Supporting text on inverse */
+  --text-on-inverse-meta: #7e9476; /* Meta on inverse (§1.1 note) */
+
+  --border: #e2dfd5; /* Default 1px rule: dividers, block borders, header/nav */
+  --border-hairline: #efede5; /* Rules inside a bordered block */
+  --border-strong: #d8d5cb; /* Tag chip at rest, inputs on light surfaces */
+  --border-accent: #c9d4bf; /* Borders on sage surfaces */
+
+  --accent: #e4602a; /* Primary action, active underline, link colour, focus ring */
+  --accent-hover: #c24e1e; /* Hover/active for accent fills and links */
+  --brand-green: #2f6033; /* Category labels, tip callout rule, section eyebrows */
+
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* ---- 1.2 Type scale --------------------------------------------------
+   * Three families: Mulish (Proxima Nova stand-in — §6), Playfair Display for
+   * the serif voice, IBM Plex Mono for every label, eyebrow, meta and number.
+   * Fluid sizes are clamp(min, container-relative, max); min is the mobile value.
+   */
+  --font-sans: "Proxima Nova", "Mulish", system-ui, -apple-system, sans-serif;
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --type-display-size: clamp(32px, 4.6cqw, 62px);
+  --type-display-lh: 1.02;
+  --type-display-ls: -0.03em;
+  --type-display-weight: 800;
+
+  --type-page-title-size: clamp(30px, 4.4cqw, 56px);
+  --type-page-title-lh: 1.03;
+  --type-page-title-ls: -0.028em;
+
+  --type-h2-size: clamp(23px, 2.5cqw, 32px);
+  --type-h2-lh: 1.18;
+  --type-h2-ls: -0.022em;
+
+  --type-h3-size: clamp(18px, 1.9cqw, 22px);
+  --type-h3-lh: 1.28;
+  --type-h3-ls: -0.014em;
+
+  --type-card-lg-size: clamp(23px, 1.9cqw, 25px);
+  --type-card-lg-lh: 1.16;
+  --type-card-lg-ls: -0.02em;
+
+  --type-card-size: 20px;
+  --type-card-lh: 1.24;
+  --type-card-ls: -0.012em;
+
+  --type-card-sm-size: 16px;
+  --type-card-sm-lh: 1.32;
+  --type-card-sm-weight: 700;
+
+  --type-dek-size: clamp(16.5px, 1.8cqw, 23px);
+  --type-dek-lh: 1.5;
+
+  --type-body-size: clamp(16.5px, 1.55cqw, 19px);
+  --type-body-lh: 1.78;
+  --type-body-ls: -0.003em;
+
+  --type-body-sm-size: 15.5px;
+  --type-body-sm-lh: 1.7;
+
+  --type-ui-size: 14.5px;
+  --type-ui-lh: 1.55;
+
+  --type-caption-size: 13px;
+  --type-caption-lh: 1.55;
+
+  --type-serif-lg-size: clamp(25px, 3cqw, 42px);
+  --type-serif-lg-lh: 1.12;
+  --type-serif-lg-weight: 500;
+
+  --type-quote-size: clamp(21px, 2.4cqw, 30px);
+  --type-quote-lh: 1.38;
+
+  --type-eyebrow-size: 11px;
+  --type-eyebrow-ls: 0.18em;
+
+  --type-label-size: 10.5px;
+  --type-label-ls: 0.16em;
+
+  --type-meta-size: 10.5px;
+  --type-meta-ls: 0.08em;
+
+  /* ---- 1.3 Spacing & layout -------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 26px;
+  --space-7: 34px;
+  --space-8: 46px;
+  --space-9: 64px;
+
+  --gutter: clamp(18px, 4cqw, 56px);
+  --section-y: clamp(34px, 4.5cqw, 68px);
+  --grid-gap: clamp(24px, 3cqw, 40px);
+  --grid-gap-row: clamp(28px, 3cqw, 44px);
+  --container: 1240px;
+  --measure: 72ch; /* ≈68 chars rendered — the article column */
+  --measure-narrow: 66ch; /* FAQ answers, callout body */
+
+  --radius-0: 0; /* Default for cards, image wells, blocks */
+  --radius-1: 2px; /* Buttons, inputs, framed chips */
+  --radius-pill: 999px; /* Tag chips, search field */
+  --radius-round: 50%; /* Author avatars */
+
+  --shadow-none: none; /* Nothing in the content system casts a shadow */
+  --shadow-1: 0 2px 24px rgba(20, 23, 15, 0.07); /* Overlays only */
+
+  --ratio-hero: 21 / 9;
+  --ratio-hero-tablet: 16 / 9;
+  --ratio-hero-mobile: 3 / 2; /* §7: 21:9 at 390px is a 167px strip */
+  --ratio-card: 3 / 2;
+  --ratio-portrait: 4 / 5;
+  --ratio-product: 1 / 1;
+
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --ease: ease-out;
+
+  /* ---- §4 shared spacing law ------------------------------------------- */
+  --block-y: 34px; /* Block against a paragraph — mobile */
+  --block-y-collapse: 26px; /* Two adjacent blocks */
+  --block-y-after-heading: 20px; /* Block immediately after an H2/H3 */
+
+  /* ---- 1.6 Documented exceptions ---------------------------------------
+   * Each of these is a raw value a component genuinely needs, hoisted here so
+   * no component file carries a literal. Reason given per token.
+   */
+  --border-on-inverse: #3c5138; /* GuidesModule row rules — no inverse border role existed (§3.9) */
+  --border-inverse-input: #2c3226; /* Footer newsletter input on --surface-inverse-deep */
+  --border-accent-input: #b9c7ae; /* Inputs on sage surfaces (§1.1 note, §3.10) */
+  --border-inverse-button: #4e6449; /* Secondary button outline on inverse (§3.10) */
+  --surface-inverse-input: #1c211c; /* Footer input fill */
+  --text-on-inverse-eyebrow: #9fb596; /* Eyebrow on inverse blocks */
+  --text-on-inverse-link: #e7e5dc; /* Footer links (§3.11) */
+  --text-on-inverse-legal: #6e7466; /* Footer legal row */
+  --text-on-accent-muted: #6e7a66; /* Meta text on sage fields — --text-subtle under-contrasts there */
+  --text-on-accent-body: #454b42; /* Body copy on sage fields, and table cell text */
+  --text-caption: #7a7f73; /* Figure captions — between --text-muted and --text-subtle */
+  --monogram: #a9b79e; /* "CS" fallback monogram on --surface-accent */
+  --type-card-related-size: 18.5px; /* §3.9: a related card never out-shouts the article it follows */
+  --toc-rest-rule: #e9e6dd; /* TOC row rule at rest — lighter than --border-hairline on white */
+  --field-placeholder: #9ca095; /* Masthead search stand-in (§6) */
+}
+
+/*
+ * 1.4 Breakpoints. The feed grids stay auto-fit (§7) — these named jumps exist
+ * only for the four cases that genuinely need a discrete change: TOC mode,
+ * hero split, pagination, nav overflow. Custom media isn't in CSS yet, so the
+ * ranges are repeated at their use sites and named in a comment there.
+ *
+ *   --bp-mobile   < 600px    1 feed column
+ *   --bp-tablet   600–899px  2 feed columns
+ *   --bp-desktop  900–1239px 3 feed columns
+ *   --bp-wide     ≥ 1240px   3 feed columns, container caps
+ */
+
+@media (min-width: 900px) {
+  :root {
+    --block-y: 38px;
+  }
+}

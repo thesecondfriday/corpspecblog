@@ -1,0 +1,277 @@
+---
+/*
+ * Component Spec §3.10 — CtaBlock.
+ *
+ * MERGED: the in-feed conversion module and the end-of-article CTA are one
+ * component with a `placement` prop. `inlineFeed` is sage with an email
+ * capture; `endOfArticle` is inverse with two buttons. Same fields, same copy
+ * slots.
+ *
+ * Placement: inlineFeed sits after the first row of feed cards — one per page,
+ * never two — spans the full grid width, and carries no border so it reads as
+ * an editorial aside rather than an ad slot. endOfArticle is full-bleed inverse
+ * between the FAQ and Related.
+ */
+import { SITE } from "../lib/site";
+
+interface Props {
+  placement: "inlineFeed" | "endOfArticle";
+  eyebrow?: string;
+  /** Serif. */
+  heading: string;
+  /** ≤44ch. */
+  body: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+  /** Omit and the primary sits alone. */
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  /** inlineFeed only. */
+  captureEmail?: boolean;
+  /** The small line under the field. */
+  reassurance?: string;
+}
+
+const {
+  placement,
+  eyebrow,
+  heading,
+  body,
+  primaryLabel = SITE.strategistLabel,
+  primaryHref = SITE.strategistHref,
+  secondaryLabel,
+  secondaryHref,
+  captureEmail = false,
+  reassurance,
+} = Astro.props;
+
+const inverse = placement === "endOfArticle";
+---
+
+<section class:list={["cta", `cta--${placement}`, inverse && "on-inverse"]}>
+  <div class:list={[inverse ? "container" : null, "cta__inner"]}>
+    <div class="cta__copy">
+      {eyebrow && <span class="cta__eyebrow">{eyebrow}</span>}
+      <h2 class="cta__heading">{heading}</h2>
+      <p class="cta__body">{body}</p>
+    </div>
+
+    <div class="cta__action">
+      {
+        captureEmail ? (
+          <form class="cta__form" data-cta-form action="/api/strategist" method="post">
+            <label class="visually-hidden" for="cta-email">
+              Work email
+            </label>
+            <input
+              id="cta-email"
+              class="field field--on-accent"
+              type="email"
+              name="email"
+              required
+              placeholder="Work email"
+              autocomplete="email"
+            />
+            <button class="btn btn--primary cta__submit" type="submit">{primaryLabel}</button>
+            <p class="cta__message" data-message role="status" aria-live="polite" hidden />
+          </form>
+        ) : (
+          <div class="cta__buttons">
+            <a class="btn btn--primary" href={primaryHref}>
+              {primaryLabel}
+            </a>
+            {secondaryLabel && secondaryHref && (
+              <a class="btn btn--on-inverse" href={secondaryHref}>
+                {secondaryLabel}
+              </a>
+            )}
+          </div>
+        )
+      }
+      {reassurance && <p class="cta__reassurance">{reassurance}</p>}
+    </div>
+  </div>
+</section>
+
+<script>
+  /* §3.10 Form states — mirrors NewsletterSignup: replaced in place, no modal. */
+  document.querySelectorAll<HTMLFormElement>("form[data-cta-form]").forEach((form) => {
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+    const message = form.querySelector<HTMLParagraphElement>("[data-message]");
+    const restLabel = button?.textContent ?? "Send";
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!button || !message) return;
+
+      button.disabled = true;
+      button.textContent = "Sending…";
+      form.dataset.state = "submitting";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.dataset.state = "success";
+        message.hidden = false;
+        message.textContent = "Got it — a strategist will reply the same business day.";
+        form.querySelectorAll("input, button").forEach((el) => el.remove());
+      } catch {
+        form.dataset.state = "error";
+        button.disabled = false;
+        button.textContent = restLabel;
+        message.hidden = false;
+        message.textContent = "That didn't send. Try again, or email desk@corporatespecialties.com.";
+      }
+    });
+  });
+</script>
+
+<style>
+  /* inlineFeed — sage field, no border: an editorial aside, not an ad slot. */
+  .cta--inlineFeed {
+    background: var(--surface-accent);
+    padding: clamp(24px, 3.4cqw, 44px) clamp(20px, 3.4cqw, 44px);
+    margin-block: clamp(30px, 3.6cqw, 52px);
+  }
+
+  /* endOfArticle — full-bleed inverse. */
+  .cta--endOfArticle {
+    background: var(--surface-inverse);
+    color: var(--text-on-inverse);
+  }
+
+  .cta--endOfArticle .cta__inner {
+    padding-block: clamp(32px, 4.4cqw, 66px);
+  }
+
+  .cta__inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: clamp(20px, 3cqw, 44px);
+    align-items: center;
+  }
+
+  .cta__copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .cta__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--brand-green);
+  }
+
+  .cta--endOfArticle .cta__eyebrow {
+    color: var(--text-on-inverse-eyebrow);
+  }
+
+  .cta__heading {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(23px, 2.7cqw, 33px);
+    line-height: 1.15;
+    font-weight: var(--type-serif-lg-weight);
+    color: var(--text-primary);
+  }
+
+  .cta--endOfArticle .cta__heading {
+    font-size: clamp(25px, 3cqw, 38px);
+    line-height: var(--type-serif-lg-lh);
+    color: var(--text-on-inverse);
+  }
+
+  .cta__body {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-on-accent-body);
+    /* §3.10 — body ≤44ch. */
+    max-width: 44ch;
+  }
+
+  .cta--endOfArticle .cta__body {
+    color: var(--text-on-inverse-muted);
+  }
+
+  .cta__action {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cta__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .cta__form .field {
+    flex: 1 1 170px;
+    min-width: 0;
+  }
+
+  .cta__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .cta__submit {
+    /* §3.10 Responsive — tablet+: field and button on one row, button nowrap. */
+    white-space: nowrap;
+    padding: 14px 20px;
+  }
+
+  .cta__reassurance,
+  .cta__message {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--text-on-accent-muted);
+  }
+
+  .cta__message {
+    flex: 1 1 100%;
+  }
+
+  .cta--endOfArticle .cta__reassurance,
+  .cta--endOfArticle .cta__message {
+    color: var(--text-on-inverse-muted);
+  }
+
+  .cta__form[data-state="submitting"] .btn {
+    opacity: 0.7;
+  }
+
+  /* §3.10 Responsive — mobile: single column, field and button full-width, 48px. */
+  @media (max-width: 599px) {
+    .cta__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .cta__form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cta__buttons {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cta__submit,
+    .cta__buttons .btn {
+      min-height: 48px;
+    }
+  }
+</style>

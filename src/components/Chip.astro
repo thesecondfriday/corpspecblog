@@ -1,0 +1,156 @@
+---
+/*
+ * Component Spec §3.2 — Chip.
+ *
+ * MERGED: category chip and tag chip were specced separately; they are one
+ * component. `kind` sets semantics and link target, `style` sets the shell.
+ */
+import type { ChipKind, ChipStyle } from "../lib/types";
+
+interface Props {
+  title: string;
+  href: string;
+  kind: ChipKind;
+  /** Defaults: category → bare inside cards, framed in article headers; tag → pill. */
+  style?: ChipStyle;
+  /** Tags only. */
+  isActive?: boolean;
+  /** Shown only in the archive filter row. */
+  count?: number;
+  /** A tag with zero matches after other filters — not focusable. */
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  href,
+  kind,
+  style,
+  isActive = false,
+  count,
+  disabled = false,
+  class: className,
+} = Astro.props;
+
+const shell: ChipStyle = style ?? (kind === "category" ? "bare" : "pill");
+const label = count === undefined ? title : `${title} ${count}`;
+---
+
+{
+  disabled ? (
+    <span class:list={["chip", `chip--${shell}`, "chip--disabled", className]}>{label}</span>
+  ) : (
+    <a
+      class:list={["chip", `chip--${shell}`, isActive && "chip--active", className]}
+      href={href}
+      aria-current={isActive ? "true" : undefined}
+    >
+      {label}
+      {/* §3.2 — an active tag appends an ✕ that clears that filter. */}
+      {isActive && shell === "pill" && <span class="chip__clear" aria-hidden="true">✕</span>}
+    </a>
+  )
+}
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--dur) var(--ease), border-color var(--dur-fast) var(--ease),
+      background var(--dur) var(--ease);
+  }
+
+  /* bare — --type-label in --brand-green, no shell. */
+  .chip--bare {
+    font-size: var(--type-label-size);
+    font-weight: 600;
+    letter-spacing: var(--type-label-ls);
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--brand-green);
+  }
+
+  .chip--bare:hover {
+    color: var(--accent);
+  }
+
+  /*
+   * framed — same type, --surface-accent-soft fill, 1px --border-accent,
+   * --radius-1, padding --space-2 / 11px.
+   * EXCEPTION: 11px is an optical inset for mono caps (§3.2).
+   */
+  .chip--framed {
+    font-size: var(--type-label-size);
+    font-weight: 600;
+    letter-spacing: var(--type-label-ls);
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--brand-green);
+    background: var(--surface-accent-soft);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-1);
+    padding: var(--space-2) 11px;
+  }
+
+  .chip--framed:hover {
+    border-color: var(--accent);
+  }
+
+  /* pill — --radius-pill, 1px --border-strong, text --text-muted. */
+  .chip--pill {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    color: var(--text-muted);
+    /* Visual height stays 36px; the hit area is padded to 44px on touch (§3.2). */
+    min-height: 36px;
+  }
+
+  .chip--pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* active — --text-primary fill, --text-on-inverse label, no border. */
+  .chip--pill.chip--active {
+    background: var(--text-primary);
+    color: var(--text-on-inverse);
+    border-color: transparent;
+  }
+
+  .chip--pill.chip--active:hover {
+    color: var(--text-on-inverse);
+  }
+
+  .chip__clear {
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  /* disabled — --text-subtle, border --border-hairline, not focusable. */
+  .chip--disabled {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-pill);
+    color: var(--text-subtle);
+    min-height: 36px;
+  }
+
+  @media (pointer: coarse) {
+    .chip--pill,
+    .chip--disabled {
+      min-height: 44px;
+    }
+  }
+</style>

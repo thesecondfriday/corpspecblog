@@ -1,0 +1,175 @@
+/*
+ * Component Spec §4.1 — Prose defaults.
+ * These are the Portable Text styles and marks an editor gets *without*
+ * inserting anything. Insertable blocks (§4.2–§4.8) are components, not rules
+ * in here; the only thing this file says about them is the spacing law.
+ *
+ * Allowed styles: normal, h2, h3, blockquote. Lists: bullet, number.
+ * Marks: strong, em, link, code. No h1, no h4+, no underline, no text colour,
+ * no font-size overrides, no centred text.
+ */
+
+.prose {
+  max-width: min(var(--measure), 100%);
+  color: var(--text-body);
+}
+
+.prose > p {
+  margin: 0 0 var(--space-6);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
+  letter-spacing: var(--type-body-ls);
+  color: var(--text-body);
+  text-wrap: pretty;
+}
+
+/* Heading-to-paragraph space is always tighter than heading-to-preceding-block:
+   the heading belongs to what follows. */
+.prose > h2 {
+  margin: var(--space-8) 0 14px;
+  font-family: var(--font-sans);
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-lh);
+  letter-spacing: var(--type-h2-ls);
+  font-weight: 800;
+  color: var(--text-primary);
+  scroll-margin-top: 90px; /* §3.8 — anchor lands clear of the sticky nav */
+}
+
+.prose > h3 {
+  margin: 30px 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  letter-spacing: var(--type-h3-ls);
+  font-weight: 800;
+  color: var(--text-primary);
+  scroll-margin-top: 90px;
+}
+
+/* Heading spacing scales down ~20% below 600px (§4.1 Responsive). */
+@media (max-width: 599px) {
+  .prose > h2 {
+    margin-top: var(--space-7);
+  }
+
+  .prose > h3 {
+    margin-top: var(--space-6);
+  }
+}
+
+.prose > ul,
+.prose > ol {
+  margin: 0 0 30px;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
+  color: var(--text-body);
+}
+
+.prose > ul {
+  padding-left: 22px;
+}
+
+.prose > ol {
+  padding-left: 24px;
+}
+
+.prose li {
+  padding-left: var(--space-1);
+}
+
+.prose li + li {
+  margin-top: 10px;
+}
+
+/* Blockquote as a *style* is reserved — editors get the pullQuote block (§4.2).
+   The mark exists only for imported content. */
+.prose > blockquote {
+  margin: var(--block-y) 0;
+  padding: 0 0 0 var(--space-6);
+  border-left: 3px solid var(--border-accent);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  transition: color var(--dur) var(--ease);
+}
+
+.prose a:hover {
+  color: var(--accent-hover);
+  text-decoration-thickness: 2px;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--surface-sunken);
+  padding: 1px 4px;
+  border-radius: var(--radius-1);
+}
+
+.prose strong {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ---- Drop cap: first paragraph of a post only --------------------------- */
+.prose > p.has-dropcap::first-letter {
+  font-family: var(--font-serif);
+  float: left;
+  font-size: 3.6em;
+  line-height: 0.82;
+  margin: 6px 12px 0 0;
+  color: var(--accent);
+}
+
+/* Suppressed on screens under 400px (§4.1). */
+@media (max-width: 399px) {
+  .prose > p.has-dropcap::first-letter {
+    font-family: inherit;
+    float: none;
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0;
+    color: inherit;
+  }
+}
+
+/*
+ * §4 Shared spacing law.
+ * Every block takes --block-y above and below against a paragraph.
+ * Two adjacent blocks collapse to --block-y-collapse.
+ * A block immediately after an H2 or H3 uses --block-y-after-heading, because
+ * the heading has already opened the space.
+ */
+.prose > .block {
+  margin-block: var(--block-y);
+}
+
+.prose > .block + .block {
+  margin-top: var(--block-y-collapse);
+}
+
+.prose > h2 + .block,
+.prose > h3 + .block {
+  margin-top: var(--block-y-after-heading);
+}
+
+/* Blocks stay inside --measure except where noted — `wide` opts out (§4.3). */
+.prose > .block--wide {
+  width: calc(100% + 240px);
+  max-width: none;
+  margin-inline: -120px;
+}
+
+@media (max-width: 899px) {
+  .prose > .block--wide {
+    width: 100%;
+    margin-inline: 0;
+  }
+}

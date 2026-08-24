@@ -1,0 +1,157 @@
+---
+/*
+ * Component Spec §4.4 — productSpotlight.
+ *
+ * 1px --border on --surface-raised, two columns: a square image well and a text
+ * column. The eyebrow is the ONLY orange one in the body — that is what marks
+ * the block as commercial without a badge.
+ *
+ * Absent image: the media column collapses and the block becomes text-only,
+ * full width — NOT the CS monogram tile, which is a card-only device.
+ * Absent price pair: the price line is omitted entirely; never "Price on
+ * request" — the CTA already says that.
+ * Absent minQty: drop the "/ n pc min" suffix.
+ *
+ * Photography tolerance: the square well plus a warm tint means a white-cutout
+ * shot and a grey-studio shot both sit consistently. Never apply a drop shadow
+ * or background removal.
+ */
+import type { Product } from "../../lib/types";
+
+interface Props {
+  product: Product;
+  ctaHref: string;
+}
+
+const { product, ctaHref } = Astro.props;
+const hasPrice = product.priceLow !== undefined && product.priceHigh !== undefined;
+const ctaLabel = product.ctaLabel ?? "Request pricing";
+---
+
+<aside
+  class:list={["block", "spotlight", !product.image && "spotlight--textonly"]}
+  itemscope
+  itemtype="https://schema.org/Product"
+>
+  {
+    product.image && (
+      <div class="spotlight__well">
+        <img src={product.image.src} alt={product.image.alt} loading="lazy" decoding="async" itemprop="image" />
+      </div>
+    )
+  }
+
+  <div class="spotlight__text">
+    <span class="spotlight__eyebrow">Product spotlight</span>
+    <h4 class="spotlight__name" itemprop="name">{product.name}</h4>
+    <p class="spotlight__oneliner" itemprop="description">{product.oneLiner}</p>
+
+    {
+      hasPrice && (
+        <p class="spotlight__price" itemprop="offers" itemscope itemtype="https://schema.org/AggregateOffer">
+          <meta itemprop="priceCurrency" content="USD" />
+          <span itemprop="lowPrice">${product.priceLow}</span> – <span itemprop="highPrice">${product.priceHigh}</span>
+          {product.minQty && <span class="spotlight__minqty">/ {product.minQty} pc min</span>}
+        </p>
+      )
+    }
+
+    <a class="btn btn--ink spotlight__cta" href={ctaHref} itemprop="url">{ctaLabel}</a>
+  </div>
+</aside>
+
+<style>
+  .spotlight {
+    border: 1px solid var(--border);
+    background: var(--surface-raised);
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .spotlight__well {
+    aspect-ratio: var(--ratio-product);
+    background: var(--surface-sunken);
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .spotlight__well img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .spotlight__text {
+    padding: clamp(18px, 2.4cqw, 28px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .spotlight__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .spotlight__name {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--type-h3-size);
+    line-height: 1.26;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .spotlight__oneliner {
+    margin: 0;
+    font-size: var(--type-ui-size);
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .spotlight__price {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .spotlight__minqty {
+    color: var(--text-subtle);
+  }
+
+  .spotlight__cta {
+    align-self: flex-start;
+    margin-top: var(--space-1);
+    font-size: var(--type-label-size);
+    padding: 11px 15px;
+  }
+
+  /* §4.4 Mobile — stacks: image on top at 1/1 (full block width), text below,
+     CTA full-width at 48px. */
+  @media (max-width: 599px) {
+    .spotlight__cta {
+      align-self: stretch;
+      min-height: 48px;
+    }
+  }
+
+  @media (min-width: 600px) {
+    .spotlight:not(.spotlight--textonly) {
+      grid-template-columns: minmax(190px, 1fr) 1.2fr;
+    }
+
+    .spotlight__well {
+      border-bottom: 0;
+      border-right: 1px solid var(--border);
+      height: 100%;
+    }
+  }
+</style>

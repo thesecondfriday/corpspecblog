@@ -1,0 +1,90 @@
+---
+/*
+ * Component Spec §3.3 — PostGrid.
+ *
+ * Grids stay auto-fit (§7): container-driven columns survive being embedded
+ * anywhere without new media queries. The column counts in §1.4 are the
+ * outcome, not a media-query instruction.
+ *
+ * The `empty` state renders nothing here — it delegates to EmptyState so the
+ * message can name the active filters.
+ */
+import type { CardVariant, GridState, Post } from "../lib/types";
+import PostCard from "./PostCard.astro";
+import PostCardSkeleton from "./PostCardSkeleton.astro";
+
+interface Props {
+  posts: Post[];
+  /** Eyebrow, e.g. "Latest", "Page 2". */
+  label?: string;
+  /** e.g. "7–12 of 42". */
+  rangeLabel?: string;
+  cardVariant?: CardVariant;
+  state?: GridState;
+  related?: boolean;
+  /** Minimum track width fed to auto-fill. */
+  min?: string;
+  id?: string;
+}
+
+const {
+  posts,
+  label,
+  rangeLabel,
+  cardVariant = "standard",
+  state = "ready",
+  related = false,
+  min = "280px",
+  id,
+} = Astro.props;
+---
+
+<div id={id}>
+  {
+    (label || rangeLabel) && (
+      <div class="rule-head">
+        {label && <span class="eyebrow">{label}</span>}
+        <span class="rule-head__line" />
+        {rangeLabel && <span class="meta">{rangeLabel}</span>}
+      </div>
+    )
+  }
+
+  {
+    state === "loading" ? (
+      /*
+       * §3.3 — render exactly one screenful. Astro ships static HTML, so this
+       * only ever appears on client-side filter/pagination fetches; with
+       * pagination as full page loads it is never reached (§7).
+       */
+      <div class="grid" style={`--grid-min: ${min}`} aria-busy="true">
+        {Array.from({ length: 6 }).map(() => (
+          <PostCardSkeleton />
+        ))}
+      </div>
+    ) : state === "ready" && posts.length > 0 ? (
+      <div class:list={["grid", cardVariant === "compact" && "grid--compact"]} style={`--grid-min: ${cardVariant === "compact" ? "240px" : min}`}>
+        {posts.map((post, i) => (
+          <PostCard post={post} variant={cardVariant} related={related} loading={i < 3 ? "eager" : "lazy"} />
+        ))}
+      </div>
+    ) : (
+      <slot name="empty" />
+    )
+  }
+</div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--grid-min), 1fr));
+    gap: var(--grid-gap-row) var(--grid-gap);
+  }
+
+  /* §3.1 — the compact variant is a divided list, so rows meet at their rules. */
+  .grid--compact {
+    grid-template-columns: repeat(auto-fit, minmax(var(--grid-min), 1fr));
+    gap: 0 var(--grid-gap);
+    border-top: 1px solid var(--border);
+  }
+</style>

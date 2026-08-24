@@ -1,0 +1,94 @@
+---
+/*
+ * Component Spec §3.11 — CategoryNav.
+ *
+ * Always visible, never a dropdown. position: sticky; top: 0 on every page.
+ * A post page marks its own category active.
+ */
+import type { Category } from "../lib/types";
+import { SITE, categoryHref } from "../lib/site";
+
+interface Props {
+  categories: Category[];
+  /** "all" marks the index link active. */
+  activeSlug?: string | "all";
+}
+
+const { categories, activeSlug } = Astro.props;
+---
+
+<nav class="catnav" aria-label="Categories">
+  <div class="container scroll-x catnav__inner">
+    <a
+      class:list={["catnav__item", "focus-inset", activeSlug === "all" && "catnav__item--active"]}
+      href={SITE.blogBase}
+      aria-current={activeSlug === "all" ? "page" : undefined}
+    >
+      All Stories
+    </a>
+    {
+      categories.map((category) => (
+        <a
+          class:list={[
+            "catnav__item",
+            "focus-inset",
+            activeSlug === category.slug && "catnav__item--active",
+          ]}
+          href={categoryHref(category.slug)}
+          aria-current={activeSlug === category.slug ? "page" : undefined}
+        >
+          {category.title}
+        </a>
+      ))
+    }
+  </div>
+</nav>
+
+<style>
+  .catnav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+
+  .catnav__inner {
+    display: flex;
+    /* §3.11 — desktop+ gap. All six fit. */
+    gap: clamp(18px, 2.6cqw, 34px);
+  }
+
+  .catnav__item {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    /* §3.11 Responsive — 44px targets. */
+    min-height: 44px;
+    padding-block: var(--space-3);
+    font-size: var(--type-ui-size);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .catnav__item:hover {
+    color: var(--text-primary);
+  }
+
+  /* Active item: weight 800 + 2px --accent bottom rule. */
+  .catnav__item--active {
+    color: var(--text-primary);
+    font-weight: 800;
+    border-bottom-color: var(--accent);
+  }
+
+  /*
+   * §3.11 Responsive — mobile/tablet: horizontal scroll, scrollbar hidden
+   * (.scroll-x), first item flush to the gutter, no fade mask: the cut-off
+   * item is the affordance.
+   */
+</style>
