@@ -1,152 +1,214 @@
-# Getting the Studio on the web
+# Get the Studio on the web — from a cold terminal
 
-**Your dataset is already seeded and live.** CSBLOG (`8og1x4eu` / `production`)
-now holds 31 published documents: 5 posts (one per category), 5 categories,
-9 tags, 4 authors, 2 products.
+Your content is **already in Sanity**: 31 published documents in CSBLOG
+(`8og1x4eu` / `production`). What's missing is the Studio — the app you edit
+content in. `sanity.io/manage` is only the admin console (datasets, tokens,
+members); it has no editor. That's why you saw nothing.
 
-What is left is one command, because the Studio has to be *built and uploaded*
-from a machine that can reach `sanity.io` — and this build environment cannot
-(see "Why I couldn't do this part" below).
+A Studio has to be built and uploaded from a machine that can reach sanity.io.
+This build environment can't (its egress policy blocks the domain), so these
+seven steps run on **your** machine. Budget five minutes.
 
 ---
 
-## The one command
+## 0 · Check Node
+
+```bash
+node -v
+```
+
+Must be **v22.12 or higher** — both Astro 7 and Sanity 6 require it. If it's
+older, install a current Node (`nvm install 22 && nvm use 22`, or download from
+nodejs.org) before continuing. Everything below fails in confusing ways on an
+old Node.
+
+---
+
+## 1 · Get the code
 
 ```bash
 git clone https://github.com/thesecondfriday/corpspecblog
-cd corpspecblog && git checkout claude/swag-content-hub-6ferhj
+cd corpspecblog
+git checkout claude/swag-content-hub-6ferhj
+```
+
+Confirm you're on the right commit:
+
+```bash
+git log --oneline -1
+```
+
+Should print something ending in `Default the project id in the Sanity configs`.
+
+---
+
+## 2 · Install
+
+```bash
 npm install
+```
 
-# Point at the project (or copy the .env.local you already have)
-printf 'PUBLIC_SANITY_PROJECT_ID=8og1x4eu\nPUBLIC_SANITY_DATASET=production\n' > .env.local
+Takes a minute or two. Warnings about deprecated transitive packages are normal;
+errors are not.
 
+---
+
+## 3 · Log in to Sanity
+
+This is the step you were missing. The CLI has its own login, separate from
+being logged into sanity.io in a browser.
+
+```bash
+npx sanity login
+```
+
+It prints a list of providers and opens your browser. **Choose GitHub** — that's
+the provider your Sanity account uses (`thesecondfriday`, GitHub). Picking
+Google or email would create or log into a *different* account that has no
+access to this project.
+
+Confirm it worked:
+
+```bash
+npx sanity projects list
+```
+
+You should see:
+
+```
+Id         Name     Members
+8og1x4eu   CSBLOG   1
+```
+
+If CSBLOG isn't listed, you're logged into the wrong account — run
+`npx sanity logout`, then step 3 again and pick GitHub.
+
+---
+
+## 4 · Deploy the Studio
+
+```bash
 npm run studio:deploy
 ```
 
-That publishes the Studio to **https://corpspecblog.sanity.studio** — already
-added to the project's CORS origins, so it works on the first try, no prompt.
-Log in with the same GitHub account and the seeded content is there.
+It builds the Studio and uploads it. The hostname is pinned in `sanity.cli.ts`,
+so it won't prompt you to pick one. Expect roughly a minute of bundling, then:
 
-To see the blog itself:
-
-```bash
-npm run dev     # site at localhost:4321, Studio also at localhost:4321/studio
+```
+Success! Studio deployed to https://corpspecblog.sanity.studio
 ```
 
-Both read the same `sanity.config.ts`, so the schema can never drift between
-the embedded Studio and the hosted one.
+**Open that URL.** Log in with GitHub. You'll land in a Studio titled
+*The Swag Desk*, with a left-hand structure of:
+
+```
+Posts ──┬─ All posts          (5)
+        ├─ Drafts
+        ├─ Can headline the homepage
+        ├─ Evergreen guides   (2)
+        ├─ By category
+        └─ By author
+Authors      (4)
+Categories   (5, in menu order)
+Tags         (9)
+Products     (2)
+```
+
+You can create and edit posts there immediately. That is your CMS.
+
+I already added `https://corpspecblog.sanity.studio` to the project's CORS
+origins, so it works on the first load — no CORS error to go fix.
 
 ---
 
-## Two things to finish
+## 5 · Run the blog locally
 
-**1. Images.** The seeded content has none. The MCP connection I used to write
-the content can create documents but cannot upload binaries, so every post
-currently renders its designed no-image fallback: the sage "CS" monogram tile on
-cards, initials circles instead of author photos, and a text-only product
-spotlight. Nothing is broken — those are the states §3.1 and §4.4 specify — but
-it is not what the design looks like with photography in it.
-
-Two ways to fix, either is fine:
+The Studio edits content; this is the site that renders it.
 
 ```bash
-# a) Bulk: uploads 12 placeholder images + 2 PDFs and re-writes the documents
+printf 'PUBLIC_SANITY_PROJECT_ID=8og1x4eu\nPUBLIC_SANITY_DATASET=production\n' > .env.local
+npm run dev
+```
+
+- Blog → http://localhost:4321/blog
+- Studio, embedded → http://localhost:4321/studio
+
+Both localhost origins are already in CORS too.
+
+*(Step 4 doesn't need `.env.local` — the configs default the project id. The
+Astro site does need it.)*
+
+---
+
+## 6 · Add the images
+
+**Expect the blog to look sparse at first.** The seeded posts have no images.
+The connection I used to write the content can create documents but can't upload
+binaries, so every post is currently rendering its *designed* no-image state:
+the sage "CS" monogram tile on cards, initials circles instead of author photos,
+a text-only product spotlight. Nothing is broken — those are the fallbacks the
+spec calls for — but it isn't the design with photography in it.
+
+Fastest fix, now that you're logged in and unblocked:
+
+```bash
+# Create an Editor token first: https://www.sanity.io/manage/project/8og1x4eu/api#tokens
 SANITY_WRITE_TOKEN=sk... npm run seed
-
-# b) By hand: open the Studio and drag real photos onto each image field
 ```
 
-Option (b) is closer to the original intent — the brief said "drop-in image
-slots I fill with real photos myself" — but (a) gives you something to look at
-in about thirty seconds.
+That uploads 12 placeholder images and 2 PDFs, then rewrites the documents to
+reference them. Re-runnable — it updates rather than duplicating.
 
-**2. The two `resourceDownload` blocks have no PDF attached.** Same reason. The
-schema requires a file, so those two blocks show a validation warning in the
-Studio until one is uploaded. `npm run seed` attaches the placeholder PDFs in
-`public/downloads/`. The front end renders the blocks either way.
+Or skip it and drag real photos onto the image fields in the Studio, which is
+what the original brief actually asked for ("drop-in image slots I fill with
+real photos myself").
 
 ---
 
-## Why I couldn't do this part
-
-Two different network paths, and only one of them was open to me:
-
-```
-  MCP path      me → mcp-proxy.anthropic.com → Sanity's MCP server → api.sanity.io
-                     ^^^^^^ on the egress bypass list ^^^^^^          ^^^^^^^^^^^^
-                                                            reached from THEIR network
-
-  Direct path   me → egress policy gateway → api.sanity.io
-                     ^^^ 403: sanity.io not on this org's allowlist
-```
-
-Everything under `sanity.io` is denied to this container — `api`, `cdn`, even
-`www`. The proxy's own guidance is to report a 403 policy denial rather than
-route around it, so I did not try.
-
-That is why the content is seeded (MCP wrote it from Sanity's side) but the
-Studio is not deployed (`sanity deploy` uploads a bundle directly, from here).
-It is also why `npm run build` cannot run in this environment: Astro's
-`getStaticPaths` calls the Sanity API directly at build time. On your machine,
-or in your CI, none of this applies.
-
-If you want builds to work in the Claude Code environment too, the fix is to
-allow `*.api.sanity.io`, `*.apicdn.sanity.io` and `cdn.sanity.io` in the
-environment's network policy — configured where the environment was created.
-
----
-
-## What was verified, and how
-
-`npm run check` → 0 errors. The rendered HTML was verified page by page against
-the seed content: **131/131 checks across 11 pages**, covering every §4 block
-type, both callout tones, the FAQ in both modes, TOC anchors matching heading
-ids, JSON-LD for BlogPosting / FAQPage / BreadcrumbList, and the designed
-fallbacks (no-image card, initials byline, omitted bio).
-
-Because the API was blocked, that verification ran against a local server
-(`scripts/local-dataset.mjs`) that serves the seed content through **groq-js** —
-Sanity's own GROQ engine. So the real queries ran against the real content;
-what it did *not* cover is dataset permissions, the drafts perspective, and real
-asset transforms. Re-run it against the live dataset once you can:
+## 7 · Optional: push the schema
 
 ```bash
-npm run build && npm run verify
+npm run schema:deploy
 ```
 
-That verification caught one genuine bug: `faq` was missing from the `FULL`
-GROQ projection, so document-level FAQs rendered nothing and emitted no
-`FAQPage` JSON-LD — invisible in both the schema and the components. Fixed.
-
-Two states the five-post seed is too small to reach were verified separately
-with variant datasets: the empty archive (§3.6) and pagination past page 1
-(§3.4). See `scripts/local-dataset.mjs --empty-category` and `--multiply`.
+Not needed for the Studio to work — a deployed Studio carries its own schema.
+This publishes the schema to the Content Lake so other Sanity tooling (and the
+MCP connection) can read the field definitions. Harmless, and useful later.
 
 ---
 
-## Draft preview
+## Troubleshooting
 
-`/api/preview?secret=…&slug=/blog/…` sets an httpOnly cookie and redirects to
-`/preview/…`, which renders drafts through the *same* `PostView` the published
-route uses. It needs a Viewer token in `.env.local`:
+**`sanity: command not found`** — use `npx sanity …` or the `npm run` scripts;
+the CLI is a local dependency, not global.
 
-```
-SANITY_VIEWER_TOKEN=sk...     # Viewer permission, not Editor
-PREVIEW_SECRET=<any string>
-```
+**`Error: No project ID found`** — you're not in the repo root. `cd` to the
+directory containing `sanity.cli.ts`.
 
-This is the one feature that requires the Node adapter, and therefore a Node
-runtime rather than pure static hosting. If you would rather deploy to a CDN,
-delete `src/pages/preview/`, `src/pages/api/preview*.ts` and the adapter from
-`astro.config.mjs` — everything else prerenders.
+**Deploy says the hostname is taken** — `corpspecblog` was claimed by someone
+else in the interim. Edit `studioHost` in `sanity.cli.ts` to something free,
+redeploy, then add the new URL at
+https://www.sanity.io/manage/project/8og1x4eu/cors — origin
+`https://<yourhost>.sanity.studio`, **Allow credentials ticked**.
+
+**Studio loads but shows "Not authorized"** — you're signed into the Studio with
+a different account than the one that owns the project. Sign out inside the
+Studio and back in with GitHub.
+
+**Studio loads but shows no documents** — check the dataset switcher reads
+`production`.
+
+**Two posts show a validation warning** — expected. The `resourceDownload`
+blocks require a PDF and don't have one yet; step 6 attaches them.
 
 ---
 
 ## Housekeeping
 
-**Rotate the Editor token** you pasted into chat:
-https://www.sanity.io/manage/project/8og1x4eu/api#tokens
+**Rotate the Editor token you pasted into chat** —
+https://www.sanity.io/manage/project/8og1x4eu/api#tokens. Treat it as
+compromised regardless.
 
-**All seeded content is placeholder** per Component Spec §6. Author names are
-fictional, and every price, lead time and the "forty people ops leads" survey is
-invented. The five categories are real — they came from the brief.
+**All seeded content is placeholder** (Component Spec §6). Author names are
+fictional; every price, lead time and the "forty people ops leads" survey is
+invented. The five categories are real — they came from your brief.
