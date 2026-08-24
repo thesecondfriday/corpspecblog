@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300..900;1,300..900&family=Playfair+Display:ital,wght@0,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #E8E6DF; }
+  * { box-sizing: border-box; }
+  a { color: #E4602A; text-decoration: none; }
+  a:hover { color: #C24E1E; }
+  ::selection { background: #DDE5D6; }
+  .om-scroll::-webkit-scrollbar { height: 0; width: 0; }
+</style>
+<script src="./image-slot.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "17 Corporate Gift Ideas Your Remote Team Will Actually Use",
+  "description": "We asked forty people ops leads what their teams kept, what got regifted, and what quietly died in a drawer.",
+  "datePublished": "2026-08-18",
+  "dateModified": "2026-08-18",
+  "wordCount": 2400,
+  "timeRequired": "PT11M",
+  "articleSection": "Gifting Guides",
+  "keywords": "corporate gifts, remote teams, employee gifting, swag budget",
+  "author": { "@type": "Person", "name": "Marissa Vaughn", "jobTitle": "Editorial Director", "url": "/authors/marissa-vaughn" },
+  "publisher": { "@type": "Organization", "name": "Corporate Specialties", "url": "https://corporatespecialties.com" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "/blog/remote-team-gift-ideas" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How much should we budget per person for a remote team gift?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Most programs land between $25 and $60 per person before shipping. Add $9 to $14 per package for domestic home delivery." } },
+    { "@type": "Question", "name": "How early do we need to order for a December in-hands date?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Work backwards from December 12. Production runs three to six weeks, and home address collection needs two weeks before that." } },
+    { "@type": "Question", "name": "Can you ship to individual home addresses?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Kitting and individual fulfillment are handled in house, including an address collection link you send to employees." } }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Blog", "item": "/blog" },
+    { "@type": "ListItem", "position": 2, "name": "Gifting Guides", "item": "/blog/gifting-guides" },
+    { "@type": "ListItem", "position": 3, "name": "17 Corporate Gift Ideas Your Remote Team Will Actually Use" }
+  ]
+}
+</script>
+</helmet>
+
+<div style="font-family: 'Mulish', system-ui, sans-serif; background: #E8E6DF; min-height: 100vh; padding-bottom: 80px;">
+
+  <div style="position: sticky; top: 0; z-index: 90; background: #14170F; color: #F4F2EA; display: flex; flex-wrap: wrap; align-items: center; gap: 18px; padding: 12px 20px; border-bottom: 1px solid #2C3226;">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A9182;">Corporate Specialties &nbsp;/&nbsp; Content Hub</span>
+    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+      <button type="button" onClick="{{ goHome }}" style="{{ tabHome }}">Home / Index</button>
+      <button type="button" onClick="{{ goCategory }}" style="{{ tabCategory }}">Category</button>
+      <button type="button" onClick="{{ goPost }}" style="{{ tabPost }}">Single Post</button>
+      <button type="button" onClick="{{ goComponents }}" style="{{ tabComponents }}">Component Spec</button>
+    </div>
+    <div style="margin-left: auto; display: flex; gap: 4px; align-items: center;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A9182;">Viewport</span>
+      <button type="button" onClick="{{ setDesktop }}" style="{{ tabDesktop }}">Desktop</button>
+      <button type="button" onClick="{{ setMobile }}" style="{{ tabMobile }}">Mobile 390</button>
+    </div>
+  </div>
+
+  <div style="display: flex; justify-content: center; padding: 28px 16px;">
+    <div style="{{ frameStyle }}">
+
+      <!-- ============ MASTHEAD ============ -->
+      <header style="background: #FCFBF8; border-bottom: 1px solid #E2DFD5;">
+        <div style="max-width: 1240px; margin: 0 auto; padding: 18px clamp(18px, 4cqw, 56px); display: flex; align-items: center; gap: clamp(14px, 3cqw, 36px); flex-wrap: wrap;">
+          <a href="#" onClick="{{ goHome }}" style="display: flex; align-items: baseline; gap: 7px; flex-shrink: 0;">
+            <span style="font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #E4602A; line-height: 1;">CS</span>
+            <span style="display: flex; flex-direction: column; line-height: 1;">
+              <span style="font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; color: #2F6033; text-transform: uppercase;">Corporate</span>
+              <span style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 15px; color: #E4602A; margin-top: 1px;">specialties</span>
+            </span>
+          </a>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8C9084; border-left: 1px solid #E2DFD5; padding-left: 14px; flex-shrink: 0;">The Swag Desk</span>
+          <div style="flex: 1 1 160px; min-width: 120px; display: flex; align-items: center; gap: 8px; border: 1px solid #E2DFD5; background: #fff; border-radius: 999px; padding: 9px 16px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA095" stroke-width="2.2"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4.2-4.2"></path></svg>
+            <span style="font-size: 13.5px; color: #9CA095;">Search articles &amp; guides</span>
+          </div>
+          <a href="#" style="flex-shrink: 0; background: #E4602A; color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 18px; border-radius: 2px;" style-hover="background: #C24E1E; color: #fff;">Talk to a strategist</a>
+        </div>
+      </header>
+
+      <!-- ============ CATEGORY BAR ============ -->
+      <nav style="background: #FCFBF8; border-bottom: 1px solid #E2DFD5; position: sticky; top: 0; z-index: 40;">
+        <div class="om-scroll" style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(18px, 4cqw, 56px); display: flex; gap: clamp(18px, 2.6cqw, 34px); overflow-x: auto;">
+          <a href="#" onClick="{{ goHome }}" style="{{ navAll }}">All Stories</a>
+          <a href="#" onClick="{{ goCategory }}" style="{{ navGifting }}">Gifting Guides</a>
+          <a href="#" style="{{ navPlain }}">Trending Products</a>
+          <a href="#" style="{{ navPlain }}">Marketing Ideas</a>
+          <a href="#" style="{{ navPlain }}">Swag Program Strategy</a>
+          <a href="#" style="{{ navPlain }}">Industry Trends</a>
+        </div>
+      </nav>
+
+      <!-- ================================================================ HOME -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <main data-screen-label="Home / Blog Index" style="background: #FCFBF8;">
+
+        <!-- HERO — split, edge to edge -->
+        <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); border-bottom: 1px solid #E2DFD5;">
+          <div style="background: #DDE5D6; padding: clamp(30px, 5cqw, 76px) clamp(20px, 4cqw, 64px); display: flex; flex-direction: column; justify-content: center; gap: 20px; order: 2;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+              <span style="height: 1px; width: 28px; background: #A9B79E;"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7A66;">Featured</span>
+            </div>
+            <h1 style="margin: 0; font-size: clamp(31px, 4.7cqw, 60px); line-height: 1.04; letter-spacing: -0.025em; font-weight: 800; color: #1C211C; text-wrap: balance;">17 Corporate Gift Ideas Your Remote Team Will Actually Use</h1>
+            <p style="margin: 0; font-size: clamp(15px, 1.5cqw, 19.5px); line-height: 1.6; color: #454B42; max-width: 46ch;">We asked forty people ops leads what their teams kept, what got regifted, and what quietly died in a drawer. The pattern had almost nothing to do with price.</p>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
+              <image-slot id="hub-byline-marissa" shape="circle" style="width: 40px; height: 40px; flex-shrink: 0;" placeholder="Author"></image-slot>
+              <div style="display: flex; flex-direction: column; gap: 3px;">
+                <span style="font-size: 13.5px; font-weight: 700; color: #1C211C;">Marissa Vaughn</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E7A66;">Aug 18, 2026 &nbsp;·&nbsp; 11 min read</span>
+              </div>
+            </div>
+            <a href="#" onClick="{{ goPost }}" style="align-self: flex-start; margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #1C211C; border-bottom: 2px solid #E4602A; padding-bottom: 4px;" style-hover="color: #E4602A;">Read the guide →</a>
+          </div>
+          <div style="position: relative; min-height: clamp(240px, 34cqw, 520px); order: 3;">
+            <image-slot id="hub-hero" shape="rect" placeholder="Hero image — 3:2 or wider"></image-slot>
+          </div>
+        </section>
+
+        <!-- SECONDARY FEATURED ROW -->
+        <section style="max-width: 1240px; margin: 0 auto; padding: clamp(34px, 4.5cqw, 64px) clamp(18px, 4cqw, 56px);">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 26px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #1C211C; font-weight: 600;">This week</span>
+            <span style="flex: 1; height: 1px; background: #E2DFD5;"></span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(24px, 3cqw, 40px);">
+            <article style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-sec-1" shape="rect" placeholder="Drinkware shot"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Trending Products</span>
+              <h3 style="margin: 0; font-size: clamp(19px, 1.9cqw, 23px); line-height: 1.22; letter-spacing: -0.015em; font-weight: 800; color: #1C211C; min-height: 3.66em;">The 2026 Drinkware Shortlist: What's Actually Shipping On Time</h3>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #5C6157;">Six bottles and tumblers we can still land inside a four-week window.</p>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Dev Okonkwo · 7 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-sec-2" shape="rect" placeholder="Budget / desk shot"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Swag Program Strategy</span>
+              <h3 style="margin: 0; font-size: clamp(19px, 1.9cqw, 23px); line-height: 1.22; letter-spacing: -0.015em; font-weight: 800; color: #1C211C; min-height: 3.66em;">How to Budget a Swag Program You'll Actually Repeat Next Year</h3>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #5C6157;">A per-head model that survives a mid-year freeze, with the math shown.</p>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Hallie Brenner · 9 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="aspect-ratio: 3 / 2; background: #DDE5D6; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 18px;">
+                <span style="font-family: 'Playfair Display', serif; font-size: 40px; color: #A9B79E; line-height: 1;">CS</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E7A66;">No image · fallback</span>
+              </div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Marketing Ideas</span>
+              <h3 style="margin: 0; font-size: clamp(19px, 1.9cqw, 23px); line-height: 1.22; letter-spacing: -0.015em; font-weight: 800; color: #1C211C; min-height: 3.66em;">Onboarding Kits That Don't Feel Like Onboarding Kits</h3>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #5C6157;">What to send day one, week two, and month six — and what to skip.</p>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Tom Reyes · 6 min</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- GUIDES MODULE — evergreen, visually distinct -->
+        <section style="background: #253A22; color: #F4F2EA;">
+          <div style="max-width: 1240px; margin: 0 auto; padding: clamp(34px, 4.5cqw, 68px) clamp(18px, 4cqw, 56px); display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: clamp(28px, 4cqw, 56px);">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #9FB596;">Evergreen guides</span>
+              <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(27px, 3.2cqw, 42px); line-height: 1.1; font-weight: 500; color: #FCFBF8;">The reference shelf</h2>
+              <p style="margin: 0; font-size: 15px; line-height: 1.65; color: #C3CFBC; max-width: 34ch;">Long-form, kept current. Start here if you inherited a swag program and no documentation.</p>
+              <a href="#" style="align-self: flex-start; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #FCFBF8; border-bottom: 2px solid #E4602A; padding-bottom: 4px;">All 12 guides →</a>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <a href="#" style="display: flex; gap: 18px; padding: 18px 0; border-top: 1px solid #3C5138; color: #FCFBF8;" style-hover="color: #E4602A;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7E9476; padding-top: 4px;">01</span>
+                <span style="display: flex; flex-direction: column; gap: 5px;">
+                  <span style="font-size: clamp(16px, 1.7cqw, 19px); font-weight: 700; line-height: 1.3;">The Complete Guide to Corporate Gifting Compliance</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #7E9476;">Updated Jul 2026 · 24 min</span>
+                </span>
+              </a>
+              <a href="#" style="display: flex; gap: 18px; padding: 18px 0; border-top: 1px solid #3C5138; color: #FCFBF8;" style-hover="color: #E4602A;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7E9476; padding-top: 4px;">02</span>
+                <span style="display: flex; flex-direction: column; gap: 5px;">
+                  <span style="font-size: clamp(16px, 1.7cqw, 19px); font-weight: 700; line-height: 1.3;">Swag Program Playbook: First Order to Annual Budget</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #7E9476;">Updated Aug 2026 · 31 min</span>
+                </span>
+              </a>
+              <a href="#" style="display: flex; gap: 18px; padding: 18px 0; border-top: 1px solid #3C5138; color: #FCFBF8;" style-hover="color: #E4602A;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7E9476; padding-top: 4px;">03</span>
+                <span style="display: flex; flex-direction: column; gap: 5px;">
+                  <span style="font-size: clamp(16px, 1.7cqw, 19px); font-weight: 700; line-height: 1.3;">Apparel Sizing &amp; Fit: A Buyer's Field Guide</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #7E9476;">Updated Jun 2026 · 18 min</span>
+                </span>
+              </a>
+              <a href="#" style="display: flex; gap: 18px; padding: 18px 0; border-top: 1px solid #3C5138; border-bottom: 1px solid #3C5138; color: #FCFBF8;" style-hover="color: #E4602A;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7E9476; padding-top: 4px;">04</span>
+                <span style="display: flex; flex-direction: column; gap: 5px;">
+                  <span style="font-size: clamp(16px, 1.7cqw, 19px); font-weight: 700; line-height: 1.3;">Decoration Methods: Embroidery, Screen Print, DTG, Laser</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #7E9476;">Updated May 2026 · 15 min</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- MAIN FEED -->
+        <section style="max-width: 1240px; margin: 0 auto; padding: clamp(34px, 4.5cqw, 68px) clamp(18px, 4cqw, 56px);">
+          <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 30px; flex-wrap: wrap;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #1C211C; font-weight: 600;">Latest</span>
+            <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 30px;"></span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8C9084;">Page 1 of 14</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: clamp(28px, 3cqw, 44px) clamp(24px, 3cqw, 40px);">
+            <article style="display: flex; flex-direction: column; gap: 13px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-feed-1" shape="rect" placeholder="Trade show shot"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Marketing Ideas</span>
+              <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Trade Show Giveaways That Survive the Walk to the Car</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 14 · 8 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 13px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-feed-2" shape="rect" placeholder="Sustainable goods"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Industry Trends</span>
+              <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Sustainable Swag: Reading Certifications Without Getting Greenwashed</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 11 · 10 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 13px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-feed-3" shape="rect" placeholder="Gift under $25"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+              <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">What a $25 Per-Person Gift Actually Buys in 2026</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 8 · 6 min</span>
+            </article>
+          </div>
+
+          <!-- INLINE CONVERSION — native, not an ad slot -->
+          <div style="margin: clamp(30px, 3.6cqw, 52px) 0; background: #DDE5D6; padding: clamp(24px, 3.4cqw, 44px) clamp(20px, 3.4cqw, 44px); display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: clamp(20px, 3cqw, 44px); align-items: center;">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #2F6033; font-weight: 600;">From the desk</span>
+              <h3 style="margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(23px, 2.7cqw, 33px); line-height: 1.15; font-weight: 500; color: #1C211C;">Stuck between four bottles and a deadline?</h3>
+              <p style="margin: 0; font-size: 15px; line-height: 1.65; color: #454B42; max-width: 44ch;">Send us the brief — headcount, budget, in-hands date. A strategist replies with two or three real options and current lead times. No catalog dump.</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <input type="text" placeholder="Work email" style="flex: 1 1 170px; min-width: 0; font-family: 'Mulish', sans-serif; font-size: 14.5px; padding: 13px 15px; border: 1px solid #B9C7AE; background: #FCFBF8; color: #1C211C; border-radius: 2px;" />
+                <a href="#" style="background: #E4602A; color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 20px; border-radius: 2px; white-space: nowrap;">Talk to a strategist</a>
+              </div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: #6E7A66;">Typical reply: same business day. No sales sequence.</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: clamp(28px, 3cqw, 44px) clamp(24px, 3cqw, 40px);">
+            <article style="display: flex; flex-direction: column; gap: 13px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-feed-4" shape="rect" placeholder="Calendar / warehouse"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Industry Trends</span>
+              <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Lead Times Are Back to Normal. Your Calendar Isn't.</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 5 · 5 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 13px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-feed-5" shape="rect" placeholder="Spreadsheet / budget"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Swag Program Strategy</span>
+              <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Six Ways to Kill a Swag Budget — and How to Justify It Instead</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 1 · 9 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 13px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-feed-6" shape="rect" placeholder="Beanie / blanket"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Trending Products</span>
+              <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Blanket, Bottle, Beanie: The Cold-Weather Trio, Ranked</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 28 · 7 min</span>
+            </article>
+          </div>
+
+          <!-- compact text-only strip -->
+          <div style="margin-top: clamp(30px, 3.6cqw, 52px); display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 clamp(24px, 3cqw, 40px); border-top: 1px solid #E2DFD5;">
+            <a href="#" style="display: flex; flex-direction: column; gap: 7px; padding: 18px 0; border-bottom: 1px solid #E2DFD5; color: #1C211C;" style-hover="color: #E4602A;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033;">Marketing Ideas</span>
+              <span style="font-size: 16px; font-weight: 700; line-height: 1.32;">Why your logo shrinks on a curved surface</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 24 · 4 min</span>
+            </a>
+            <a href="#" style="display: flex; flex-direction: column; gap: 7px; padding: 18px 0; border-bottom: 1px solid #E2DFD5; color: #1C211C;" style-hover="color: #E4602A;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033;">Gifting Guides</span>
+              <span style="font-size: 16px; font-weight: 700; line-height: 1.32;">The client gift rules nobody tells you about</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 21 · 6 min</span>
+            </a>
+            <a href="#" style="display: flex; flex-direction: column; gap: 7px; padding: 18px 0; border-bottom: 1px solid #E2DFD5; color: #1C211C;" style-hover="color: #E4602A;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033;">Swag Program Strategy</span>
+              <span style="font-size: 16px; font-weight: 700; line-height: 1.32;">A one-page intake form for internal swag requests</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 17 · 3 min</span>
+            </a>
+          </div>
+
+          <!-- PAGINATION -->
+          <div style="margin-top: clamp(32px, 4cqw, 56px); display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #C0C4B8; padding: 10px 12px;">← Prev</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #FCFBF8; background: #1C211C; padding: 10px 15px;">1</span>
+            <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1C211C; padding: 10px 15px; border: 1px solid #E2DFD5;">2</a>
+            <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1C211C; padding: 10px 15px; border: 1px solid #E2DFD5;">3</a>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8C9084; padding: 10px 6px;">…</span>
+            <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1C211C; padding: 10px 15px; border: 1px solid #E2DFD5;">14</a>
+            <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C211C; padding: 10px 12px; border-bottom: 2px solid #E4602A;">Next →</a>
+          </div>
+        </section>
+      </main>
+      </sc-if>
+
+      <!-- ================================================================ CATEGORY -->
+      <sc-if value="{{ isCategory }}" hint-placeholder-val="{{ true }}">
+      <main data-screen-label="Category / Archive" style="background: #FCFBF8;">
+
+        <div style="background: #DDE5D6; border-bottom: 1px solid #C9D4BF;">
+          <div style="max-width: 1240px; margin: 0 auto; padding: clamp(30px, 4.4cqw, 62px) clamp(18px, 4cqw, 56px); display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(20px, 3cqw, 48px); align-items: end;">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="#" onClick="{{ goHome }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E7A66;">All stories</a>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #A9B79E;">/</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+              </div>
+              <h1 style="margin: 0; font-size: clamp(32px, 4.4cqw, 56px); line-height: 1.02; letter-spacing: -0.028em; font-weight: 800; color: #1C211C;">Gifting Guides</h1>
+              <p style="margin: 0; font-size: clamp(15px, 1.5cqw, 18px); line-height: 1.62; color: #454B42; max-width: 56ch;">Who to gift, when, and what it costs. Shortlists built for real budgets and real in-hands dates — holiday, milestones, onboarding, client thank-yous — with the compliance footnotes nobody enjoys reading but everybody needs.</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-family: 'Playfair Display', serif; font-size: clamp(38px, 4.6cqw, 58px); line-height: 1; color: #2F6033;">42</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E7A66;">Articles in this category</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="max-width: 1240px; margin: 0 auto; padding: clamp(22px, 2.6cqw, 34px) clamp(18px, 4cqw, 56px) 0;">
+          <div class="om-scroll" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px;">
+            <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; background: #1C211C; color: #FCFBF8;">All 42</span>
+            <a href="#" style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid #D8D5CB; color: #454B42;" style-hover="border-color: #E4602A; color: #E4602A;">Remote teams</a>
+            <a href="#" style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid #D8D5CB; color: #454B42;" style-hover="border-color: #E4602A; color: #E4602A;">Under $25</a>
+            <a href="#" style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid #D8D5CB; color: #454B42;" style-hover="border-color: #E4602A; color: #E4602A;">Client gifts</a>
+            <a href="#" style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid #D8D5CB; color: #454B42;" style-hover="border-color: #E4602A; color: #E4602A;">Holiday</a>
+            <a href="#" style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid #D8D5CB; color: #454B42;" style-hover="border-color: #E4602A; color: #E4602A;">Onboarding</a>
+            <a href="#" style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid #D8D5CB; color: #454B42;" style-hover="border-color: #E4602A; color: #E4602A;">Milestones</a>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 8px 10px; border: 1px dashed #C0C4B8; background: #F5F3EC;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8C9084;">State</span>
+            <button type="button" onClick="{{ setResults }}" style="{{ stateBtnResults }}">Page 1</button>
+            <button type="button" onClick="{{ setPageTwo }}" style="{{ stateBtnPage2 }}">Page 2+</button>
+            <button type="button" onClick="{{ setEmpty }}" style="{{ stateBtnEmpty }}">Empty</button>
+          </div>
+        </div>
+
+        <section style="max-width: 1240px; margin: 0 auto; padding: clamp(26px, 3.4cqw, 44px) clamp(18px, 4cqw, 56px) clamp(34px, 4.5cqw, 68px);">
+
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="border: 1px solid #E2DFD5; padding: clamp(32px, 5cqw, 76px) clamp(20px, 4cqw, 56px); display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: 62ch;">
+              <span style="font-family: 'Playfair Display', serif; font-size: 46px; line-height: 1; color: #C9D4BF;">CS</span>
+              <h2 style="margin: 0; font-size: clamp(22px, 2.6cqw, 30px); line-height: 1.18; letter-spacing: -0.02em; font-weight: 800; color: #1C211C;">Nothing filed under “Under $25 + Client gifts” yet.</h2>
+              <p style="margin: 0; font-size: 15.5px; line-height: 1.7; color: #5C6157;">That combination is new. Clear a filter to widen the search, browse the 42 pieces in Gifting Guides, or ask a strategist directly — this is a question we answer several times a week.</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px;">
+                <button type="button" onClick="{{ setResults }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; background: #1C211C; color: #FCFBF8; border: 0; padding: 13px 18px; border-radius: 2px; cursor: pointer;">Clear filters</button>
+                <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #1C211C; border: 1px solid #D8D5CB; padding: 13px 18px; border-radius: 2px;">Talk to a strategist</a>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 26px; flex-wrap: wrap;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #1C211C; font-weight: 600;">{{ catFeedLabel }}</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 30px;"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8C9084;">{{ catRangeLabel }}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: clamp(28px, 3cqw, 44px) clamp(24px, 3cqw, 40px);">
+              <article style="display: flex; flex-direction: column; gap: 13px;">
+                <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-cat-1" shape="rect" placeholder="Remote gift box"></image-slot></div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+                <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;"><a href="#" onClick="{{ goPost }}" style="color: #1C211C;" style-hover="color: #E4602A;">17 Corporate Gift Ideas Your Remote Team Will Actually Use</a></h3>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 18 · 11 min</span>
+              </article>
+              <article style="display: flex; flex-direction: column; gap: 13px;">
+                <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-cat-2" shape="rect" placeholder="$25 gift flat-lay"></image-slot></div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+                <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">What a $25 Per-Person Gift Actually Buys in 2026</h3>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 8 · 6 min</span>
+              </article>
+              <article style="display: flex; flex-direction: column; gap: 13px;">
+                <div style="aspect-ratio: 3 / 2; background: #DDE5D6; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 18px;">
+                  <span style="font-family: 'Playfair Display', serif; font-size: 40px; color: #A9B79E; line-height: 1;">CS</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E7A66;">No image · fallback</span>
+                </div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+                <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Client Gifting Limits by Industry: Finance, Health, Public Sector</h3>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 3 · 12 min</span>
+              </article>
+              <article style="display: flex; flex-direction: column; gap: 13px;">
+                <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-cat-4" shape="rect" placeholder="Milestone gift"></image-slot></div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+                <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Five-Year Anniversary Gifts That Aren't a Glass Award</h3>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 30 · 7 min</span>
+              </article>
+              <article style="display: flex; flex-direction: column; gap: 13px;">
+                <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-cat-5" shape="rect" placeholder="Holiday packaging"></image-slot></div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+                <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">The Holiday Gifting Calendar: Work Backwards From December 12</h3>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 26 · 9 min</span>
+              </article>
+              <article style="display: flex; flex-direction: column; gap: 13px;">
+                <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-cat-6" shape="rect" placeholder="Gift card / kit"></image-slot></div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+                <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Choice Portals vs. Curated Kits: Which Lands Better</h3>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 22 · 8 min</span>
+              </article>
+            </div>
+
+            <div style="margin-top: clamp(32px, 4cqw, 56px); display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
+              <a href="#" onClick="{{ setResults }}" style="{{ prevLinkStyle }}">← Prev</a>
+              <a href="#" onClick="{{ setResults }}" style="{{ page1Style }}">1</a>
+              <a href="#" onClick="{{ setPageTwo }}" style="{{ page2Style }}">2</a>
+              <a href="#" onClick="{{ setPageTwo }}" style="{{ page3Style }}">3</a>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8C9084; padding: 10px 6px;">…</span>
+              <a href="#" onClick="{{ setPageTwo }}" style="{{ page3Style }}">7</a>
+              <a href="#" onClick="{{ setPageTwo }}" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C211C; padding: 10px 12px; border-bottom: 2px solid #E4602A;">Next →</a>
+            </div>
+          </div>
+          </sc-if>
+        </section>
+      </main>
+      </sc-if>
+
+      <!-- ================================================================ POST -->
+      <sc-if value="{{ isPost }}" hint-placeholder-val="{{ true }}">
+      <main data-screen-label="Single Post" itemscope="itemscope" itemtype="https://schema.org/BlogPosting" style="background: #FCFBF8;">
+
+        <!-- ARTICLE HEADER -->
+        <header style="max-width: 1240px; margin: 0 auto; padding: clamp(28px, 3.6cqw, 56px) clamp(18px, 4cqw, 56px) clamp(22px, 2.6cqw, 34px);">
+          <div style="max-width: 44ch;">
+            <a href="#" onClick="{{ goCategory }}" style="display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600; border: 1px solid #C9D4BF; background: #EDF1E8; padding: 7px 11px; border-radius: 2px;">Gifting Guides</a>
+            <h1 itemprop="headline" style="margin: 20px 0 0; font-size: clamp(32px, 4.6cqw, 62px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; color: #1C211C; text-wrap: balance;">17 Corporate Gift Ideas Your Remote Team Will Actually Use</h1>
+          </div>
+          <p itemprop="description" style="margin: 20px 0 0; font-size: clamp(16.5px, 1.8cqw, 23px); line-height: 1.5; color: #454B42; max-width: 52ch; font-weight: 400;">We asked forty people ops leads what their teams kept, what got regifted, and what quietly died in a drawer. The pattern had almost nothing to do with price — and a lot to do with whether the thing had a job.</p>
+          <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid #E2DFD5; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <image-slot id="hub-author-marissa" shape="circle" style="width: 46px; height: 46px; flex-shrink: 0;" placeholder="Author"></image-slot>
+              <div itemprop="author" itemscope="itemscope" itemtype="https://schema.org/Person" style="display: flex; flex-direction: column; gap: 3px;">
+                <span itemprop="name" style="font-size: 14.5px; font-weight: 700; color: #1C211C;">Marissa Vaughn</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E7A66;">Editorial Director</span>
+              </div>
+            </div>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E7A66;"><time itemprop="datePublished" datetime="2026-08-18">Aug 18, 2026</time></span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E7A66;">11 min read</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E7A66;">Reviewed by sourcing</span>
+          </div>
+        </header>
+
+        <!-- WIDE HERO + CAPTION -->
+        <figure itemprop="image" itemscope="itemscope" itemtype="https://schema.org/ImageObject" style="margin: 0 0 clamp(28px, 3.4cqw, 48px);">
+          <div style="aspect-ratio: 21 / 9; min-height: 200px; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-post-hero" shape="rect" placeholder="Wide hero — 21:9"></image-slot></div>
+          <figcaption style="max-width: 1240px; margin: 12px auto 0; padding: 0 clamp(18px, 4cqw, 56px); font-size: 13px; line-height: 1.55; color: #7A7F73; display: flex; gap: 10px;">
+            <span style="width: 2px; background: #E4602A; flex-shrink: 0;"></span>
+            <span>A first-week kit assembled for a 60-person distributed team: insulated bottle, notebook, socks, and a card that explains what the budget was. Photo: Corporate Specialties.</span>
+          </figcaption>
+        </figure>
+
+        <!-- BODY + TOC -->
+        <div style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(18px, 4cqw, 56px) clamp(34px, 4.5cqw, 64px); display: flex; flex-wrap: wrap; gap: clamp(24px, 4cqw, 64px); align-items: flex-start;">
+
+          <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+          <aside style="flex: 1 1 210px; max-width: 260px; position: sticky; top: 74px;">
+            <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C9084; padding-bottom: 12px; border-bottom: 1px solid #E2DFD5;">Contents</span>
+            <nav itemscope="itemscope" itemtype="https://schema.org/SiteNavigationElement" style="display: flex; flex-direction: column;">
+              <a itemprop="url" href="#what-people-keep" style="font-size: 13.5px; line-height: 1.4; color: #1C211C; font-weight: 700; padding: 11px 0 11px 12px; border-left: 2px solid #E4602A;"><span itemprop="name">What people actually keep</span></a>
+              <a itemprop="url" href="#the-17-ideas" style="font-size: 13.5px; line-height: 1.4; color: #5C6157; padding: 11px 0 11px 12px; border-left: 2px solid #E9E6DD;" style-hover="color: #E4602A;"><span itemprop="name">The 17 ideas, by budget</span></a>
+              <a itemprop="url" href="#under-25" style="font-size: 13.5px; line-height: 1.4; color: #5C6157; padding: 11px 0 11px 12px; border-left: 2px solid #E9E6DD;" style-hover="color: #E4602A;"><span itemprop="name">Under $25</span></a>
+              <a itemprop="url" href="#25-60" style="font-size: 13.5px; line-height: 1.4; color: #5C6157; padding: 11px 0 11px 12px; border-left: 2px solid #E9E6DD;" style-hover="color: #E4602A;"><span itemprop="name">$25–$60</span></a>
+              <a itemprop="url" href="#over-60" style="font-size: 13.5px; line-height: 1.4; color: #5C6157; padding: 11px 0 11px 12px; border-left: 2px solid #E9E6DD;" style-hover="color: #E4602A;"><span itemprop="name">$60 and up</span></a>
+              <a itemprop="url" href="#shipping-home" style="font-size: 13.5px; line-height: 1.4; color: #5C6157; padding: 11px 0 11px 12px; border-left: 2px solid #E9E6DD;" style-hover="color: #E4602A;"><span itemprop="name">Shipping to home addresses</span></a>
+              <a itemprop="url" href="#what-to-skip" style="font-size: 13.5px; line-height: 1.4; color: #5C6157; padding: 11px 0 11px 12px; border-left: 2px solid #E9E6DD;" style-hover="color: #E4602A;"><span itemprop="name">What to skip entirely</span></a>
+            </nav>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid #E2DFD5; display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #8C9084;">Share</span>
+              <div style="display: flex; gap: 8px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #454B42; border: 1px solid #E2DFD5; padding: 7px 10px;">Link</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #454B42; border: 1px solid #E2DFD5; padding: 7px 10px;">in</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #454B42; border: 1px solid #E2DFD5; padding: 7px 10px;">✉</span>
+              </div>
+            </div>
+          </aside>
+          </sc-if>
+
+          <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+          <div style="flex: 1 1 100%; position: sticky; top: 52px; z-index: 30; background: #FCFBF8; border-bottom: 1px solid #E2DFD5; padding: 10px 0;">
+            <button type="button" onClick="{{ toggleToc }}" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #F2F0E8; border: 1px solid #E2DFD5; padding: 12px 14px; cursor: pointer; border-radius: 2px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #1C211C;">Contents · 7 sections</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #E4602A;">{{ tocCaret }}</span>
+            </button>
+            <sc-if value="{{ tocOpen }}" hint-placeholder-val="{{ false }}">
+            <nav style="display: flex; flex-direction: column; border: 1px solid #E2DFD5; border-top: 0; background: #FCFBF8;">
+              <a href="#what-people-keep" style="font-size: 14px; color: #1C211C; font-weight: 700; padding: 12px 14px; border-bottom: 1px solid #EFEDE5;">What people actually keep</a>
+              <a href="#the-17-ideas" style="font-size: 14px; color: #5C6157; padding: 12px 14px; border-bottom: 1px solid #EFEDE5;">The 17 ideas, by budget</a>
+              <a href="#under-25" style="font-size: 14px; color: #5C6157; padding: 12px 14px 12px 26px; border-bottom: 1px solid #EFEDE5;">Under $25</a>
+              <a href="#25-60" style="font-size: 14px; color: #5C6157; padding: 12px 14px 12px 26px; border-bottom: 1px solid #EFEDE5;">$25–$60</a>
+              <a href="#over-60" style="font-size: 14px; color: #5C6157; padding: 12px 14px 12px 26px; border-bottom: 1px solid #EFEDE5;">$60 and up</a>
+              <a href="#shipping-home" style="font-size: 14px; color: #5C6157; padding: 12px 14px; border-bottom: 1px solid #EFEDE5;">Shipping to home addresses</a>
+              <a href="#what-to-skip" style="font-size: 14px; color: #5C6157; padding: 12px 14px;">What to skip entirely</a>
+            </nav>
+            </sc-if>
+            <div style="height: 2px; background: #E9E6DD; margin-top: 10px;"><div style="width: 34%; height: 2px; background: #E4602A;"></div></div>
+          </div>
+          </sc-if>
+
+          <article itemprop="articleBody" style="flex: 6 1 460px; min-width: 0; max-width: 72ch;">
+            <p style="margin: 0 0 26px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25; letter-spacing: -0.003em; text-wrap: pretty;"><span style="font-family: 'Playfair Display', serif; float: left; font-size: 3.6em; line-height: 0.82; margin: 6px 12px 0 0; color: #E4602A;">T</span>he most-kept item in our survey cost eleven dollars. The least-kept cost sixty-two. That gap is the whole story: remote employees keep things that solve a problem in the room they already work in, and quietly discard anything that asks them to change their life to accommodate a logo.</p>
+            <p style="margin: 0 0 26px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25; text-wrap: pretty;">Below are seventeen ideas that cleared that bar, grouped by per-person budget, with the sourcing notes we'd give a client on a call — decoration constraints, realistic lead times, and where the cheap version falls apart.</p>
+
+            <h2 id="what-people-keep" style="margin: 46px 0 14px; font-size: clamp(23px, 2.5cqw, 32px); line-height: 1.18; letter-spacing: -0.022em; font-weight: 800; color: #1C211C;">What people actually keep</h2>
+            <p style="margin: 0 0 26px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25; text-wrap: pretty;">Three attributes predicted retention better than price, brand, or category. An item was kept when it had a daily job, when it worked without explanation, and when its branding was small enough to survive being seen by someone outside the company.</p>
+
+            <ul style="margin: 0 0 30px; padding-left: 22px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25;">
+              <li style="margin-bottom: 10px; padding-left: 6px;">It has a job — desk, kitchen, commute, or gym. Novelty has no job.</li>
+              <li style="margin-bottom: 10px; padding-left: 6px;">It works alone. No app, no pairing, no proprietary charger.</li>
+              <li style="padding-left: 6px;">It passes the coffee-shop test: wearable or usable in public without explaining where you work.</li>
+            </ul>
+
+            <blockquote style="margin: 38px 0; padding: 0 0 0 clamp(18px, 2.4cqw, 30px); border-left: 3px solid #E4602A;">
+              <p style="margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(21px, 2.4cqw, 30px); line-height: 1.38; color: #1C211C; font-style: italic;">“We stopped asking what people would like and started asking what they'd replace. Retention doubled and we spent less.”</p>
+              <footer style="margin-top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7A66;">Priya N., People Ops Lead · 340-person SaaS</footer>
+            </blockquote>
+
+            <h2 style="margin: 46px 0 14px; font-size: clamp(23px, 2.5cqw, 32px); line-height: 1.18; letter-spacing: -0.022em; font-weight: 800; color: #1C211C;" id="the-17-ideas">The 17 ideas, by budget</h2>
+            <h3 style="margin: 30px 0 12px; font-size: clamp(18px, 1.9cqw, 22px); line-height: 1.28; letter-spacing: -0.014em; font-weight: 800; color: #1C211C;" id="under-25">Under $25 per person</h3>
+            <p style="margin: 0 0 26px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25; text-wrap: pretty;">This tier lives or dies on material quality, not feature count. Buy one good thing rather than three adequate ones, and put the savings into packaging — the unboxing is most of the perceived value at this price.</p>
+            <ol style="margin: 0 0 30px; padding-left: 24px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25;">
+              <li style="margin-bottom: 10px; padding-left: 6px;">Heavyweight crew socks in a single accent color, logo on the sole.</li>
+              <li style="margin-bottom: 10px; padding-left: 6px;">A 14oz ceramic mug with a debossed mark instead of a print.</li>
+              <li style="padding-left: 6px;">A dot-grid notebook with a printed inside cover — cheaper than foil, reads more expensive.</li>
+            </ol>
+
+            <!-- PRODUCT SPOTLIGHT -->
+            <aside itemscope="itemscope" itemtype="https://schema.org/Product" style="margin: 38px 0; border: 1px solid #E2DFD5; background: #FBFAF6; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));">
+              <div style="aspect-ratio: 1 / 1; background: #F2F0E8; overflow: hidden; border-right: 1px solid #E2DFD5;"><image-slot id="hub-spotlight-1" shape="rect" placeholder="Product photo — square crop"></image-slot></div>
+              <div style="padding: clamp(18px, 2.4cqw, 28px); display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #E4602A; font-weight: 600;">Product spotlight</span>
+                <h4 itemprop="name" style="margin: 0; font-size: clamp(18px, 1.9cqw, 22px); line-height: 1.26; font-weight: 800; color: #1C211C;">Merino Crew Sock, Sole-Marked</h4>
+                <p itemprop="description" style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #5C6157;">Mid-weight merino blend that survives a dryer — the version people re-wear, not re-gift.</p>
+                <span itemprop="offers" itemscope="itemscope" itemtype="https://schema.org/AggregateOffer" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: #1C211C; font-weight: 500;"><meta itemprop="priceCurrency" content="USD" /><span itemprop="lowPrice">$14</span> – <span itemprop="highPrice">$19</span> <span style="color: #8C9084;">/ 100 pc min</span></span>
+                <a href="#" style="align-self: flex-start; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; background: #1C211C; color: #FCFBF8; padding: 11px 15px; border-radius: 2px;">Request pricing</a>
+              </div>
+            </aside>
+
+            <!-- CALLOUT — neutral tip -->
+            <aside style="margin: 32px 0; background: #EDF1E8; border-top: 2px solid #2F6033; padding: clamp(18px, 2.2cqw, 26px);">
+              <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #2F6033; font-weight: 600; margin-bottom: 8px;">Tip</span>
+              <p style="margin: 0; font-size: 15.5px; line-height: 1.7; color: #262B25;">Ask for a pre-production sample with your actual artwork, not a stock sample. Thread color and stitch density change how a logo reads more than the garment does.</p>
+            </aside>
+
+            <h3 style="margin: 40px 0 12px; font-size: clamp(18px, 1.9cqw, 22px); line-height: 1.28; letter-spacing: -0.014em; font-weight: 800; color: #1C211C;" id="25-60">$25 – $60 per person</h3>
+            <p style="margin: 0 0 26px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25; text-wrap: pretty;">The most competitive tier and the easiest to overspend in. This is where insulated drinkware, mid-weight fleece, and small tech accessories all overlap — and where a second color of decoration starts adding real cost per unit.</p>
+
+            <!-- INLINE IMAGE + CAPTION -->
+            <figure style="margin: 34px 0;">
+              <div style="aspect-ratio: 3 / 2; background: #F2F0E8; overflow: hidden;"><image-slot id="hub-body-img-1" shape="rect" placeholder="In-article image — 3:2"></image-slot></div>
+              <figcaption style="margin-top: 10px; font-size: 13px; line-height: 1.55; color: #7A7F73; display: flex; gap: 10px;">
+                <span style="width: 2px; background: #C9D4BF; flex-shrink: 0;"></span>
+                <span>Two decoration passes on the same fleece: laser-etched patch (left) held up to eight washes better than the puff print.</span>
+              </figcaption>
+            </figure>
+
+            <!-- TWO-COLUMN IMAGE PAIR -->
+            <div style="margin: 34px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px;">
+              <figure style="margin: 0;">
+                <div style="aspect-ratio: 4 / 5; background: #F2F0E8; overflow: hidden;"><image-slot id="hub-body-pair-a" shape="rect" placeholder="Pair A"></image-slot></div>
+                <figcaption style="margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #8C9084;">Kept — daily job</figcaption>
+              </figure>
+              <figure style="margin: 0;">
+                <div style="aspect-ratio: 4 / 5; background: #F2F0E8; overflow: hidden;"><image-slot id="hub-body-pair-b" shape="rect" placeholder="Pair B"></image-slot></div>
+                <figcaption style="margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #8C9084;">Regifted — needs an app</figcaption>
+              </figure>
+            </div>
+
+            <!-- COMPARISON TABLE -->
+            <div style="margin: 38px 0;">
+              <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C9084; margin-bottom: 10px;">Compare · best drinkware for remote kits</span>
+              <div class="om-scroll" style="overflow-x: auto; border: 1px solid #E2DFD5;">
+                <table itemscope="itemscope" itemtype="https://schema.org/Table" style="border-collapse: collapse; width: 100%; min-width: 460px; font-size: 14px;">
+                  <thead>
+                    <tr style="background: #F2F0E8;">
+                      <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; font-weight: 600; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Item</th>
+                      <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; font-weight: 600; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Range</th>
+                      <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; font-weight: 600; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Lead time</th>
+                      <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; font-weight: 600; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Best for</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">20oz insulated tumbler</td>
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">$22–$31</td>
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">3–4 wks</td>
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">All-team gifting</td>
+                    </tr>
+                    <tr style="background: #FBFAF6;">
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">24oz steel bottle</td>
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">$26–$38</td>
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">4–6 wks</td>
+                      <td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">Field &amp; gym use</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 14px; font-weight: 700; color: #1C211C;">12oz ceramic mug</td>
+                      <td style="padding: 14px; color: #454B42;">$11–$16</td>
+                      <td style="padding: 14px; color: #454B42;">2–3 wks</td>
+                      <td style="padding: 14px; color: #454B42;">Rush &amp; budget</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <span style="display: block; margin-top: 8px; font-size: 12.5px; color: #8C9084;">Ranges assume one-color decoration at 100 units, Aug 2026 quotes.</span>
+            </div>
+
+            <!-- CALLOUT — cautionary -->
+            <aside style="margin: 32px 0; background: #FBEFE8; border-top: 2px solid #E4602A; padding: clamp(18px, 2.2cqw, 26px);">
+              <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #C24E1E; font-weight: 600; margin-bottom: 8px;">Watch out</span>
+              <p style="margin: 0; font-size: 15.5px; line-height: 1.7; color: #262B25;">Shipping to home addresses is not a line item you can add late. Budget $9–$14 per package domestically and collect addresses two weeks before your in-hands date — address collection, not production, is what misses December.</p>
+            </aside>
+
+            <h2 style="margin: 46px 0 14px; font-size: clamp(23px, 2.5cqw, 32px); line-height: 1.18; letter-spacing: -0.022em; font-weight: 800; color: #1C211C;" id="what-to-skip">What to skip entirely</h2>
+            <p style="margin: 0 0 26px; font-size: clamp(16.5px, 1.55cqw, 19px); line-height: 1.78; color: #262B25; text-wrap: pretty;">Bluetooth anything under $20. Stress balls. Full-front logo placement on apparel people are supposed to wear voluntarily. Anything that requires the recipient to download something to justify its existence.</p>
+
+            <!-- DOWNLOADABLE RESOURCE — gated -->
+            <aside style="margin: 38px 0; border: 1px solid #C9D4BF; background: #EDF1E8; padding: clamp(20px, 2.6cqw, 30px); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: clamp(18px, 2.6cqw, 32px); align-items: center;">
+              <div style="display: flex; flex-direction: column; gap: 9px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Free download · PDF · 18 pages</span>
+                <h4 style="margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(20px, 2.2cqw, 26px); line-height: 1.2; font-weight: 500; color: #1C211C;">The 2026 Remote Team Gift Guide</h4>
+                <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #454B42;">All 17 picks with current price ranges, decoration notes, and a shipping cost worksheet.</p>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <input type="text" placeholder="Work email" style="font-family: 'Mulish', sans-serif; font-size: 14.5px; padding: 13px 15px; border: 1px solid #B9C7AE; background: #FCFBF8; color: #1C211C; border-radius: 2px;" />
+                <button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; background: #E4602A; color: #fff; border: 0; padding: 14px 18px; border-radius: 2px; cursor: pointer;">Send me the PDF</button>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.04em; color: #6E7A66;">Email only. No follow-up sequence.</span>
+              </div>
+            </aside>
+
+            <!-- AUTHOR BIO -->
+            <div style="margin: clamp(38px, 4cqw, 56px) 0 0; padding-top: 28px; border-top: 1px solid #E2DFD5; display: flex; flex-wrap: wrap; gap: 18px;">
+              <image-slot id="hub-bio-marissa" shape="circle" style="width: 72px; height: 72px; flex-shrink: 0;" placeholder="Author"></image-slot>
+              <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C9084;">Written by</span>
+                <span style="font-size: 17px; font-weight: 800; color: #1C211C;">Marissa Vaughn</span>
+                <p style="margin: 0; font-size: 14.5px; line-height: 1.7; color: #5C6157; max-width: 58ch;">Editorial Director at Corporate Specialties. Nine years running merch programs in-house before switching sides — she has personally apologized for a late hoodie order and does not intend to do it again.</p>
+                <div style="display: flex; gap: 14px; margin-top: 2px;">
+                  <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;">All 34 articles</a>
+                  <a href="#" style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;">LinkedIn</a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- FAQ -->
+        <section itemscope="itemscope" itemtype="https://schema.org/FAQPage" style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(18px, 4cqw, 56px) clamp(34px, 4.4cqw, 60px);">
+          <div style="max-width: 78ch;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #1C211C; font-weight: 600;">Common questions</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5;"></span>
+            </div>
+            <div itemprop="mainEntity" itemscope="itemscope" itemtype="https://schema.org/Question" style="border-top: 1px solid #E2DFD5; padding: 20px 0; display: flex; flex-direction: column; gap: 9px;">
+              <h3 itemprop="name" style="margin: 0; font-size: clamp(17px, 1.8cqw, 20px); line-height: 1.3; letter-spacing: -0.012em; font-weight: 800; color: #1C211C;">How much should we budget per person for a remote team gift?</h3>
+              <div itemprop="acceptedAnswer" itemscope="itemscope" itemtype="https://schema.org/Answer">
+                <p itemprop="text" style="margin: 0; font-size: 16px; line-height: 1.72; color: #454B42; max-width: 66ch;">Most programs land between $25 and $60 per person before shipping. Add $9 to $14 per package for domestic home delivery, and decide early whether that comes out of the same line item — it is the number that surprises people.</p>
+              </div>
+            </div>
+            <div itemprop="mainEntity" itemscope="itemscope" itemtype="https://schema.org/Question" style="border-top: 1px solid #E2DFD5; padding: 20px 0; display: flex; flex-direction: column; gap: 9px;">
+              <h3 itemprop="name" style="margin: 0; font-size: clamp(17px, 1.8cqw, 20px); line-height: 1.3; letter-spacing: -0.012em; font-weight: 800; color: #1C211C;">How early do we need to order for a December in-hands date?</h3>
+              <div itemprop="acceptedAnswer" itemscope="itemscope" itemtype="https://schema.org/Answer">
+                <p itemprop="text" style="margin: 0; font-size: 16px; line-height: 1.72; color: #454B42; max-width: 66ch;">Work backwards from December 12. Production runs three to six weeks depending on decoration method, and home address collection realistically needs two weeks ahead of that. Late November orders become January gifts.</p>
+              </div>
+            </div>
+            <div itemprop="mainEntity" itemscope="itemscope" itemtype="https://schema.org/Question" style="border-top: 1px solid #E2DFD5; border-bottom: 1px solid #E2DFD5; padding: 20px 0; display: flex; flex-direction: column; gap: 9px;">
+              <h3 itemprop="name" style="margin: 0; font-size: clamp(17px, 1.8cqw, 20px); line-height: 1.3; letter-spacing: -0.012em; font-weight: 800; color: #1C211C;">Can you ship to individual home addresses?</h3>
+              <div itemprop="acceptedAnswer" itemscope="itemscope" itemtype="https://schema.org/Answer">
+                <p itemprop="text" style="margin: 0; font-size: 16px; line-height: 1.72; color: #454B42; max-width: 66ch;">Yes. Kitting and individual fulfillment are handled in house, including an address collection link you send to employees so you never touch a spreadsheet of home addresses.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- END CTA -->
+        <section style="background: #253A22; color: #F4F2EA;">
+          <div style="max-width: 1240px; margin: 0 auto; padding: clamp(32px, 4.4cqw, 66px) clamp(18px, 4cqw, 56px); display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(22px, 3cqw, 48px); align-items: center;">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #9FB596;">Next step</span>
+              <h2 style="margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(25px, 3cqw, 38px); line-height: 1.12; font-weight: 500; color: #FCFBF8;">Have a headcount and a date? That's enough to start.</h2>
+              <p style="margin: 0; font-size: 15px; line-height: 1.65; color: #C3CFBC; max-width: 44ch;">Tell a strategist your budget per person and your in-hands date. You'll get two or three options with real lead times — not a catalog link.</p>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+              <a href="#" style="background: #E4602A; color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 15px 22px; border-radius: 2px;">Talk to a strategist</a>
+              <a href="#" style="border: 1px solid #4E6449; color: #FCFBF8; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 15px 22px; border-radius: 2px;">Browse products</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- RELATED -->
+        <section style="max-width: 1240px; margin: 0 auto; padding: clamp(34px, 4.4cqw, 64px) clamp(18px, 4cqw, 56px);">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 26px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #1C211C; font-weight: 600;">Keep reading</span>
+            <span style="flex: 1; height: 1px; background: #E2DFD5;"></span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: clamp(24px, 3cqw, 40px);">
+            <article style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-rel-1" shape="rect" placeholder="Related 1"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+              <h3 style="margin: 0; font-size: 18.5px; line-height: 1.26; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.78em;">What a $25 Per-Person Gift Actually Buys in 2026</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 8 · 6 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-rel-2" shape="rect" placeholder="Related 2"></image-slot></div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Marketing Ideas</span>
+              <h3 style="margin: 0; font-size: 18.5px; line-height: 1.26; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.78em;">Onboarding Kits That Don't Feel Like Onboarding Kits</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 12 · 6 min</span>
+            </article>
+            <article style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="aspect-ratio: 3 / 2; background: #DDE5D6; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 16px;">
+                <span style="font-family: 'Playfair Display', serif; font-size: 34px; color: #A9B79E; line-height: 1;">CS</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E7A66;">No image · fallback</span>
+              </div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Swag Program Strategy</span>
+              <h3 style="margin: 0; font-size: 18.5px; line-height: 1.26; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.78em;">How to Budget a Swag Program You'll Actually Repeat Next Year</h3>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 15 · 9 min</span>
+            </article>
+          </div>
+        </section>
+      </main>
+      </sc-if>
+
+      <!-- ================================================================ COMPONENT SPEC -->
+      <sc-if value="{{ isComponents }}" hint-placeholder-val="{{ true }}">
+      <main data-screen-label="Component Spec" style="background: #FCFBF8;">
+        <div style="background: #DDE5D6; border-bottom: 1px solid #C9D4BF;">
+          <div style="max-width: 1240px; margin: 0 auto; padding: clamp(28px, 4cqw, 56px) clamp(18px, 4cqw, 56px); display: flex; flex-direction: column; gap: 12px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Spec sheet</span>
+            <h1 style="margin: 0; font-size: clamp(30px, 4cqw, 50px); line-height: 1.04; letter-spacing: -0.028em; font-weight: 800; color: #1C211C;">Component vocabulary</h1>
+            <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #454B42; max-width: 60ch;">Every block below maps to one CMS component. Names in monospace are the field-set names to hand to the Astro build.</p>
+          </div>
+        </div>
+
+        <div style="max-width: 1240px; margin: 0 auto; padding: clamp(28px, 3.6cqw, 52px) clamp(18px, 4cqw, 56px); display: flex; flex-direction: column; gap: clamp(38px, 4.4cqw, 64px);">
+
+          <!-- POST CARD VARIANTS -->
+          <section style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">Post card</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">postCard · variant: featured | standard | compact</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: clamp(22px, 3cqw, 38px);">
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">featured (large)</span>
+                <div style="border: 1px solid #E2DFD5; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                  <div style="aspect-ratio: 3 / 2; background: #EFEDE5; overflow: hidden;"><image-slot id="hub-spec-card-lg" shape="rect" placeholder="16:9 or 3:2"></image-slot></div>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Gifting Guides</span>
+                  <h3 style="margin: 0; font-size: 25px; line-height: 1.16; letter-spacing: -0.02em; font-weight: 800; color: #1C211C;">17 Corporate Gift Ideas Your Remote Team Will Actually Use</h3>
+                  <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #5C6157;">Dek shows only on the featured variant, clamped to two lines.</p>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Marissa Vaughn · Aug 18 · 11 min</span>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">standard + no-image fallback</span>
+                <div style="border: 1px solid #E2DFD5; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                  <div style="aspect-ratio: 3 / 2; background: #DDE5D6; display: flex; flex-direction: column; justify-content: space-between; padding: 16px;">
+                    <span style="font-family: 'Playfair Display', serif; font-size: 34px; color: #A9B79E; line-height: 1;">CS</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E7A66;">No image · fallback</span>
+                  </div>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Industry Trends</span>
+                  <h3 style="margin: 0; font-size: 20px; line-height: 1.24; letter-spacing: -0.012em; font-weight: 800; color: #1C211C; min-height: 3.72em;">Sustainable Swag: Reading Certifications Without Getting Greenwashed</h3>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Aug 11 · 10 min</span>
+                </div>
+                <span style="font-size: 12.5px; line-height: 1.5; color: #8C9084;">Title reserves three lines (min-height 3.72em) so grids stay aligned regardless of headline length.</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">compact (text only)</span>
+                <div style="border: 1px solid #E2DFD5; padding: 4px 16px;">
+                  <a href="#" style="display: flex; flex-direction: column; gap: 7px; padding: 16px 0; border-bottom: 1px solid #EFEDE5; color: #1C211C;">
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033;">Marketing Ideas</span>
+                    <span style="font-size: 16px; font-weight: 700; line-height: 1.32;">Why your logo shrinks on a curved surface</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 24 · 4 min</span>
+                  </a>
+                  <a href="#" style="display: flex; flex-direction: column; gap: 7px; padding: 16px 0; color: #1C211C;">
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033;">Gifting Guides</span>
+                    <span style="font-size: 16px; font-weight: 700; line-height: 1.32;">The client gift rules nobody tells you about</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #8C9084;">Jul 21 · 6 min</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- CHIPS -->
+          <section style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">Category chip &amp; tag chip</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">categoryChip · tagChip</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px;">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">category · in-card (label only)</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Swag Program Strategy</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">category · framed (article header)</span>
+                <span style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #2F6033; font-weight: 600; border: 1px solid #C9D4BF; background: #EDF1E8; padding: 7px 11px; border-radius: 2px;">Gifting Guides</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">tag · rest / active</span>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid #D8D5CB; color: #454B42;">Remote teams</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; background: #1C211C; color: #FCFBF8;">Under $25</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ARTICLE BODY ELEMENTS -->
+          <section style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">Article body elements</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">prose · 72ch measure, 1.78 line-height, 19px</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div style="border: 1px solid #E2DFD5; padding: clamp(20px, 3cqw, 40px); max-width: 78ch;">
+              <h2 style="margin: 0 0 12px; font-size: 30px; line-height: 1.18; letter-spacing: -0.022em; font-weight: 800; color: #1C211C;">H2 — section heading, 46px above</h2>
+              <p style="margin: 0 0 26px; font-size: 19px; line-height: 1.78; color: #262B25; text-wrap: pretty;">Body copy sits at 19px with a 1.78 line height and a 72-character measure. Headings take generous space above and tight space below, so a heading reads as belonging to the paragraph that follows it rather than floating between two blocks.</p>
+              <h3 style="margin: 30px 0 12px; font-size: 22px; line-height: 1.28; letter-spacing: -0.014em; font-weight: 800; color: #1C211C;">H3 — subsection, 30px above</h3>
+              <ul style="margin: 0 0 26px; padding-left: 22px; font-size: 19px; line-height: 1.78; color: #262B25;">
+                <li style="margin-bottom: 10px; padding-left: 6px;">Bulleted list item, 10px between items</li>
+                <li style="padding-left: 6px;">Markers sit outside the measure</li>
+              </ul>
+              <ol style="margin: 0 0 26px; padding-left: 24px; font-size: 19px; line-height: 1.78; color: #262B25;">
+                <li style="margin-bottom: 10px; padding-left: 6px;">Numbered list, same rhythm</li>
+                <li style="padding-left: 6px;">Used for ranked shortlists</li>
+              </ol>
+              <blockquote style="margin: 34px 0; padding: 0 0 0 26px; border-left: 3px solid #E4602A;">
+                <p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 28px; line-height: 1.38; color: #1C211C; font-style: italic;">“Pull quote — serif italic, the one place the logo serif appears in running text.”</p>
+                <footer style="margin-top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7A66;">Attribution · role · company size</footer>
+              </blockquote>
+              <figure style="margin: 30px 0;">
+                <div style="aspect-ratio: 3 / 2; background: #F2F0E8; overflow: hidden;"><image-slot id="hub-spec-inline-img" shape="rect" placeholder="Inline image"></image-slot></div>
+                <figcaption style="margin-top: 10px; font-size: 13px; line-height: 1.55; color: #7A7F73; display: flex; gap: 10px;"><span style="width: 2px; background: #C9D4BF; flex-shrink: 0;"></span><span>Inline image with caption — caption keeps a 2px rule so it never reads as body copy.</span></figcaption>
+              </figure>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px;">
+                <figure style="margin: 0;"><div style="aspect-ratio: 4 / 5; background: #F2F0E8; overflow: hidden;"><image-slot id="hub-spec-pair-a" shape="rect" placeholder="Pair A"></image-slot></div><figcaption style="margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #8C9084;">Two-up left</figcaption></figure>
+                <figure style="margin: 0;"><div style="aspect-ratio: 4 / 5; background: #F2F0E8; overflow: hidden;"><image-slot id="hub-spec-pair-b" shape="rect" placeholder="Pair B"></image-slot></div><figcaption style="margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #8C9084;">Two-up right</figcaption></figure>
+              </div>
+            </div>
+          </section>
+
+          <!-- EMBEDS -->
+          <section style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">Embeddable blocks</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">productSpotlight · callout · resource · newsletter</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(22px, 3cqw, 36px);">
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">productSpotlight</span>
+                <aside style="border: 1px solid #E2DFD5; background: #FBFAF6; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                  <div style="aspect-ratio: 1 / 1; background: #F2F0E8; overflow: hidden;"><image-slot id="hub-spec-product" shape="rect" placeholder="Any background"></image-slot></div>
+                  <div style="padding: 18px; display: flex; flex-direction: column; gap: 9px; justify-content: center;">
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #E4602A; font-weight: 600;">Product spotlight</span>
+                    <h4 style="margin: 0; font-size: 19px; line-height: 1.26; font-weight: 800; color: #1C211C;">24oz Steel Bottle</h4>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #5C6157;">Powder-coat finish that hides a laser mark cleanly.</p>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1C211C;">$26 – $38 <span style="color: #8C9084;">/ 50 pc</span></span>
+                    <a href="#" style="align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; background: #1C211C; color: #FCFBF8; padding: 10px 14px; border-radius: 2px;">Request pricing</a>
+                  </div>
+                </aside>
+                <span style="font-size: 12.5px; line-height: 1.5; color: #8C9084;">Square crop with a flat tint behind it — tolerates inconsistent product backgrounds.</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">callout · tone: tip | caution</span>
+                <aside style="background: #EDF1E8; border-top: 2px solid #2F6033; padding: 20px;">
+                  <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #2F6033; font-weight: 600; margin-bottom: 8px;">Tip</span>
+                  <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #262B25;">Neutral tone — sage field, green rule. Use for process advice.</p>
+                </aside>
+                <aside style="background: #FBEFE8; border-top: 2px solid #E4602A; padding: 20px;">
+                  <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #C24E1E; font-weight: 600; margin-bottom: 8px;">Watch out</span>
+                  <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #262B25;">Cautionary tone — warm field, orange rule. Use for money and deadlines.</p>
+                </aside>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">resource · ungated</span>
+                <aside style="border: 1px solid #E2DFD5; padding: 20px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                  <div style="width: 54px; height: 68px; background: #DDE5D6; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; flex-shrink: 0;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #2F6033;">PDF</span></div>
+                  <div style="flex: 1 1 150px; display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 16.5px; font-weight: 800; color: #1C211C; line-height: 1.25;">Holiday Gifting Calendar</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8C9084;">PDF · 4 pages · 1.2 MB</span>
+                    <a href="#" style="align-self: flex-start; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #1C211C; border-bottom: 2px solid #E4602A; padding-bottom: 3px;">Download ↓</a>
+                  </div>
+                </aside>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A; margin-top: 6px;">resource · gated (email only)</span>
+                <aside style="border: 1px solid #C9D4BF; background: #EDF1E8; padding: 20px; display: flex; flex-direction: column; gap: 9px;">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #2F6033; font-weight: 600;">Free download · PDF · 18 pages</span>
+                  <span style="font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.2; color: #1C211C;">The 2026 Remote Team Gift Guide</span>
+                  <input type="text" placeholder="Work email" style="font-family: 'Mulish', sans-serif; font-size: 14px; padding: 12px 14px; border: 1px solid #B9C7AE; background: #FCFBF8; border-radius: 2px;" />
+                  <button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; background: #E4602A; color: #fff; border: 0; padding: 13px 16px; border-radius: 2px; cursor: pointer;">Send me the PDF</button>
+                </aside>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">newsletter · inline</span>
+                <div style="background: #DDE5D6; padding: 22px; display: flex; flex-direction: column; gap: 10px;">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #2F6033; font-weight: 600;">The Swag Desk</span>
+                  <span style="font-family: 'Playfair Display', serif; font-size: 23px; line-height: 1.18; color: #1C211C;">One idea, every other Tuesday</span>
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <input type="text" placeholder="Work email" style="flex: 1 1 140px; min-width: 0; font-family: 'Mulish', sans-serif; font-size: 14px; padding: 12px 14px; border: 1px solid #B9C7AE; background: #FCFBF8; border-radius: 2px;" />
+                    <button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; background: #1C211C; color: #FCFBF8; border: 0; padding: 12px 16px; border-radius: 2px; cursor: pointer;">Subscribe</button>
+                  </div>
+                </div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A; margin-top: 6px;">newsletter · footer</span>
+                <div style="background: #14170F; padding: 22px; display: flex; flex-direction: column; gap: 10px;">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A9182;">Newsletter</span>
+                  <span style="font-family: 'Playfair Display', serif; font-size: 23px; line-height: 1.18; color: #FCFBF8;">The Swag Desk</span>
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <input type="text" placeholder="Work email" style="flex: 1 1 140px; min-width: 0; font-family: 'Mulish', sans-serif; font-size: 14px; padding: 12px 14px; border: 1px solid #2C3226; background: #1C211C; color: #FCFBF8; border-radius: 2px;" />
+                    <button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; background: #E4602A; color: #fff; border: 0; padding: 12px 16px; border-radius: 2px; cursor: pointer;">Subscribe</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TOC SPEC -->
+          <section style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">Table of contents</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">tableOfContents · auto-built from H2/H3 · anchor slugs</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(22px, 3cqw, 36px);">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">desktop · sticky sidebar (top 74px)</span>
+                <div style="border: 1px solid #E2DFD5; padding: 18px; max-width: 280px;">
+                  <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8C9084; padding-bottom: 12px; border-bottom: 1px solid #E2DFD5;">Contents</span>
+                  <nav itemscope="itemscope" itemtype="https://schema.org/SiteNavigationElement" style="display: flex; flex-direction: column;">
+                    <a itemprop="url" href="#what-people-keep" style="font-size: 13.5px; line-height: 1.4; color: #1C211C; font-weight: 700; padding: 11px 0 11px 12px; border-left: 2px solid #E4602A;"><span itemprop="name">Active section — H2</span></a>
+                    <a itemprop="url" href="#the-17-ideas" style="font-size: 13.5px; line-height: 1.4; color: #5C6157; padding: 11px 0 11px 12px; border-left: 2px solid #E9E6DD;"><span itemprop="name">Inactive section — H2</span></a>
+                    <a itemprop="url" href="#under-25" style="font-size: 13px; line-height: 1.4; color: #5C6157; padding: 10px 0 10px 24px; border-left: 2px solid #E9E6DD;"><span itemprop="name">Nested — H3</span></a>
+                  </nav>
+                </div>
+                <span style="font-size: 12.5px; line-height: 1.55; color: #8C9084;">Renders only when the post has 4+ H2s. Active state driven by IntersectionObserver; 2px left rule is the only indicator.</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">mobile · collapsed bar + progress</span>
+                <div style="max-width: 300px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; background: #F2F0E8; border: 1px solid #E2DFD5; padding: 12px 14px;">
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #1C211C;">Contents · 7 sections</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #E4602A;">+</span>
+                  </div>
+                  <div style="height: 2px; background: #E9E6DD; margin-top: 10px;"><div style="width: 34%; height: 2px; background: #E4602A;"></div></div>
+                </div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A; margin-top: 6px;">mobile · expanded</span>
+                <div style="max-width: 300px; border: 1px solid #E2DFD5;">
+                  <a href="#what-people-keep" style="display: block; font-size: 14px; color: #1C211C; font-weight: 700; padding: 12px 14px; border-bottom: 1px solid #EFEDE5;">Active section — H2</a>
+                  <a href="#the-17-ideas" style="display: block; font-size: 14px; color: #5C6157; padding: 12px 14px; border-bottom: 1px solid #EFEDE5;">Inactive section — H2</a>
+                  <a href="#under-25" style="display: block; font-size: 14px; color: #5C6157; padding: 12px 14px 12px 26px;">Nested — H3</a>
+                </div>
+                <span style="font-size: 12.5px; line-height: 1.55; color: #8C9084;">Sticks below the category bar at 52px, collapses on tap and on anchor navigation. 44px minimum row height.</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- FAQ SPEC -->
+          <section style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">FAQ module</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">faqModule · variant: open | accordion · FAQPage schema</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(22px, 3cqw, 36px);">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">open (default — always crawlable)</span>
+                <div itemscope="itemscope" itemtype="https://schema.org/FAQPage" style="border: 1px solid #E2DFD5; padding: 4px 18px;">
+                  <div itemprop="mainEntity" itemscope="itemscope" itemtype="https://schema.org/Question" style="padding: 18px 0; border-bottom: 1px solid #EFEDE5; display: flex; flex-direction: column; gap: 8px;">
+                    <h3 itemprop="name" style="margin: 0; font-size: 18px; line-height: 1.3; font-weight: 800; color: #1C211C;">Question text as a plain H3</h3>
+                    <div itemprop="acceptedAnswer" itemscope="itemscope" itemtype="https://schema.org/Answer"><p itemprop="text" style="margin: 0; font-size: 15.5px; line-height: 1.72; color: #454B42;">Answer at 15.5px / 1.72, capped at 66ch. Two short paragraphs maximum.</p></div>
+                  </div>
+                  <div itemprop="mainEntity" itemscope="itemscope" itemtype="https://schema.org/Question" style="padding: 18px 0; display: flex; flex-direction: column; gap: 8px;">
+                    <h3 itemprop="name" style="margin: 0; font-size: 18px; line-height: 1.3; font-weight: 800; color: #1C211C;">Second question</h3>
+                    <div itemprop="acceptedAnswer" itemscope="itemscope" itemtype="https://schema.org/Answer"><p itemprop="text" style="margin: 0; font-size: 15.5px; line-height: 1.72; color: #454B42;">Hairline rules between items; no card, no chevron.</p></div>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E4602A;">accordion (long FAQ pages only)</span>
+                <div style="border: 1px solid #E2DFD5;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid #EFEDE5;">
+                    <span style="font-size: 16.5px; font-weight: 800; color: #1C211C; line-height: 1.3;">Collapsed question</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #E4602A;">+</span>
+                  </div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px;">
+                    <span style="font-size: 16.5px; font-weight: 800; color: #1C211C; line-height: 1.3;">Expanded question</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #E4602A;">−</span>
+                  </div>
+                  <p style="margin: 0; padding: 0 18px 18px; font-size: 15.5px; line-height: 1.72; color: #454B42;">Answer markup stays in the DOM when collapsed (height animation, not conditional render) so the FAQPage schema always validates.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- STRUCTURED DATA SPEC -->
+          <section style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">Structured data map</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">JSON-LD in head + inline microdata</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div class="om-scroll" style="overflow-x: auto; border: 1px solid #E2DFD5;">
+              <table style="border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px;">
+                <thead>
+                  <tr style="background: #F2F0E8;">
+                    <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Element</th>
+                    <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Type</th>
+                    <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Properties</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">Post page</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">BlogPosting</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">headline, description, datePublished, dateModified, timeRequired, wordCount, articleSection, keywords, author, publisher, mainEntityOfPage</td></tr>
+                  <tr style="background: #FBFAF6;"><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">Body copy</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">articleBody</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">Wraps the prose column; H2/H3 carry slug ids used by the TOC</td></tr>
+                  <tr><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">Byline</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">Person</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">name, jobTitle, url</td></tr>
+                  <tr style="background: #FBFAF6;"><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">Hero &amp; inline images</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">ImageObject</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">contentUrl, caption</td></tr>
+                  <tr><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">TOC</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">SiteNavigationElement</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">name, url (fragment link per heading)</td></tr>
+                  <tr style="background: #FBFAF6;"><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">FAQ</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">FAQPage · Question · Answer</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">mainEntity, name, acceptedAnswer, text</td></tr>
+                  <tr><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">Comparison table</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">Table</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">Real thead/th scope; caption line below as plain text</td></tr>
+                  <tr style="background: #FBFAF6;"><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">Product spotlight</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">Product · AggregateOffer</td><td style="padding: 13px 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">name, description, image, lowPrice, highPrice, priceCurrency</td></tr>
+                  <tr><td style="padding: 13px 14px; font-weight: 700; color: #1C211C;">Breadcrumb</td><td style="padding: 13px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #2F6033;">BreadcrumbList</td><td style="padding: 13px 14px; color: #454B42;">Blog → Category → Post</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- COMPARISON TABLE SPEC -->
+          <section style="display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: clamp(20px, 2.2cqw, 26px); font-weight: 800; letter-spacing: -0.02em; color: #1C211C;">Comparison table</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C9084;">comparisonTable · scrolls horizontally under 460px</span>
+              <span style="flex: 1; height: 1px; background: #E2DFD5; min-width: 20px;"></span>
+            </div>
+            <div class="om-scroll" style="overflow-x: auto; border: 1px solid #E2DFD5;">
+              <table itemscope="itemscope" itemtype="https://schema.org/Table" style="border-collapse: collapse; width: 100%; min-width: 460px; font-size: 14px;">
+                <thead>
+                  <tr style="background: #F2F0E8;">
+                    <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Item</th>
+                    <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Range</th>
+                    <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Lead time</th>
+                    <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #454B42; padding: 12px 14px; border-bottom: 1px solid #E2DFD5;">Best for</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="padding: 14px; border-bottom: 1px solid #EFEDE5; font-weight: 700; color: #1C211C;">Row label</td><td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">$22–$31</td><td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">3–4 wks</td><td style="padding: 14px; border-bottom: 1px solid #EFEDE5; color: #454B42;">All-team</td></tr>
+                  <tr style="background: #FBFAF6;"><td style="padding: 14px; font-weight: 700; color: #1C211C;">Zebra row</td><td style="padding: 14px; color: #454B42;">$26–$38</td><td style="padding: 14px; color: #454B42;">4–6 wks</td><td style="padding: 14px; color: #454B42;">Field use</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </main>
+      </sc-if>
+
+      <!-- ============ FOOTER ============ -->
+      <footer style="background: #14170F; color: #E7E5DC;">
+        <div style="max-width: 1240px; margin: 0 auto; padding: clamp(32px, 4cqw, 64px) clamp(18px, 4cqw, 56px); display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: clamp(28px, 4cqw, 56px);">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A9182;">Newsletter</span>
+            <h3 style="margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(22px, 2.5cqw, 30px); line-height: 1.15; font-weight: 500; color: #FCFBF8;">The Swag Desk, every other Tuesday</h3>
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #A8AEA0; max-width: 38ch;">One idea, one product worth knowing, one lead-time warning. Read by 9,400 buyers.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;">
+              <input type="text" placeholder="Work email" style="flex: 1 1 160px; min-width: 0; font-family: 'Mulish', sans-serif; font-size: 14.5px; padding: 12px 14px; border: 1px solid #2C3226; background: #1C211C; color: #FCFBF8; border-radius: 2px;" />
+              <button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; background: #E4602A; color: #fff; border: 0; padding: 13px 18px; border-radius: 2px; cursor: pointer;">Subscribe</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 11px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A9182;">Categories</span>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Gifting Guides</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Trending Products</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Marketing Ideas</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Swag Program Strategy</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Industry Trends</a>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 11px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A9182;">Resources</span>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Evergreen guides</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Gift guide PDFs</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Lead time tracker</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Decoration glossary</a>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 11px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A9182;">Company</span>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Shop products</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Talk to a strategist</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">About Corporate Specialties</a>
+            <a href="#" style="font-size: 14.5px; color: #E7E5DC;">Contact</a>
+          </div>
+        </div>
+        <div style="border-top: 1px solid #2C3226;">
+          <div style="max-width: 1240px; margin: 0 auto; padding: 18px clamp(18px, 4cqw, 56px); display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; color: #6E7466;">© 2026 Corporate Specialties</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; color: #6E7466;">Privacy · Terms · Accessibility</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;category&quot;,&quot;post&quot;,&quot;components&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;startViewport&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;}}">
+class Component extends DCLogic {
+  state = { view: 'home', mobile: false, catState: 'results', tocOpen: false };
+
+  componentDidMount() {
+    if (this.props.startView) this.setState({ view: this.props.startView });
+    if (this.props.startViewport === 'mobile') this.setState({ mobile: true });
+  }
+
+  go(view) {
+    return (e) => { if (e) e.preventDefault(); this.setState({ view }); window.scrollTo(0, 0); };
+  }
+
+  tab(active) {
+    return {
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', letterSpacing: '0.08em',
+      textTransform: 'uppercase', padding: '7px 11px', borderRadius: '2px', cursor: 'pointer',
+      border: active ? '1px solid #E4602A' : '1px solid #2C3226',
+      background: active ? '#E4602A' : 'transparent',
+      color: active ? '#fff' : '#B5BBAD'
+    };
+  }
+
+  navLink(active) {
+    return {
+      fontSize: '13.5px', fontWeight: active ? 800 : 600, whiteSpace: 'nowrap',
+      color: active ? '#1C211C' : '#5C6157', padding: '16px 0 14px',
+      borderBottom: active ? '2px solid #E4602A' : '2px solid transparent'
+    };
+  }
+
+  stateBtn(active) {
+    return {
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', letterSpacing: '0.08em',
+      textTransform: 'uppercase', padding: '6px 10px', cursor: 'pointer', borderRadius: '2px',
+      border: active ? '1px solid #1C211C' : '1px solid #D8D5CB',
+      background: active ? '#1C211C' : 'transparent',
+      color: active ? '#FCFBF8' : '#5C6157'
+    };
+  }
+
+  pageLink(active) {
+    return {
+      fontFamily: "'IBM Plex Mono', monospace", fontSize: '13px', padding: '10px 15px',
+      background: active ? '#1C211C' : 'transparent',
+      color: active ? '#FCFBF8' : '#1C211C',
+      border: active ? '1px solid #1C211C' : '1px solid #E2DFD5'
+    };
+  }
+
+  renderVals() {
+    const v = this.state.view, m = this.state.mobile;
+    const cs = this.state.catState, p2 = cs === 'page2';
+    return {
+      showGrid: cs !== 'empty',
+      catFeedLabel: p2 ? 'Page 2' : 'Newest first',
+      catRangeLabel: p2 ? '7–12 of 42' : '1–6 of 42',
+      stateBtnResults: this.stateBtn(cs === 'results'),
+      stateBtnPage2: this.stateBtn(p2),
+      stateBtnEmpty: this.stateBtn(cs === 'empty'),
+      page1Style: this.pageLink(!p2),
+      page2Style: this.pageLink(p2),
+      page3Style: this.pageLink(false),
+      prevLinkStyle: {
+        fontFamily: "'IBM Plex Mono', monospace", fontSize: '11px', letterSpacing: '0.08em',
+        textTransform: 'uppercase', padding: '10px 12px',
+        color: p2 ? '#1C211C' : '#C0C4B8',
+        borderBottom: p2 ? '2px solid #E4602A' : '2px solid transparent',
+        pointerEvents: p2 ? 'auto' : 'none'
+      },
+      tocCaret: this.state.tocOpen ? '−' : '+',
+      isHome: v === 'home', isCategory: v === 'category', isPost: v === 'post', isComponents: v === 'components',
+      mobile: m, desktop: !m,
+      isResults: this.state.catState === 'results',
+      isPageTwo: this.state.catState === 'page2',
+      isEmpty: this.state.catState === 'empty',
+      setResults: () => this.setState({ catState: 'results' }),
+      setPageTwo: () => this.setState({ catState: 'page2' }),
+      setEmpty: () => this.setState({ catState: 'empty' }),
+      tocOpen: this.state.tocOpen,
+      toggleToc: () => this.setState(s => ({ tocOpen: !s.tocOpen })),
+      goHome: this.go('home'), goCategory: this.go('category'), goPost: this.go('post'), goComponents: this.go('components'),
+      setDesktop: () => this.setState({ mobile: false }),
+      setMobile: () => this.setState({ mobile: true }),
+      tabHome: this.tab(v === 'home'), tabCategory: this.tab(v === 'category'),
+      tabPost: this.tab(v === 'post'), tabComponents: this.tab(v === 'components'),
+      tabDesktop: this.tab(!m), tabMobile: this.tab(m),
+      navAll: this.navLink(v === 'home'), navGifting: this.navLink(v === 'category'), navPlain: this.navLink(false),
+      frameStyle: {
+        containerType: 'inline-size', width: m ? '390px' : '100%', maxWidth: m ? '390px' : '1500px',
+        background: '#FCFBF8', overflow: 'hidden',
+        border: m ? '10px solid #14170F' : '1px solid #D8D5CB',
+        borderRadius: m ? '38px' : '3px',
+        boxShadow: m ? '0 24px 60px rgba(20,23,15,0.28)' : '0 2px 24px rgba(20,23,15,0.07)'
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

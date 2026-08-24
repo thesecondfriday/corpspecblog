@@ -1,0 +1,48 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": []
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Proxima Nova|Mulish|Playfair Display|IBM Plex Mono))/i]",
+        "message": "Font not provided by the design system. Available: Proxima Nova, Mulish, Playfair Display, IBM Plex Mono."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {},
+    "tokens": [],
+    "tokenKinds": {},
+    "fontFamilies": [
+      "IBM Plex Mono",
+      "Mulish",
+      "Playfair Display",
+      "Proxima Nova"
+    ]
+  }
+}
