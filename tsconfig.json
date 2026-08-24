@@ -1,7 +1,9 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*.ts", "**/*.astro"],
-  "exclude": ["dist", "node_modules"],
+  // src/sanity is a deliverable for the Studio project, not part of this build —
+  // it imports `sanity`, which this front end deliberately does not depend on.
+  "exclude": ["dist", "node_modules", "src/sanity"],
   "compilerOptions": {
     "strictNullChecks": true
   }

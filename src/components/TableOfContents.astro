@@ -3,14 +3,18 @@
  * Component Spec §3.8 — TableOfContents. mode: sidebar | bar.
  *
  * Markup is SHARED; only the shell swaps, so headings and slugs exist once.
- * Anchors are real <a href="#slug"> links in both modes — crawlable, and marked
+ * Anchors are real anchor elements (href="#slug") in both modes — crawlable, and marked
  * up as SiteNavigationElement (name + url per item).
  *
- *   < 900px  → `bar`: a collapsed sticky bar at the TOP OF THE ARTICLE. Not a
+ *   under 900px → `bar`: a collapsed sticky bar at the TOP OF THE ARTICLE. Not a
  *              bottom sheet, not hidden (§7). Carries the reading-progress rule,
  *              which is the only progress indicator on the site.
- *   ≥ 900px  → `sidebar`: 210–260px sticky column left of the prose. The
+ *   900px and up → `sidebar`: 210–260px sticky column left of the prose. The
  *              progress rule is dropped — the sidebar's active state does that job.
+ *
+ * (Phrasing note: never write a bare left angle bracket in Astro frontmatter,
+ * even inside a comment — the compiler reads it as the start of markup and
+ * silently drops Props inference, leaving every prop typed `any`.)
  *
  * Renders only when there are ≥4 H2s (see shouldRenderToc); below that, no TOC
  * and no empty shell. The caller enforces this.
