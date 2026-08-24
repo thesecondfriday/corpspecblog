@@ -72,6 +72,7 @@ export const author = defineType({
       type: "array",
       of: [
         defineArrayMember({
+          name: "profileLink",
           type: "object",
           fields: [
             defineField({

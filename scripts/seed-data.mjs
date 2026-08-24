@@ -277,6 +277,7 @@ export const posts = [
       blk({
         _type: "resourceDownload",
         title: "The 2026 Remote Team Gift Guide",
+        file: "remote-team-gift-guide-2026.pdf",
         pageCount: 18,
         description: "All 17 picks with current price ranges, decoration notes, and a shipping cost worksheet.",
         gated: true,
@@ -446,6 +447,7 @@ export const posts = [
       blk({
         _type: "resourceDownload",
         title: "Per-head budget worksheet",
+        file: "per-head-budget-worksheet.pdf",
         pageCount: 4,
         description: "The model above as a spreadsheet, with the rush reserve and shipping lines already broken out.",
         gated: false,
@@ -500,5 +502,11 @@ export const relatedOverrides = {
 export const redirectOverrides = {
   "post.remote-team-gift-ideas": ["/blog/remote-team-gift-ideas", "/gift-ideas-remote"],
 };
+
+/** PDFs the seed uploads, from public/downloads/. */
+export const files = [
+  "remote-team-gift-guide-2026.pdf",
+  "per-head-budget-worksheet.pdf",
+];
 
 export { blk, h2, h3, img, keyed, ol, p, ref, ul };
