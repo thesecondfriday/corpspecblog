@@ -1,0 +1,67 @@
+---
+/*
+ * Shown only on the preview routes, so an editor can never mistake a draft for
+ * the live page. Uses the caution tone from §4.6 rather than inventing a new
+ * one — this is the same "something needs your attention" signal.
+ */
+---
+
+<div class="draft-banner">
+  <div class="container draft-banner__inner">
+    <span class="draft-banner__label">Draft preview</span>
+    <span class="draft-banner__text">
+      You're seeing unpublished content. This page is not indexed and is not visible to readers.
+    </span>
+    <a class="draft-banner__exit" href="/api/preview-exit">Exit preview</a>
+  </div>
+</div>
+
+<style>
+  .draft-banner {
+    background: var(--surface-warn);
+    border-bottom: 2px solid var(--accent);
+    position: sticky;
+    /* Sits under the category nav, which is sticky at top: 0. */
+    top: 52px;
+    z-index: 35;
+  }
+
+  .draft-banner__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    flex-wrap: wrap;
+    padding-block: 10px;
+  }
+
+  .draft-banner__label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: var(--type-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--accent-hover);
+  }
+
+  .draft-banner__text {
+    flex: 1 1 240px;
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-lh);
+    color: var(--text-body);
+  }
+
+  .draft-banner__exit {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 2px;
+  }
+
+  .draft-banner__exit:hover {
+    color: var(--accent);
+  }
+</style>

@@ -7,12 +7,11 @@
  * `featured` card variant never appears on an archive — it is reserved for the
  * index.
  *
- * The tag filter row is rendered as real links. Filtering itself is a URL
- * concern: with Astro's static output the ?tag= query does not re-render on the
- * server, so the row currently links to the un-narrowed archive and the chips
- * carry their counts. Wire the filter when you decide whether narrowing is a
- * static route (/blog/{category}/tag/{tag}) or a client-side filter — the
- * latter is also what would make the §3.3 skeleton real.
+ * The tag filter row renders as real links with live counts, but narrowing is
+ * not wired: with static output a ?tag= query cannot re-render server-side.
+ * See IMPLEMENTATION-NOTES.md — the choice between a static route
+ * (/blog/{category}/tag/{tag}) and client-side filtering is still open, and it
+ * is the same decision that decides whether the §3.3 skeleton is ever real.
  */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import CategoryHeader from "../../../components/CategoryHeader.astro";
@@ -21,36 +20,42 @@ import EmptyState from "../../../components/EmptyState.astro";
 import Pagination from "../../../components/Pagination.astro";
 import PostGrid from "../../../components/PostGrid.astro";
 import { categoryHref, pageHref } from "../../../lib/site";
-import {
-  PAGE_SIZE,
-  allCategories,
-  categoriesWithCounts,
-  paginate,
-  postCount,
-  postsInCategory,
-  tagsInCategory,
-} from "../../../lib/queries";
+import { PAGE_SIZE, paginate } from "../../../lib/paginate";
+import { sanityApi } from "../../../sanity/lib/queries";
 
-export function getStaticPaths() {
-  return allCategories().flatMap((category) => {
-    const total = postsInCategory(category.slug).length;
-    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+export async function getStaticPaths() {
+  const { sanityApi } = await import("../../../sanity/lib/queries");
+  const { PAGE_SIZE } = await import("../../../lib/paginate");
+
+  const categories = await sanityApi.categoryPaths();
+
+  return categories.flatMap((category) => {
+    // A category with no posts still gets page 1 — that is the §3.6 empty state,
+    // not a missing route.
+    const totalPages = Math.max(1, Math.ceil(category.total / PAGE_SIZE));
 
     return Array.from({ length: totalPages }, (_, i) => ({
       params: { category: category.slug, page: i === 0 ? undefined : `page/${i + 1}` },
-      props: { categorySlug: category.slug, page: i + 1 },
+      props: { page: i + 1 },
     }));
   });
 }
 
-const { categorySlug, page } = Astro.props;
+const { category: categorySlug } = Astro.params;
+const { page } = Astro.props;
 
-const categories = categoriesWithCounts();
-const category = categories.find((c) => c.slug === categorySlug)!;
-const count = postCount(categorySlug);
-const paged = paginate(postsInCategory(categorySlug), page, PAGE_SIZE);
-const filterTags = tagsInCategory(categorySlug);
-const basePath = categoryHref(categorySlug);
+const [categories, posts, filterTags] = await Promise.all([
+  sanityApi.allCategories(),
+  sanityApi.postsInCategory(categorySlug!),
+  sanityApi.tagsInCategory(categorySlug!),
+]);
+
+const category = categories.find((c) => c.slug === categorySlug);
+if (!category) return new Response(null, { status: 404 });
+
+const count = category.postCount ?? posts.length;
+const paged = paginate(posts, page, PAGE_SIZE);
+const basePath = categoryHref(categorySlug!);
 
 // §3.4 Page 2+ — the eyebrow becomes "Page {n}" and the range label
 // "{from}–{to} of {total}".
@@ -76,7 +81,12 @@ const rangeLabel = `${paged.from}–${paged.to} of ${paged.total}`;
         <div class="scroll-x filters__row">
           <Chip title={`All ${count}`} href={basePath} kind="tag" isActive />
           {filterTags.map((tag) => (
-            <Chip title={tag.title} href={`${basePath}?tag=${tag.slug}`} kind="tag" count={tag.count} />
+            <Chip
+              title={tag.title}
+              href={`${basePath}?tag=${tag.slug}`}
+              kind="tag"
+              count={tag.count}
+            />
           ))}
         </div>
       </div>

@@ -1,0 +1,8 @@
+---
+/*
+ * §4.1 paragraph. `_dropcap` is annotated onto the first paragraph of a post
+ * only; prose.css handles the suppression below 400px.
+ */
+const { node } = Astro.props;
+---
+<p class:list={[node._dropcap && "has-dropcap"]}><slot /></p>

@@ -1,21 +1,40 @@
 ---
 /*
- * Renders the Portable Text body: §4.1 prose styles inline, §4.2–§4.8 blocks
- * dispatched to their components.
+ * Renders the article body.
  *
- * Every insertable block carries the `.block` class (applied in the block
- * component itself), which is what the shared spacing law in prose.css keys off.
+ * Prose, headings, lists and marks (§4.1) go through astro-portabletext, which
+ * handles the two things the mock renderer got wrong: text lives in `children[]`
+ * spans rather than a flat string, and there is no list *type* — list items are
+ * ordinary blocks carrying `listItem`, which the renderer groups into <ul>/<ol>
+ * itself.
+ *
+ * The nine §4 object blocks are mapped to their components by `_type`. Renaming
+ * a type in the Studio without renaming it here would render nothing, silently,
+ * so `unknownType` fails loudly instead.
+ *
+ * astro-portabletext passes each component only `{node, index, isInline}` —
+ * there is no way to pass extra context down. So anything a block needs to know
+ * about its position in the document is annotated onto the node here: heading
+ * slugs (shared with the TOC) and the drop cap.
  */
+import { PortableText } from "astro-portabletext";
 import type { BodyNode, Heading } from "../lib/types";
+
 import Callout from "./blocks/Callout.astro";
 import ComparisonTable from "./blocks/ComparisonTable.astro";
 import FaqBlock from "./blocks/FaqBlock.astro";
 import ImagePair from "./blocks/ImagePair.astro";
 import InlineImage from "./blocks/InlineImage.astro";
-import NewsletterSignup from "./NewsletterSignup.astro";
+import NewsletterInline from "./blocks/NewsletterInline.astro";
 import ProductSpotlight from "./blocks/ProductSpotlight.astro";
 import PullQuote from "./blocks/PullQuote.astro";
 import ResourceDownload from "./blocks/ResourceDownload.astro";
+
+import Heading2 from "./prose/Heading2.astro";
+import Heading3 from "./prose/Heading3.astro";
+import Paragraph from "./prose/Paragraph.astro";
+import ProseLink from "./prose/ProseLink.astro";
+import UnknownType from "./prose/UnknownType.astro";
 
 interface Props {
   body: BodyNode[];
@@ -23,129 +42,54 @@ interface Props {
   headings: Heading[];
 }
 
-const { body, headings } = Astro.props;
+const { body = [], headings } = Astro.props;
+
+const isProse = (node: BodyNode) => node._type === "block";
+const styleOf = (node: BodyNode) => (node as { style?: string }).style;
+const isListItem = (node: BodyNode) => Boolean((node as { listItem?: string }).listItem);
 
 /*
  * §4.1 — the drop cap applies to the FIRST PARAGRAPH OF A POST ONLY, and is
  * suppressed if the first block is not a paragraph.
  */
-const firstNode = body[0];
-const dropcapIndex =
-  firstNode && firstNode._type === "block" && firstNode.style === "normal" ? 0 : -1;
+const first = body[0];
+const dropcapKey =
+  first && isProse(first) && styleOf(first) === "normal" && !isListItem(first)
+    ? (first as { _key?: string })._key
+    : undefined;
 
-// Heading slugs are consumed in document order, matching getHeadings().
-let headingCursor = 0;
-const slugFor = () => headings[headingCursor++]?.slug;
+/*
+ * Heading slugs are consumed in document order, matching getHeadings(), so the
+ * anchor a heading renders is by construction the one the TOC links to.
+ */
+let cursor = 0;
+const annotated = body.map((node) => {
+  if (isProse(node) && !isListItem(node) && (styleOf(node) === "h2" || styleOf(node) === "h3")) {
+    return { ...node, _slug: headings[cursor++]?.slug };
+  }
+  if ((node as { _key?: string })._key === dropcapKey) {
+    return { ...node, _dropcap: true };
+  }
+  return node;
+});
 ---
 
-{
-  body.map((node, index) => {
-    switch (node._type) {
-      case "block": {
-        if (node.style === "h2") {
-          return <h2 id={slugFor()} set:html={node.text} />;
-        }
-        if (node.style === "h3") {
-          return <h3 id={slugFor()} set:html={node.text} />;
-        }
-        if (node.style === "blockquote") {
-          return <blockquote><p set:html={node.text} /></blockquote>;
-        }
-        return (
-          <p class:list={[index === dropcapIndex && "has-dropcap"]} set:html={node.text} />
-        );
-      }
-
-      case "list": {
-        const Tag = node.listItem === "number" ? "ol" : "ul";
-        return (
-          <Tag>
-            {node.items.map((item) => (
-              <li set:html={item} />
-            ))}
-          </Tag>
-        );
-      }
-
-      case "pullQuote":
-        return (
-          <PullQuote
-            quote={node.quote}
-            attribution={node.attribution}
-            attributionDetail={node.attributionDetail}
-          />
-        );
-
-      case "inlineImage":
-        return (
-          <InlineImage
-            image={node.image}
-            caption={node.caption}
-            credit={node.credit}
-            width={node.width}
-            ratio={node.ratio}
-          />
-        );
-
-      case "imagePair":
-        return <ImagePair images={node.images} captions={node.captions} ratio={node.ratio} />;
-
-      case "productSpotlight":
-        return <ProductSpotlight product={node.product} ctaHref={node.ctaHref} />;
-
-      case "comparisonTable":
-        return (
-          <ComparisonTable
-            label={node.label}
-            columns={node.columns}
-            rows={node.rows}
-            footnote={node.footnote}
-            highlightRow={node.highlightRow}
-          />
-        );
-
-      case "callout":
-        return <Callout tone={node.tone} label={node.label} body={node.body} />;
-
-      case "resourceDownload":
-        return (
-          <ResourceDownload
-            title={node.title}
-            file={node.file}
-            pageCount={node.pageCount}
-            description={node.description}
-            gated={node.gated}
-            formatLabel={node.formatLabel}
-            submitLabel={node.submitLabel}
-            listId={node.listId}
-            reassurance={node.reassurance}
-          />
-        );
-
-      case "faqBlock":
-        return <FaqBlock eyebrow={node.eyebrow} items={node.items} display={node.display} />;
-
-      case "newsletterInline":
-        return (
-          <div class="block">
-            <NewsletterSignup
-              placement="inline"
-              heading={node.heading}
-              body={node.body}
-              placeholder={node.placeholder}
-              submitLabel={node.submitLabel}
-              proofLine={node.proofLine}
-              listId={node.listId}
-            />
-          </div>
-        );
-
-      default: {
-        // An unknown block type means the CMS shipped a schema the front end
-        // does not render. Fail loudly at build rather than dropping content.
-        const unknown = node as { _type: string };
-        throw new Error(`PortableText: unhandled block type "${unknown._type}"`);
-      }
-    }
-  })
-}
+<PortableText
+  value={annotated}
+  components={{
+    block: { h2: Heading2, h3: Heading3, normal: Paragraph },
+    mark: { link: ProseLink },
+    type: {
+      pullQuote: PullQuote,
+      inlineImage: InlineImage,
+      imagePair: ImagePair,
+      productSpotlight: ProductSpotlight,
+      comparisonTable: ComparisonTable,
+      callout: Callout,
+      resourceDownload: ResourceDownload,
+      faqBlock: FaqBlock,
+      newsletterInline: NewsletterInline,
+    },
+    unknownType: UnknownType,
+  }}
+/>

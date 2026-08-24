@@ -14,6 +14,7 @@ import { SITE, absolute } from "../lib/site";
 import Masthead from "../components/Masthead.astro";
 import CategoryNav from "../components/CategoryNav.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import DraftBanner from "../components/DraftBanner.astro";
 import "../styles/tokens.css";
 import "../styles/base.css";
 
@@ -24,6 +25,15 @@ interface Props {
   activeSlug?: string | "all";
   /** Canonical path; page 1 of a paginated set is canonical at its basePath (§3.4). */
   canonical?: string;
+  /**
+   * Flag 5 — an absolute canonical from seo.canonical, for content first
+   * published elsewhere. Wins over the route-derived `canonical` above.
+   */
+  canonicalOverride?: string;
+  /** Flag 5 — keeps the page out of search results. Still publicly readable. */
+  noindex?: boolean;
+  /** Shown when previewing an unpublished draft. */
+  draft?: boolean;
   /** §3.4 — emit rel prev/next on paginated pages. */
   prev?: string;
   next?: string;
@@ -38,6 +48,9 @@ const {
   categories,
   activeSlug,
   canonical = Astro.url.pathname,
+  canonicalOverride,
+  noindex = false,
+  draft = false,
   prev,
   next,
   schemas = [],
@@ -56,7 +69,9 @@ const fullTitle = title.includes(SITE.organisation)
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={absolute(canonical)} />
+    <link rel="canonical" href={canonicalOverride ?? absolute(canonical)} />
+    {/* A preview of unpublished work must never be indexed, whatever the post says. */}
+    {(noindex || draft) && <meta name="robots" content="noindex, nofollow" />}
     {prev && <link rel="prev" href={absolute(prev)} />}
     {next && <link rel="next" href={absolute(next)} />}
 
@@ -88,6 +103,7 @@ const fullTitle = title.includes(SITE.organisation)
     <div class="site">
       <Masthead />
       <CategoryNav categories={categories} activeSlug={activeSlug} />
+      {draft && <DraftBanner />}
       <main id="main">
         <slot />
       </main>

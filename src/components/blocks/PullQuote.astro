@@ -9,14 +9,14 @@
  * Absent attribution: the footer line and its space are omitted; quote alone
  * is valid.
  */
+import type { PullQuoteNode } from "../../lib/types";
+
 interface Props {
-  /** ≤220 chars — validate; longer defeats the type size. */
-  quote: string;
-  attribution?: string;
-  attributionDetail?: string;
+  node: PullQuoteNode;
 }
 
-const { quote, attribution, attributionDetail } = Astro.props;
+const { node } = Astro.props;
+const { quote, attribution, attributionDetail } = node;
 const credit = [attribution, attributionDetail].filter(Boolean).join(" · ");
 ---
 

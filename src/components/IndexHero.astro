@@ -9,6 +9,7 @@
 import type { Post } from "../lib/types";
 import { formatDate, getReadTime, initials } from "../lib/derive";
 import { postHref } from "../lib/site";
+import { SIZES, responsive, urlFor } from "../sanity/lib/image";
 
 interface Props {
   post: Post;
@@ -17,6 +18,10 @@ interface Props {
 const { post } = Astro.props;
 const readTime = getReadTime(post);
 const href = postHref(post.category.slug, post.slug);
+const heroSrc = post.heroImage ? responsive(post.heroImage, { ratio: 4 / 3, max: 1600 }) : null;
+const avatarSrc = post.author.avatar
+  ? urlFor(post.author.avatar).width(80).height(80).fit("crop").url()
+  : null;
 ---
 
 <section class="hero-split">
@@ -36,7 +41,7 @@ const href = postHref(post.category.slug, post.slug);
     <div class="hero-split__byline">
       {
         post.author.avatar ? (
-          <img src={post.author.avatar.src} alt={post.author.avatar.alt} width="40" height="40" />
+          <img src={avatarSrc!} alt={post.author.avatar.alt} width="40" height="40" loading="lazy" decoding="async" />
         ) : (
           <span class="hero-split__initials" aria-hidden="true">
             {initials(post.author.name)}
@@ -61,8 +66,18 @@ const href = postHref(post.category.slug, post.slug);
    */}
   {
     post.heroImage && (
-      <div class="hero-split__media">
-        <img src={post.heroImage.src} alt={post.heroImage.alt} fetchpriority="high" decoding="async" />
+      <div
+        class="hero-split__media"
+        style={post.heroImage.lqip ? `background-image: url(${post.heroImage.lqip})` : undefined}
+      >
+        <img
+          src={heroSrc!.src}
+          srcset={heroSrc!.srcset}
+          sizes={SIZES.heroSplit}
+          alt={post.heroImage.alt}
+          fetchpriority="high"
+          decoding="async"
+        />
       </div>
     )
   }
@@ -181,7 +196,9 @@ const href = postHref(post.category.slug, post.slug);
 
   .hero-split__media {
     min-height: clamp(240px, 34cqw, 520px);
-    background: var(--surface-sunken);
+    background-color: var(--surface-sunken);
+    background-size: cover;
+    background-position: center;
     overflow: hidden;
   }
 

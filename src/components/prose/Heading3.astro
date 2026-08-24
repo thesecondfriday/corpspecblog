@@ -1,0 +1,5 @@
+---
+/* §4.1 H3. Same slug contract as H2. */
+const { node } = Astro.props;
+---
+<h3 id={node._slug}><slot /></h3>

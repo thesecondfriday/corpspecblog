@@ -9,20 +9,23 @@
  * Absent label: the default is used. An EMPTY STRING suppresses the label row
  * entirely — so the check below is for `undefined`, not for falsiness.
  */
+import { PortableText } from "astro-portabletext";
+import type { CalloutNode } from "../../lib/types";
+
 interface Props {
-  tone: "tip" | "caution";
-  label?: string;
-  /** Paragraphs. Lists and links are allowed in the CMS schema; no nested blocks. */
-  body: string[];
+  node: CalloutNode;
 }
 
-const { tone, label, body } = Astro.props;
+const { node } = Astro.props as Props;
+const { tone, label, body } = node;
 const resolvedLabel = label === undefined ? (tone === "tip" ? "Tip" : "Watch out") : label;
 ---
 
 <aside class:list={["block", "callout", `callout--${tone}`]}>
   {resolvedLabel !== "" && <span class="callout__label">{resolvedLabel}</span>}
-  {body.map((paragraph) => <p class="callout__body" set:html={paragraph} />)}
+  <div class="callout__body">
+    <PortableText value={body} />
+  </div>
 </aside>
 
 <style>
@@ -59,17 +62,34 @@ const resolvedLabel = label === undefined ? (tone === "tip" ? "Tip" : "Watch out
     color: var(--accent-hover);
   }
 
+  /* §4.6 — body capped at --measure-narrow. */
   .callout__body {
+    max-width: var(--measure-narrow);
+  }
+
+  .callout__body :global(p),
+  .callout__body :global(li) {
     margin: 0;
     font-size: var(--type-body-sm-size);
     line-height: var(--type-body-sm-lh);
     color: var(--text-body);
-    /* §4.6 — body capped at --measure-narrow. */
-    max-width: var(--measure-narrow);
   }
 
-  .callout__body + .callout__body {
+  .callout__body :global(p + p),
+  .callout__body :global(ul),
+  .callout__body :global(ol) {
     margin-top: var(--space-3);
+  }
+
+  .callout__body :global(ul),
+  .callout__body :global(ol) {
+    padding-left: 22px;
+  }
+
+  .callout__body :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
   /* §4.6 Mobile — padding 18px, full measure width, block spacing 32px.

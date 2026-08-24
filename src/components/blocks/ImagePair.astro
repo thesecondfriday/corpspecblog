@@ -8,31 +8,48 @@
  * wide still reads, and stacking it would break the comparison the pair exists
  * to make. Below 340px it stacks. Captions stay under their own image.
  */
-import type { ImageRef } from "../../lib/types";
+import type { ImagePairNode } from "../../lib/types";
+import { SIZES, responsive } from "../../sanity/lib/image";
 
 interface Props {
-  images: [ImageRef, ImageRef];
-  captions?: [string?, string?];
-  ratio?: "4/5" | "3/2" | "1/1";
+  node: ImagePairNode;
 }
 
-const { images, captions = [], ratio = "4/5" } = Astro.props;
+const { node } = Astro.props as Props;
+const { images, ratio = "4/5" } = node;
 
 for (const image of images) {
   if (!image.alt) {
     throw new Error(`imagePair: alt is required on both images (§4.3). Missing on ${image.src}.`);
   }
 }
+
+const [w, h] = ratio.split("/").map(Number);
+// Half the measure, so 800px covers a 2x display.
+const sources = images.map((image) => responsive(image, { ratio: w / h, max: 800 }));
 ---
 
-<div class="block pair" style={`--img-ratio: ${ratio.replace("/", " / ")}`}>
+<div class="block pair" style={`--img-ratio: ${w} / ${h}`}>
   {
     images.map((image, index) => (
       <figure class="pair__item">
-        <div class="pair__well">
-          <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+        <div
+          class="pair__well"
+          style={image.lqip ? `background-image: url(${image.lqip})` : undefined}
+        >
+          <img
+            src={sources[index].src}
+            srcset={sources[index].srcset}
+            sizes={SIZES.bodyHalf}
+            alt={image.alt}
+            width={sources[index].width}
+            height={sources[index].height}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
-        {captions[index] && <figcaption class="pair__caption">{captions[index]}</figcaption>}
+        {/* Captions live on each image in the CMS, not in a parallel array. */}
+        {image.caption && <figcaption class="pair__caption">{image.caption}</figcaption>}
       </figure>
     ))
   }
@@ -51,7 +68,9 @@ for (const image of images) {
 
   .pair__well {
     aspect-ratio: var(--img-ratio);
-    background: var(--surface-sunken);
+    background-color: var(--surface-sunken);
+    background-size: cover;
+    background-position: center;
     border-radius: var(--radius-0);
     overflow: hidden;
   }

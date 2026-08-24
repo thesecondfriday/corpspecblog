@@ -1,0 +1,9 @@
+---
+/*
+ * §4.1 H2. The id comes from the slug annotated onto the node in
+ * PortableText.astro, which is the same value the TOC links to — so a heading
+ * and its anchor cannot drift apart.
+ */
+const { node } = Astro.props;
+---
+<h2 id={node._slug}><slot /></h2>

@@ -13,18 +13,14 @@
  * Absent footnote: nothing renders; no "Source: —".
  * Ragged rows render empty cells rather than shifting.
  */
+import type { ComparisonTableNode } from "../../lib/types";
+
 interface Props {
-  /** Eyebrow, e.g. "Compare · best drinkware for remote kits". */
-  label?: string;
-  /** 3–5 header strings — validate the max; 6 columns cannot be read on mobile. */
-  columns: string[];
-  rows: string[][];
-  footnote?: string;
-  /** Index into rows → an editor's pick. */
-  highlightRow?: number;
+  node: ComparisonTableNode;
 }
 
-const { label, columns, rows, footnote, highlightRow } = Astro.props;
+const { node } = Astro.props;
+const { label, columns, rows, footnote, highlightRow } = node;
 
 if (columns.length < 3 || columns.length > 5) {
   throw new Error(

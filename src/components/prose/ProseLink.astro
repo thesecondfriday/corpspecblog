@@ -1,0 +1,10 @@
+---
+/*
+ * §5 text link. Internal links stay relative; anything off-site gets
+ * rel="noopener" since it may open in a new tab from a shared page.
+ */
+const { node } = Astro.props;
+const href: string = node?.href ?? "#";
+const external = /^https?:\/\//.test(href);
+---
+<a href={href} rel={external ? "noopener noreferrer" : undefined}><slot /></a>

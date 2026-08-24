@@ -8,33 +8,50 @@
  * the hero (§3.7). Credit appends to the caption after an em dash.
  *
  * Absent caption: no caption row and no rule; the image's bottom margin does
- * not change. An image block with no alt fails validation — the one hard block.
+ * not change. An image block with no alt fails schema validation — the one
+ * hard block — so a missing alt here means the CMS let something through and
+ * we fail the build rather than shipping it.
+ *
+ * The block IS the image: Sanity spreads the asset fields onto the node, so
+ * `node` carries src/alt/hotspot alongside width and ratio.
  */
-import type { ImageRef } from "../../lib/types";
+import type { InlineImageNode } from "../../lib/types";
+import { SIZES, responsive } from "../../sanity/lib/image";
 
 interface Props {
-  image: ImageRef;
-  caption?: string;
-  credit?: string;
-  /** `wide` breaks 120px past the measure on each side, desktop only. */
-  width?: "measure" | "wide";
-  ratio?: "3/2" | "4/5" | "1/1";
+  node: InlineImageNode;
 }
 
-const { image, caption, credit, width = "measure", ratio = "3/2" } = Astro.props;
+const { node } = Astro.props as Props;
+const image = node;
+const { caption, credit, width = "measure", ratio = "3/2" } = image;
 
 if (!image.alt) {
   throw new Error(
-    `inlineImage: alt is required (§4.3). Missing on ${image.src}. This should be caught by Sanity validation before it reaches the build.`,
+    `inlineImage: alt is required (§4.3). Missing on ${image.src}. Sanity validation should have caught this.`,
   );
 }
 
+const [w, h] = ratio.split("/").map(Number);
+const src = responsive(image, { ratio: w / h, max: width === "wide" ? 2000 : 1600 });
 const text = [caption, credit].filter(Boolean).join(" — ");
 ---
 
 <figure class:list={["block", width === "wide" && "block--wide", "inline-image"]}>
-  <div class="inline-image__well" style={`--img-ratio: ${ratio.replace("/", " / ")}`}>
-    <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+  <div
+    class="inline-image__well"
+    style={`--img-ratio: ${w} / ${h};${image.lqip ? ` background-image: url(${image.lqip});` : ""}`}
+  >
+    <img
+      src={src.src}
+      srcset={src.srcset}
+      sizes={width === "wide" ? SIZES.hero : SIZES.body}
+      alt={image.alt}
+      width={src.width}
+      height={src.height}
+      loading="lazy"
+      decoding="async"
+    />
   </div>
   {
     text && (
@@ -53,7 +70,10 @@ const text = [caption, credit].filter(Boolean).join(" — ");
 
   .inline-image__well {
     aspect-ratio: var(--img-ratio);
-    background: var(--surface-sunken);
+    background-color: var(--surface-sunken);
+    /* The LQIP is a tiny blurred JPEG; scaling it up is the point. */
+    background-size: cover;
+    background-position: center;
     border-radius: var(--radius-0);
     overflow: hidden;
   }

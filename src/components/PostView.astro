@@ -1,0 +1,104 @@
+---
+/*
+ * The single-post page body, extracted so the static route and the draft
+ * preview route render THE SAME layout from the same code. That is what makes
+ * "preview on the real layout" true rather than approximately true.
+ *
+ * Order: header → hero figure → TOC + body → FAQ → end CTA → related
+ * (§3.10 Placement: "endOfArticle is full-bleed inverse between the FAQ and
+ * Related").
+ */
+import type { Post } from "../lib/types";
+import ArticleHeader from "./ArticleHeader.astro";
+import AuthorBio from "./AuthorBio.astro";
+import CtaBlock from "./CtaBlock.astro";
+import FaqBlock from "./blocks/FaqBlock.astro";
+import PortableText from "./PortableText.astro";
+import RelatedPosts from "./RelatedPosts.astro";
+import TableOfContents from "./TableOfContents.astro";
+import { getHeadings, shouldRenderToc } from "../lib/derive";
+import { SITE, absolute, postHref } from "../lib/site";
+
+interface Props {
+  post: Post;
+  related: Post[];
+}
+
+const { post, related } = Astro.props;
+
+const headings = getHeadings(post.body);
+// §3.8 — renders only when there are ≥4 H2s; below that, no TOC and no empty shell.
+const withToc = shouldRenderToc(headings);
+const url = absolute(postHref(post.category.slug, post.slug));
+
+/*
+ * §4.8 — one FAQ per page maximum. If a faqBlock exists in the body, the body
+ * block wins and the document-level post.faq field is ignored. Schema
+ * validation blocks the combination, but old documents may predate that rule.
+ */
+const hasBodyFaq = (post.body ?? []).some((node) => node._type === "faqBlock");
+const documentFaq = hasBodyFaq ? undefined : post.faq;
+---
+
+<article itemscope itemtype="https://schema.org/BlogPosting">
+  <ArticleHeader post={post} />
+
+  <div class="container post-body">
+    {withToc && <TableOfContents headings={headings} shareUrl={url} shareTitle={post.title} />}
+
+    <div class="prose" itemprop="articleBody" data-article-body>
+      <PortableText body={post.body} headings={headings} />
+      <AuthorBio author={post.author} />
+    </div>
+  </div>
+
+  {
+    documentFaq && documentFaq.length > 0 && (
+      <section class="container post-faq">
+        <FaqBlock items={documentFaq} standalone />
+      </section>
+    )
+  }
+</article>
+
+<CtaBlock
+  placement="endOfArticle"
+  eyebrow="Next step"
+  heading="Have a headcount and a date? That's enough to start."
+  body="Tell a strategist your budget per person and your in-hands date. You'll get two or three options with real lead times — not a catalog link."
+  secondaryLabel="Browse products"
+  secondaryHref={SITE.productsHref}
+/>
+
+<RelatedPosts posts={related} />
+
+<style>
+  .post-body {
+    padding-bottom: var(--section-y);
+    display: grid;
+    gap: clamp(24px, 4cqw, 64px);
+  }
+
+  .post-faq {
+    padding-bottom: clamp(34px, 4.4cqw, 60px);
+  }
+
+  .post-faq :global(.faq) {
+    max-width: 78ch;
+  }
+
+  /* §3.8 Responsive — at 900px and up the TOC becomes a 210–260px sticky
+     sidebar left of the prose. Below that it is the sticky bar, first in the
+     single column. */
+  @media (min-width: 900px) {
+    .post-body {
+      grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    /* With no TOC the prose takes the full width rather than leaving a gap. */
+    .post-body > .prose:only-child {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+/*
+ * Component Spec §3.10, offered as a §4 body block.
+ *
+ * A thin adapter: NewsletterSignup is also used in the footer, so it stays
+ * prop-based and this maps the Portable Text node onto it. The `.block` wrapper
+ * is what the §4 spacing law in prose.css keys off.
+ */
+import type { NewsletterInlineNode } from "../../lib/types";
+import NewsletterSignup from "../NewsletterSignup.astro";
+
+interface Props {
+  node: NewsletterInlineNode;
+}
+
+const { node } = Astro.props as Props;
+const { heading, body, placeholder, submitLabel, proofLine, listId } = node;
+---
+
+<div class="block">
+  <NewsletterSignup
+    placement="inline"
+    heading={heading}
+    body={body}
+    placeholder={placeholder}
+    submitLabel={submitLabel}
+    proofLine={proofLine}
+    listId={listId}
+  />
+</div>

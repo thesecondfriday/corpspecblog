@@ -1,0 +1,73 @@
+---
+/*
+ * DRAFT PREVIEW — /preview/{category}/{slug}
+ *
+ * Renders an unpublished post on the real layout, by rendering the exact same
+ * PostView the published route uses. Nothing about the page is a mock-up: only
+ * the data source changes.
+ *
+ * This route is on-demand (prerender = false) because a draft cannot exist at
+ * build time, and because reading drafts needs a token that must never end up
+ * in a built file. Gated by the httpOnly cookie set in /api/preview.
+ */
+export const prerender = false;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostView from "../../components/PostView.astro";
+import { resolveRelated } from "../../lib/paginate";
+import { getDraftClient } from "../../sanity/lib/client";
+import { api } from "../../sanity/lib/queries";
+import "../../styles/prose.css";
+
+const { slug: path } = Astro.params;
+const segments = (path ?? "").split("/").filter(Boolean);
+const slug = segments.at(-1);
+
+if (!Astro.cookies.has("__preview")) {
+  return new Response(
+    "Preview mode is not active. Open /api/preview?secret=…&slug=/blog/… to start.",
+    { status: 401 },
+  );
+}
+
+const draftClient = getDraftClient();
+if (!draftClient) {
+  return new Response(
+    "Preview is not configured: SANITY_VIEWER_TOKEN is unset. Add a Viewer token to .env.local.",
+    { status: 501 },
+  );
+}
+
+if (!slug) return new Response("No post specified.", { status: 400 });
+
+const draftApi = api(draftClient);
+
+const [post, categories] = await Promise.all([
+  draftApi.postBySlug(slug),
+  draftApi.allCategories(),
+]);
+
+if (!post) {
+  return new Response(`No post found with the URL "${slug}", published or draft.`, { status: 404 });
+}
+
+/*
+ * Related posts come from the draft client too, so a draft that references
+ * another draft resolves instead of showing a hole.
+ */
+const pool =
+  post.relatedPosts && post.relatedPosts.length >= 3
+    ? []
+    : await draftApi.relatedFallback(post.slug, post.category.slug);
+const related = resolveRelated(post, pool);
+---
+
+<BaseLayout
+  title={`Draft — ${post.title}`}
+  description={post.dek}
+  categories={categories}
+  activeSlug={post.category?.slug}
+  draft
+>
+  <PostView post={post} related={related} />
+</BaseLayout>

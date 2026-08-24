@@ -1,29 +1,39 @@
 /*
- * Component Spec §2 — Content model, as TypeScript.
+ * Component Spec §2 — the content model, as the front end receives it.
  *
- * Field names here are the Sanity field names. Five document types; components
- * consume projections of these. `derived` fields are computed at build time,
- * not authored — they are marked in the comments and produced by src/lib/derive.ts.
+ * These are the shapes AFTER the GROQ projections in src/sanity/lib/queries.ts
+ * have run, not the shapes Sanity stores. The projection is where `slug{current}`
+ * becomes a string, an asset reference becomes `{src, alt, …}`, and a
+ * comparison table's `rows[].cells[]` becomes `string[][]`.
  *
- * The mirror of this file is src/sanity/schemas/, which defines the same shapes
- * for the Studio. Change one, change the other.
+ * The mirror of this file is src/sanity/schemaTypes/, which defines what the
+ * Studio stores. Change one, change the other — and check the projection in
+ * between, because it is what reconciles them.
  */
+
+import type { PortableTextBlock } from "@portabletext/types";
 
 /* ---- Shared -------------------------------------------------------------- */
 
-/** A Sanity image asset plus the fields the design depends on. */
+/** A Sanity image, flattened by the IMAGE fragment. */
 export interface ImageRef {
-  /** Resolved asset URL. In production this comes from the Sanity image builder. */
+  /** Resolved asset URL. Pass the whole object to `responsive()` for a srcset. */
   src: string;
-  /** Required whenever an image is present. An image block with no alt fails validation (§4.3). */
+  assetId?: string;
+  /** Required whenever an image is present — enforced by schema validation. */
   alt: string;
   caption?: string;
   credit?: string;
-  /** Sanity hotspot, respected by the fixed-ratio crops (§3.1). */
-  hotspot?: { x: number; y: number };
+  /** Drives the fixed-ratio crops (§3.1). */
+  hotspot?: { x: number; y: number; width: number; height: number };
+  crop?: { top: number; bottom: number; left: number; right: number };
+  /** Inline blur placeholder from Sanity's asset metadata. */
+  lqip?: string;
+  dimensions?: { width: number; height: number; aspectRatio: number };
 }
 
 export interface Link {
+  _key?: string;
   label: string;
   url: string;
 }
@@ -33,11 +43,10 @@ export interface Link {
 export interface Category {
   title: string;
   slug: string;
-  /** Renders in the category header; 1 paragraph, 220–320 chars. */
   description: string;
   /** Fixes nav order. */
   order: number;
-  /** derived */
+  /** derived — counted in GROQ, never authored. */
   postCount?: number;
 }
 
@@ -46,7 +55,7 @@ export interface Author {
   slug: string;
   role?: string;
   avatar?: ImageRef;
-  /** 2–3 sentences. If absent the whole AuthorBio block is omitted (§3.9). */
+  /** If absent the whole AuthorBio block is omitted (§3.9). */
   bio?: string;
   links?: Link[];
   /** derived */
@@ -61,172 +70,139 @@ export interface Tag {
 
 export interface Product {
   name: string;
-  /** Links to the storefront when present. */
   slug?: string;
   image?: ImageRef;
-  /** ≤90 chars. */
   oneLiner: string;
-  /** Both or neither. */
   priceLow?: number;
   priceHigh?: number;
   minQty?: number;
-  /** Default "Request pricing". */
   ctaLabel?: string;
 }
 
 export interface FaqItem {
+  _key?: string;
   question: string;
-  /** Rich text, 1–2 short paragraphs. Modelled here as paragraph strings. */
-  answer: string[];
+  /** Portable Text — §4.8 allows links inside an answer. */
+  answer: PortableTextBlock[];
 }
 
 export interface Seo {
   metaTitle?: string;
   metaDescription?: string;
+  /** Override, for content first published elsewhere. */
+  canonical?: string;
+  noindex?: boolean;
   ogImage?: ImageRef;
 }
 
 export interface Post {
+  _id?: string;
   title: string;
   slug: string;
-  /** Also the meta description fallback. */
   dek: string;
-  /** ≤140 chars. */
   excerpt?: string;
   heroImage?: ImageRef;
-  /** One category per post (§7). */
   category: Category;
   tags?: Tag[];
   author: Author;
-  /** ISO datetime. */
   publishedAt: string;
   updatedAt?: string;
-  /** Minutes. derived from body word count ÷ 220 when absent. */
+  /** Minutes. Derived from word count when absent. */
   readTime?: number;
-  /** Portable Text with the §4 blocks. */
   body: BodyNode[];
   faq?: FaqItem[];
-  /** Routes to the Guides module. */
   isGuide?: boolean;
-  /** Eligible for the index hero. */
-  isFeatured?: boolean;
+  featured?: boolean;
   reviewedBy?: string;
   seo?: Seo;
+  redirectFrom?: string[];
+  /** Manual override; empty means fall back to the algorithm (§3.9). */
+  relatedPosts?: Post[];
 }
 
-/* ---- §4 Article body blocks ---------------------------------------------
- * Each of these is an insertable object in the Portable Text array — a Sanity
- * object schema an editor picks from the insert menu, not a styling rule.
+/* ---- §4 Article body blocks ----------------------------------------------
+ * Prose, lists and marks arrive as ordinary Portable Text blocks and are
+ * rendered by astro-portabletext. Everything below is a §4 object block.
  */
 
-/** §4.1 — the default prose styles and marks. */
-export interface ProseNode {
-  _type: "block";
-  style: "normal" | "h2" | "h3" | "blockquote";
-  /** Rendered as HTML; marks (strong, em, link, code) are inline in the string. */
-  text: string;
-}
-
-export interface ListNode {
-  _type: "list";
-  listItem: "bullet" | "number";
-  items: string[];
-}
-
-/** §4.2 */
 export interface PullQuoteNode {
   _type: "pullQuote";
-  /** ≤220 chars — validate; longer defeats the type size. */
+  _key: string;
   quote: string;
   attribution?: string;
-  /** Role, company size. */
   attributionDetail?: string;
 }
 
-/** §4.3 */
-export interface InlineImageNode {
+export interface InlineImageNode extends ImageRef {
   _type: "inlineImage";
-  image: ImageRef;
-  caption?: string;
-  credit?: string;
-  /** `wide` breaks 120px past the measure each side, desktop only. */
+  _key: string;
+  /** `wide` breaks past the measure, desktop only. */
   width?: "measure" | "wide";
   ratio?: "3/2" | "4/5" | "1/1";
 }
 
-/** §4.3 — exactly 2 images, one shared crop. */
 export interface ImagePairNode {
   _type: "imagePair";
-  images: [ImageRef, ImageRef];
-  captions?: [string?, string?];
+  _key: string;
+  images: Array<ImageRef & { _key: string; caption?: string }>;
   ratio?: "4/5" | "3/2" | "1/1";
 }
 
-/** §4.4 — a product reference plus optional inline overrides. */
 export interface ProductSpotlightNode {
   _type: "productSpotlight";
+  _key: string;
   product: Product;
-  /** Quote form with the SKU prefilled, not the product page. */
   ctaHref: string;
 }
 
-/** §4.5 */
 export interface ComparisonTableNode {
   _type: "comparisonTable";
-  /** Eyebrow, e.g. "Compare · best drinkware for remote kits". */
+  _key: string;
   label?: string;
-  /** 3–5 header strings — validate the max; 6 columns cannot be read on mobile. */
   columns: string[];
-  /** First cell of each row is the row label. */
+  /** Flattened from rows[].cells by the projection. */
   rows: string[][];
-  /** Sourcing and date. Strongly encouraged. */
   footnote?: string;
-  /** Index into rows → an editor's pick, filled --surface-accent-soft. */
-  highlightRow?: number;
+  /** Zero-based here; the Studio field is one-based. */
+  highlightRow?: number | null;
 }
 
-/** §4.6 */
 export interface CalloutNode {
   _type: "callout";
+  _key: string;
   tone: "tip" | "caution";
-  /** Defaults "Tip" / "Watch out". An empty string suppresses the label row. */
   label?: string;
-  /** Paragraphs. */
-  body: string[];
+  body: PortableTextBlock[];
 }
 
-/** §4.7 */
 export interface ResourceDownloadNode {
   _type: "resourceDownload";
+  _key: string;
   title: string;
-  /** Asset URL; pageCount and fileSize are derived from it. */
-  file: string;
+  /** Resolved asset URL. Undefined when no file has been uploaded yet. */
+  file?: string;
+  fileSize?: number;
   pageCount?: number;
   description?: string;
   gated: boolean;
-  /** Default derived: "PDF · {n} pages". */
   formatLabel?: string;
-  /** Default "Send me the PDF". */
   submitLabel?: string;
-  /** Required when gated. */
   listId?: string;
-  /** Default "Email only. No follow-up sequence." */
   reassurance?: string;
   thumbnail?: ImageRef;
 }
 
-/** §4.8 */
 export interface FaqBlockNode {
   _type: "faqBlock";
-  /** Default "Common questions". */
+  _key: string;
   eyebrow?: string;
   items: FaqItem[];
   display?: "open" | "accordion";
 }
 
-/** §3.10, offered as a body block. */
 export interface NewsletterInlineNode {
   _type: "newsletterInline";
+  _key: string;
   heading: string;
   body?: string;
   placeholder?: string;
@@ -235,9 +211,8 @@ export interface NewsletterInlineNode {
   listId: string;
 }
 
-export type BodyNode =
-  | ProseNode
-  | ListNode
+/** A §4 block, as opposed to ordinary prose. */
+export type CustomBlock =
   | PullQuoteNode
   | InlineImageNode
   | ImagePairNode
@@ -248,6 +223,8 @@ export type BodyNode =
   | FaqBlockNode
   | NewsletterInlineNode;
 
+export type BodyNode = PortableTextBlock | CustomBlock;
+
 /* ---- Derived shapes ------------------------------------------------------ */
 
 /** §3.8 — derived from body at build; the CMS never authors these. */
@@ -257,12 +234,7 @@ export interface Heading {
   slug: string;
 }
 
-/** §3.1 */
 export type CardVariant = "featured" | "standard" | "compact";
-
-/** §3.3 */
 export type GridState = "ready" | "loading" | "empty";
-
-/** §3.2 */
 export type ChipKind = "category" | "tag";
 export type ChipStyle = "bare" | "framed" | "pill";

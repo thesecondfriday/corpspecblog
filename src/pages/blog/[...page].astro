@@ -13,49 +13,54 @@ import IndexHero from "../../components/IndexHero.astro";
 import Pagination from "../../components/Pagination.astro";
 import PostGrid from "../../components/PostGrid.astro";
 import { SITE, pageHref } from "../../lib/site";
-import {
-  COMPACT_TAIL_SIZE,
-  PAGE_SIZE,
-  allGuides,
-  allPosts,
-  categoriesWithCounts,
-  featuredPost,
-  guideCount,
-  paginate,
-  secondaryFeatured,
-} from "../../lib/queries";
+import { COMPACT_TAIL_SIZE, PAGE_SIZE, paginate } from "../../lib/paginate";
+import { sanityApi } from "../../sanity/lib/queries";
 
-export function getStaticPaths() {
-  const hero = featuredPost();
-  const secondary = secondaryFeatured().map((p) => p.slug);
+export async function getStaticPaths() {
+  const { sanityApi } = await import("../../sanity/lib/queries");
+  const { PAGE_SIZE, COMPACT_TAIL_SIZE } = await import("../../lib/paginate");
 
-  // The hero and the secondary row are shown above the feed on page 1, so they
-  // are excluded from the feed itself rather than appearing twice.
-  const feed = allPosts().filter((p) => p.slug !== hero.slug && !secondary.includes(p.slug));
+  const [all, hero] = await Promise.all([sanityApi.allPosts(), sanityApi.featuredPost()]);
+
+  // The hero and secondary row sit above the feed on page 1, so they are
+  // excluded from the feed rather than appearing twice.
+  const aboveFeed = new Set(
+    [hero?.slug, ...all.filter((p) => p.slug !== hero?.slug).slice(0, 3).map((p) => p.slug)].filter(
+      Boolean,
+    ),
+  );
+  const feedLength = all.filter((p) => !aboveFeed.has(p.slug)).length;
 
   // The index shows 6 standard cards plus a 3-up compact tail strip (§3.4).
   const perPage = PAGE_SIZE + COMPACT_TAIL_SIZE;
-  const totalPages = Math.max(1, Math.ceil(feed.length / perPage));
+  const totalPages = Math.max(1, Math.ceil(feedLength / perPage));
 
   return Array.from({ length: totalPages }, (_, i) => ({
     // page 1 is canonical at /blog, with no /page/1 duplicate.
     params: { page: i === 0 ? undefined : `page/${i + 1}` },
-    props: { page: i + 1, perPage },
+    props: { page: i + 1 },
   }));
 }
 
-const { page, perPage } = Astro.props;
+const { page } = Astro.props;
 
-const hero = featuredPost();
-const secondary = secondaryFeatured();
-const secondarySlugs = secondary.map((p) => p.slug);
-const feed = allPosts().filter((p) => p.slug !== hero.slug && !secondarySlugs.includes(p.slug));
+const [all, hero, categories, guides, guideCount] = await Promise.all([
+  sanityApi.allPosts(),
+  sanityApi.featuredPost(),
+  sanityApi.allCategories(),
+  sanityApi.allGuides(),
+  sanityApi.guideCount(),
+]);
 
+const secondary = all.filter((p) => p.slug !== hero?.slug).slice(0, 3);
+const aboveFeed = new Set([hero?.slug, ...secondary.map((p) => p.slug)].filter(Boolean));
+const feed = all.filter((p) => !aboveFeed.has(p.slug));
+
+const perPage = PAGE_SIZE + COMPACT_TAIL_SIZE;
 const paged = paginate(feed, page, perPage);
-const categories = categoriesWithCounts();
 
 // §3.10 Placement — inlineFeed sits after the first row of feed cards, one per
-// page, never two. The tail strip is the compact variant (§3.1 "index tail strip").
+// page, never two. The tail strip is the compact variant (§3.1).
 const firstRow = paged.items.slice(0, 3);
 const secondRow = paged.items.slice(3, PAGE_SIZE);
 const tail = paged.items.slice(PAGE_SIZE);
@@ -75,10 +80,10 @@ const rangeLabel = `${paged.from}–${paged.to} of ${paged.total}`;
   prev={page > 1 ? pageHref(SITE.blogBase, page - 1) : undefined}
   next={page < paged.totalPages ? pageHref(SITE.blogBase, page + 1) : undefined}
 >
-  {isFirstPage && <IndexHero post={hero} />}
+  {isFirstPage && hero && <IndexHero post={hero} />}
 
   {
-    isFirstPage && (
+    isFirstPage && secondary.length > 0 && (
       <section class="container section-y">
         <PostGrid posts={secondary} label="This week" cardVariant="featured" min="260px" />
       </section>
@@ -86,13 +91,13 @@ const rangeLabel = `${paged.from}–${paged.to} of ${paged.total}`;
   }
 
   {
-    isFirstPage && (
+    isFirstPage && guides.length > 0 && (
       <GuidesModule
-        guides={allGuides()}
+        guides={guides}
         heading="The reference shelf"
         blurb="Long-form, kept current. Start here if you inherited a swag program and no documentation."
         allHref="/guides"
-        allCount={guideCount()}
+        allCount={guideCount}
       />
     )
   }

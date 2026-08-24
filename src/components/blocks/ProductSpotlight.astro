@@ -16,14 +16,16 @@
  * shot and a grey-studio shot both sit consistently. Never apply a drop shadow
  * or background removal.
  */
-import type { Product } from "../../lib/types";
+import type { ProductSpotlightNode } from "../../lib/types";
+import { SIZES, responsive } from "../../sanity/lib/image";
 
 interface Props {
-  product: Product;
-  ctaHref: string;
+  node: ProductSpotlightNode;
 }
 
-const { product, ctaHref } = Astro.props;
+const { node } = Astro.props as Props;
+const { product, ctaHref } = node;
+const photo = product.image ? responsive(product.image, { ratio: 1, max: 800 }) : null;
 const hasPrice = product.priceLow !== undefined && product.priceHigh !== undefined;
 const ctaLabel = product.ctaLabel ?? "Request pricing";
 ---
@@ -35,8 +37,21 @@ const ctaLabel = product.ctaLabel ?? "Request pricing";
 >
   {
     product.image && (
-      <div class="spotlight__well">
-        <img src={product.image.src} alt={product.image.alt} loading="lazy" decoding="async" itemprop="image" />
+      <div
+        class="spotlight__well"
+        style={product.image.lqip ? `background-image: url(${product.image.lqip})` : undefined}
+      >
+        <img
+          src={photo!.src}
+          srcset={photo!.srcset}
+          sizes={SIZES.product}
+          alt={product.image.alt}
+          width={photo!.width}
+          height={photo!.height}
+          loading="lazy"
+          decoding="async"
+          itemprop="image"
+        />
       </div>
     )
   }
@@ -70,7 +85,9 @@ const ctaLabel = product.ctaLabel ?? "Request pricing";
 
   .spotlight__well {
     aspect-ratio: var(--ratio-product);
-    background: var(--surface-sunken);
+    background-color: var(--surface-sunken);
+    background-size: cover;
+    background-position: center;
     overflow: hidden;
     border-bottom: 1px solid var(--border);
   }

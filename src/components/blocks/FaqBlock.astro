@@ -13,17 +13,37 @@
  * between the article body and the end CTA. One FAQ per page maximum: if both
  * exist the body block wins and the document field is ignored (validate).
  */
-import type { FaqItem } from "../../lib/types";
+import { PortableText } from "astro-portabletext";
+import type { FaqBlockNode, FaqItem } from "../../lib/types";
 
 interface Props {
   eyebrow?: string;
-  items: FaqItem[];
+  items?: FaqItem[];
   display?: "open" | "accordion";
   /** Set when this is the document-level FAQ rather than an inserted block. */
   standalone?: boolean;
+  /** Present when rendered as a body block by astro-portabletext. */
+  node?: FaqBlockNode;
 }
 
-const { eyebrow = "Common questions", items, display = "open", standalone = false } = Astro.props;
+/*
+ * Dual-use: the document-level post.faq renders this directly with props, and
+ * the insertable faqBlock renders it through astro-portabletext, which passes
+ * everything under `node`. Normalising here keeps one component for both, so
+ * the two paths can never drift into producing different FAQPage markup.
+ */
+const { node, standalone = false } = Astro.props as Props;
+const source = node ?? (Astro.props as Props);
+const eyebrow = source.eyebrow ?? "Common questions";
+const items = source.items ?? [];
+const display = source.display ?? "open";
+
+/*
+ * Ids must be unique across the whole page. Sanity gives every array item a
+ * stable _key, so prefer it over the index — two FAQ blocks on one page would
+ * otherwise both emit #faq-answer-0.
+ */
+const answerId = (item: FaqItem, index: number) => `faq-answer-${item._key ?? index}`;
 ---
 
 <section
@@ -46,7 +66,7 @@ const { eyebrow = "Common questions", items, display = "open", standalone = fals
                 type="button"
                 class="faq__trigger"
                 aria-expanded="false"
-                aria-controls={`faq-answer-${index}`}
+                aria-controls={answerId(item, index)}
                 data-faq-trigger
               >
                 <span itemprop="name">{item.question}</span>
@@ -63,15 +83,16 @@ const { eyebrow = "Common questions", items, display = "open", standalone = fals
 
           <div
             class="faq__answer"
-            id={`faq-answer-${index}`}
+            id={answerId(item, index)}
             itemprop="acceptedAnswer"
             itemscope
             itemtype="https://schema.org/Answer"
             hidden={display === "accordion"}
           >
-            {item.answer.map((paragraph) => (
-              <p itemprop="text">{paragraph}</p>
-            ))}
+            {/* itemprop="text" must wrap the answer body for FAQPage to validate. */}
+            <div itemprop="text">
+              <PortableText value={item.answer} />
+            </div>
           </div>
         </div>
       ))
@@ -122,7 +143,10 @@ const { eyebrow = "Common questions", items, display = "open", standalone = fals
     margin-top: 9px;
   }
 
-  .faq__answer p {
+  /* :global because the answer is rendered by astro-portabletext — Astro's
+     style scoping does not reach into a nested component's output. */
+  .faq__answer :global(p),
+  .faq__answer :global(li) {
     margin: 0;
     font-size: var(--type-body-sm-size);
     line-height: 1.72;
@@ -131,8 +155,21 @@ const { eyebrow = "Common questions", items, display = "open", standalone = fals
     max-width: var(--measure-narrow);
   }
 
-  .faq__answer p + p {
+  .faq__answer :global(p + p),
+  .faq__answer :global(ul),
+  .faq__answer :global(ol) {
     margin-top: var(--space-3);
+  }
+
+  .faq__answer :global(ul),
+  .faq__answer :global(ol) {
+    padding-left: 22px;
+  }
+
+  .faq__answer :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
   /* ---- accordion --------------------------------------------------------- */

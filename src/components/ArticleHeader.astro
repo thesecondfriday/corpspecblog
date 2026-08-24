@@ -13,6 +13,7 @@ import type { Post } from "../lib/types";
 import { formatDate, getReadTime, initials } from "../lib/derive";
 import { categoryHref } from "../lib/site";
 import Chip from "./Chip.astro";
+import { SIZES, responsive, urlFor } from "../sanity/lib/image";
 
 interface Props {
   post: Post;
@@ -22,6 +23,24 @@ const { post } = Astro.props;
 const readTime = getReadTime(post);
 const hero = post.heroImage;
 const caption = [hero?.caption, hero?.credit && `Photo: ${hero.credit}.`].filter(Boolean).join(" ");
+
+/*
+ * §3.7 / §7 — the hero crop changes by breakpoint: 3:2 on mobile (a 21:9 strip
+ * at 390px is 167px tall), 16:9 on tablet, 21:9 on desktop. Each is a separate
+ * crop from Sanity rather than one image letterboxed by CSS, so the hotspot
+ * decides what survives at every width.
+ */
+const heroSources = hero
+  ? {
+      mobile: responsive(hero, { ratio: 3 / 2, max: 900 }),
+      tablet: responsive(hero, { ratio: 16 / 9, max: 1400 }),
+      desktop: responsive(hero, { ratio: 21 / 9, max: 2000 }),
+    }
+  : null;
+
+const avatarSrc = post.author.avatar
+  ? urlFor(post.author.avatar).width(92).height(92).fit("crop").url()
+  : null;
 ---
 
 <header class="container art-head">
@@ -43,10 +62,12 @@ const caption = [hero?.caption, hero?.credit && `Photo: ${hero.credit}.`].filter
         post.author.avatar ? (
           <img
             class="art-head__avatar"
-            src={post.author.avatar.src}
+            src={avatarSrc!}
             alt={post.author.avatar.alt}
             width="46"
             height="46"
+            loading="lazy"
+            decoding="async"
           />
         ) : (
           <span class="art-head__avatar art-head__avatar--initials" aria-hidden="true">
@@ -71,8 +92,20 @@ const caption = [hero?.caption, hero?.credit && `Photo: ${hero.credit}.`].filter
 {
   hero && (
     <figure class="hero" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
-      <div class="hero__well">
-        <img src={hero.src} alt={hero.alt} itemprop="contentUrl" fetchpriority="high" decoding="async" />
+      <div class="hero__well" style={hero.lqip ? `background-image: url(${hero.lqip})` : undefined}>
+        <picture>
+          <source media="(min-width: 900px)" srcset={heroSources!.desktop.srcset} sizes={SIZES.hero} />
+          <source media="(min-width: 600px)" srcset={heroSources!.tablet.srcset} sizes={SIZES.hero} />
+          <img
+            src={heroSources!.mobile.src}
+            srcset={heroSources!.mobile.srcset}
+            sizes={SIZES.hero}
+            alt={hero.alt}
+            itemprop="contentUrl"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
       </div>
       {caption && (
         <figcaption class="container hero__caption">
@@ -188,10 +221,13 @@ const caption = [hero?.caption, hero?.credit && `Photo: ${hero.credit}.`].filter
     /* §3.7 Responsive / §7 — mobile relaxes to 3/2 with a 200px min-height. */
     aspect-ratio: var(--ratio-hero-mobile);
     min-height: 200px;
-    background: var(--surface-sunken);
+    background-color: var(--surface-sunken);
+    background-size: cover;
+    background-position: center;
     overflow: hidden;
   }
 
+  .hero__well picture,
   .hero__well img {
     width: 100%;
     height: 100%;

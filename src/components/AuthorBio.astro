@@ -8,19 +8,29 @@
 import type { Author } from "../lib/types";
 import { initials } from "../lib/derive";
 import { authorHref } from "../lib/site";
+import { urlFor } from "../sanity/lib/image";
 
 interface Props {
   author: Author;
 }
 
 const { author } = Astro.props;
+const avatarSrc = author.avatar ? urlFor(author.avatar).width(144).height(144).fit("crop").url() : null;
 ---
 
 {
   author.bio && (
     <div class="bio">
       {author.avatar ? (
-        <img class="bio__avatar" src={author.avatar.src} alt={author.avatar.alt} width="72" height="72" />
+        <img
+          class="bio__avatar"
+          src={avatarSrc!}
+          alt={author.avatar.alt}
+          width="72"
+          height="72"
+          loading="lazy"
+          decoding="async"
+        />
       ) : (
         <span class="bio__avatar bio__avatar--initials" aria-hidden="true">
           {initials(author.name)}

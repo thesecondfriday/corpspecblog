@@ -13,18 +13,13 @@
  * On success the form is replaced in place AND the file downloads immediately,
  * rather than only by email.
  */
+import type { ResourceDownloadNode } from "../../lib/types";
+
 interface Props {
-  title: string;
-  file: string;
-  pageCount?: number;
-  description?: string;
-  gated: boolean;
-  formatLabel?: string;
-  submitLabel?: string;
-  listId?: string;
-  reassurance?: string;
+  node: ResourceDownloadNode;
 }
 
+const { node } = Astro.props as Props;
 const {
   title,
   file,
@@ -35,7 +30,7 @@ const {
   submitLabel = "Send me the PDF",
   listId,
   reassurance = "Email only. No follow-up sequence.",
-} = Astro.props;
+} = node;
 
 if (gated && !listId) {
   throw new Error(`resourceDownload: listId is required when gated (§4.7). Missing on "${title}".`);
@@ -88,9 +83,19 @@ const fieldId = `resource-${listId ?? title.replace(/\W+/g, "-").toLowerCase()}`
         <span class="resource__format">{format}</span>
         {description && <p class="resource__desc">{description}</p>}
       </div>
-      <a class="resource__download" href={file} download>
-        Download ↓
-      </a>
+      {/*
+        * `file` is required by the schema, so an absent one means the document
+        * was written by something that bypassed validation (the seed script,
+        * typically). Render the row without a dead link rather than failing the
+        * whole build over placeholder content.
+        */}
+      {file ? (
+        <a class="resource__download" href={file} download>
+          Download ↓
+        </a>
+      ) : (
+        <span class="resource__download resource__download--missing">No file attached</span>
+      )}
     </aside>
   )
 }
@@ -271,6 +276,11 @@ const fieldId = `resource-${listId ?? title.replace(/\W+/g, "-").toLowerCase()}`
 
   .resource__download:hover {
     color: var(--accent);
+  }
+
+  .resource__download--missing {
+    color: var(--text-subtle);
+    border-bottom-color: var(--border);
   }
 
   /* §4.7 Mobile — both stack to one column; the gated form is full-width with a

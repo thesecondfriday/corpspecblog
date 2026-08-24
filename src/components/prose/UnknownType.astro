@@ -1,0 +1,15 @@
+---
+/*
+ * A block type the CMS ships that the front end has no component for.
+ *
+ * Failing loudly at build is deliberate: the alternative is an editor inserting
+ * a block, seeing it in the Studio, and finding nothing on the page with no
+ * error anywhere. If you add a §4 block type, add it to the `type` map in
+ * PortableText.astro.
+ */
+const { node } = Astro.props;
+throw new Error(
+  `PortableText: no component registered for block type "${node?._type}". ` +
+    `Add it to the \`type\` map in src/components/PortableText.astro.`,
+);
+---

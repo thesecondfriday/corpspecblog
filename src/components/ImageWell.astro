@@ -13,11 +13,16 @@
  * content, and must not ship (§6). Never substitute a stock photo.
  */
 import type { ImageRef } from "../lib/types";
+import { responsive } from "../sanity/lib/image";
 
 interface Props {
   image?: ImageRef;
   /** Any aspect-ratio value; pass a --ratio-* token. */
   ratio?: string;
+  /** Numeric width/height for the crop, e.g. 3/2. Must match `ratio`. */
+  cropRatio?: number;
+  /** The `sizes` attribute — pick one from SIZES. */
+  sizes?: string;
   /** Fallback monogram size. */
   monogram?: string;
   /** Hover scale is driven by an ancestor carrying .is-card. */
@@ -28,23 +33,37 @@ interface Props {
 const {
   image,
   ratio = "var(--ratio-card)",
+  cropRatio = 3 / 2,
+  sizes,
   monogram = "40px",
   class: className,
   loading = "lazy",
 } = Astro.props;
 
-const objectPosition = image?.hotspot
-  ? `${image.hotspot.x * 100}% ${image.hotspot.y * 100}%`
-  : "center";
+/*
+ * Sanity's hotspot is honoured by the crop itself (fit: crop), so the rendered
+ * <img> does not also need object-position — asking for both double-applies the
+ * offset and pushes the subject out of frame.
+ */
+const src = image ? responsive(image, { ratio: cropRatio, max: 1200 }) : null;
 ---
 
 <div
   class:list={["well", !image && "well--fallback", className]}
-  style={`--well-ratio: ${ratio}; --well-monogram: ${monogram};`}
+  style={`--well-ratio: ${ratio}; --well-monogram: ${monogram};${image?.lqip ? ` background-image: url(${image.lqip});` : ""}`}
 >
   {
-    image ? (
-      <img src={image.src} alt={image.alt} loading={loading} decoding="async" style={`object-position: ${objectPosition}`} />
+    image && src ? (
+      <img
+        src={src.src}
+        srcset={src.srcset}
+        sizes={sizes}
+        alt={image.alt}
+        width={src.width}
+        height={src.height}
+        loading={loading}
+        decoding="async"
+      />
     ) : (
       <span class="well__monogram" aria-hidden="true">
         CS
@@ -56,7 +75,10 @@ const objectPosition = image?.hotspot
 <style>
   .well {
     aspect-ratio: var(--well-ratio);
-    background: var(--surface-sunken);
+    background-color: var(--surface-sunken);
+    /* Sanity's LQIP — a tiny blurred JPEG held behind the real image. */
+    background-size: cover;
+    background-position: center;
     border-radius: var(--radius-0);
     overflow: hidden;
   }

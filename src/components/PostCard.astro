@@ -15,6 +15,7 @@ import { metaParts } from "../lib/derive";
 import { categoryHref, postHref } from "../lib/site";
 import Chip from "./Chip.astro";
 import ImageWell from "./ImageWell.astro";
+import { SIZES } from "../sanity/lib/image";
 
 interface Props {
   post: Post;
@@ -42,6 +43,8 @@ const showExcerpt = variant === "featured" && Boolean(post.excerpt);
       <ImageWell
         image={post.heroImage}
         ratio="var(--ratio-card)"
+        cropRatio={3 / 2}
+        sizes={SIZES.card}
         monogram={related ? "34px" : "40px"}
         loading={loading}
       />
