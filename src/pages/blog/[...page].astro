@@ -1,0 +1,130 @@
+---
+/*
+ * HOME / BLOG INDEX — page 1 at /blog, page 2+ at /blog/page/{n} (§3.4).
+ *
+ * Page 1 carries the hero, the secondary featured row and the Guides module.
+ * Page 2+ drops all three and leads with the feed, because a reader on page 4
+ * is browsing, not being introduced.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CtaBlock from "../../components/CtaBlock.astro";
+import GuidesModule from "../../components/GuidesModule.astro";
+import IndexHero from "../../components/IndexHero.astro";
+import Pagination from "../../components/Pagination.astro";
+import PostGrid from "../../components/PostGrid.astro";
+import { SITE, pageHref } from "../../lib/site";
+import {
+  COMPACT_TAIL_SIZE,
+  PAGE_SIZE,
+  allGuides,
+  allPosts,
+  categoriesWithCounts,
+  featuredPost,
+  guideCount,
+  paginate,
+  secondaryFeatured,
+} from "../../lib/queries";
+
+export function getStaticPaths() {
+  const hero = featuredPost();
+  const secondary = secondaryFeatured().map((p) => p.slug);
+
+  // The hero and the secondary row are shown above the feed on page 1, so they
+  // are excluded from the feed itself rather than appearing twice.
+  const feed = allPosts().filter((p) => p.slug !== hero.slug && !secondary.includes(p.slug));
+
+  // The index shows 6 standard cards plus a 3-up compact tail strip (§3.4).
+  const perPage = PAGE_SIZE + COMPACT_TAIL_SIZE;
+  const totalPages = Math.max(1, Math.ceil(feed.length / perPage));
+
+  return Array.from({ length: totalPages }, (_, i) => ({
+    // page 1 is canonical at /blog, with no /page/1 duplicate.
+    params: { page: i === 0 ? undefined : `page/${i + 1}` },
+    props: { page: i + 1, perPage },
+  }));
+}
+
+const { page, perPage } = Astro.props;
+
+const hero = featuredPost();
+const secondary = secondaryFeatured();
+const secondarySlugs = secondary.map((p) => p.slug);
+const feed = allPosts().filter((p) => p.slug !== hero.slug && !secondarySlugs.includes(p.slug));
+
+const paged = paginate(feed, page, perPage);
+const categories = categoriesWithCounts();
+
+// §3.10 Placement — inlineFeed sits after the first row of feed cards, one per
+// page, never two. The tail strip is the compact variant (§3.1 "index tail strip").
+const firstRow = paged.items.slice(0, 3);
+const secondRow = paged.items.slice(3, PAGE_SIZE);
+const tail = paged.items.slice(PAGE_SIZE);
+
+const isFirstPage = page === 1;
+// §3.4 Page 2+ — the feed eyebrow changes from "Latest" to "Page {n}".
+const feedLabel = isFirstPage ? "Latest" : `Page ${page}`;
+const rangeLabel = `${paged.from}–${paged.to} of ${paged.total}`;
+---
+
+<BaseLayout
+  title={isFirstPage ? SITE.hubName : `${SITE.hubName} — Page ${page}`}
+  description="Gifting strategy, trending products, branding ideas and swag program advice for HR, marketing and event teams."
+  categories={categories}
+  activeSlug="all"
+  canonical={pageHref(SITE.blogBase, page)}
+  prev={page > 1 ? pageHref(SITE.blogBase, page - 1) : undefined}
+  next={page < paged.totalPages ? pageHref(SITE.blogBase, page + 1) : undefined}
+>
+  {isFirstPage && <IndexHero post={hero} />}
+
+  {
+    isFirstPage && (
+      <section class="container section-y">
+        <PostGrid posts={secondary} label="This week" cardVariant="featured" min="260px" />
+      </section>
+    )
+  }
+
+  {
+    isFirstPage && (
+      <GuidesModule
+        guides={allGuides()}
+        heading="The reference shelf"
+        blurb="Long-form, kept current. Start here if you inherited a swag program and no documentation."
+        allHref="/guides"
+        allCount={guideCount()}
+      />
+    )
+  }
+
+  <section class="container section-y">
+    <PostGrid posts={firstRow} label={feedLabel} rangeLabel={rangeLabel} />
+
+    <CtaBlock
+      placement="inlineFeed"
+      eyebrow="From the desk"
+      heading="Stuck between four bottles and a deadline?"
+      body="Send us the brief — headcount, budget, in-hands date. A strategist replies with two or three real options and current lead times. No catalog dump."
+      captureEmail
+      reassurance="Typical reply: same business day. No sales sequence."
+    />
+
+    {secondRow.length > 0 && <PostGrid posts={secondRow} />}
+
+    {
+      tail.length > 0 && (
+        <div class="tail">
+          <PostGrid posts={tail} cardVariant="compact" />
+        </div>
+      )
+    }
+
+    <Pagination currentPage={page} totalPages={paged.totalPages} basePath={SITE.blogBase} />
+  </section>
+</BaseLayout>
+
+<style>
+  .tail {
+    margin-top: clamp(30px, 3.6cqw, 52px);
+  }
+</style>

@@ -1,0 +1,97 @@
+---
+/*
+ * The page shell: head, chrome, footer. Every page uses it.
+ *
+ * PLACEHOLDER (§6): Mulish substitutes for licensed Proxima Nova and Playfair
+ * Display for the logo serif, per the design system's own note. Every type
+ * token holds when the licensed files land — re-check the H1 optical size,
+ * since Proxima runs slightly narrower. To swap: drop the .woff2 files in
+ * public/fonts/, add @font-face rules for "Proxima Nova", and remove the
+ * Google Fonts link below. --font-sans already names "Proxima Nova" first.
+ */
+import type { Category } from "../lib/types";
+import { SITE, absolute } from "../lib/site";
+import Masthead from "../components/Masthead.astro";
+import CategoryNav from "../components/CategoryNav.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import "../styles/tokens.css";
+import "../styles/base.css";
+
+interface Props {
+  title: string;
+  description: string;
+  categories: Category[];
+  activeSlug?: string | "all";
+  /** Canonical path; page 1 of a paginated set is canonical at its basePath (§3.4). */
+  canonical?: string;
+  /** §3.4 — emit rel prev/next on paginated pages. */
+  prev?: string;
+  next?: string;
+  /** JSON-LD blocks for this page. */
+  schemas?: unknown[];
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  categories,
+  activeSlug,
+  canonical = Astro.url.pathname,
+  prev,
+  next,
+  schemas = [],
+  ogImage,
+} = Astro.props;
+
+const fullTitle = title.includes(SITE.organisation)
+  ? title
+  : `${title} · ${SITE.hubName} — ${SITE.organisation}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={absolute(canonical)} />
+    {prev && <link rel="prev" href={absolute(prev)} />}
+    {next && <link rel="next" href={absolute(next)} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={absolute(canonical)} />
+    {ogImage && <meta property="og:image" content={absolute(ogImage)} />}
+    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300..900;1,300..900&family=Playfair+Display:ital,wght@0,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    />
+
+    {
+      schemas.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      ))
+    }
+  </head>
+
+  <body>
+    {/* §5 — a skip link to #main is first in tab order on every page. */}
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="site">
+      <Masthead />
+      <CategoryNav categories={categories} activeSlug={activeSlug} />
+      <main id="main">
+        <slot />
+      </main>
+      <SiteFooter categories={categories} />
+    </div>
+  </body>
+</html>

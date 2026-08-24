@@ -1,0 +1,129 @@
+---
+/*
+ * SINGLE POST — /blog/{category}/{slug}.
+ *
+ * Order on the page: header → hero figure → TOC + body → FAQ → end CTA →
+ * related (§3.10 Placement: "endOfArticle is full-bleed inverse between the FAQ
+ * and Related").
+ *
+ * The TOC and the prose share one grid so the markup order is source order
+ * (§5: "the mobile TOC bar is in the flow, not appended at the end") while the
+ * sidebar still sits left of the prose on desktop.
+ */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticleHeader from "../../../components/ArticleHeader.astro";
+import AuthorBio from "../../../components/AuthorBio.astro";
+import CtaBlock from "../../../components/CtaBlock.astro";
+import FaqBlock from "../../../components/blocks/FaqBlock.astro";
+import PortableText from "../../../components/PortableText.astro";
+import RelatedPosts from "../../../components/RelatedPosts.astro";
+import TableOfContents from "../../../components/TableOfContents.astro";
+import { getHeadings, shouldRenderToc } from "../../../lib/derive";
+import { absolute, postHref } from "../../../lib/site";
+import { blogPostingSchema, breadcrumbSchema, faqPageSchema } from "../../../lib/schema";
+import { allGuides, allPosts, categoriesWithCounts, relatedPosts } from "../../../lib/queries";
+import "../../../styles/prose.css";
+
+export function getStaticPaths() {
+  return [...allPosts(), ...allGuides()].map((post) => ({
+    params: { category: post.category.slug, slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+const categories = categoriesWithCounts();
+const headings = getHeadings(post.body);
+// §3.8 — renders only when there are ≥4 H2s; below that, no TOC and no empty shell.
+const withToc = shouldRenderToc(headings);
+const related = relatedPosts(post);
+const url = absolute(postHref(post.category.slug, post.slug));
+
+/*
+ * §4.8 — one FAQ per page maximum. If a faqBlock exists in the body, the body
+ * block wins and the document-level post.faq field is ignored.
+ */
+const hasBodyFaq = post.body.some((node) => node._type === "faqBlock");
+const documentFaq = hasBodyFaq ? undefined : post.faq;
+const faqForSchema = hasBodyFaq
+  ? post.body.find((node) => node._type === "faqBlock")?.items
+  : post.faq;
+
+const schemas = [
+  blogPostingSchema(post),
+  breadcrumbSchema(post),
+  ...(faqForSchema?.length ? [faqPageSchema(faqForSchema)] : []),
+];
+---
+
+<BaseLayout
+  title={post.seo?.metaTitle ?? post.title}
+  description={post.seo?.metaDescription ?? post.dek}
+  categories={categories}
+  activeSlug={post.category.slug}
+  ogImage={post.seo?.ogImage?.src ?? post.heroImage?.src}
+  schemas={schemas}
+>
+  <article itemscope itemtype="https://schema.org/BlogPosting">
+    <ArticleHeader post={post} />
+
+    <div class="container post-body">
+      {withToc && <TableOfContents headings={headings} shareUrl={url} shareTitle={post.title} />}
+
+      <div class="prose" itemprop="articleBody" data-article-body>
+        <PortableText body={post.body} headings={headings} />
+        <AuthorBio author={post.author} />
+      </div>
+    </div>
+
+    {
+      documentFaq && documentFaq.length > 0 && (
+        <section class="container post-faq">
+          <FaqBlock items={documentFaq} standalone />
+        </section>
+      )
+    }
+  </article>
+
+  <CtaBlock
+    placement="endOfArticle"
+    eyebrow="Next step"
+    heading="Have a headcount and a date? That's enough to start."
+    body="Tell a strategist your budget per person and your in-hands date. You'll get two or three options with real lead times — not a catalog link."
+    secondaryLabel="Browse products"
+    secondaryHref="/products"
+  />
+
+  <RelatedPosts posts={related} />
+</BaseLayout>
+
+<style>
+  .post-body {
+    padding-bottom: var(--section-y);
+    display: grid;
+    gap: clamp(24px, 4cqw, 64px);
+  }
+
+  .post-faq {
+    padding-bottom: clamp(34px, 4.4cqw, 60px);
+  }
+
+  .post-faq :global(.faq) {
+    max-width: 78ch;
+  }
+
+  /* §3.8 Responsive — ≥900px the TOC becomes a 210–260px sticky sidebar left of
+     the prose. Below that it is the sticky bar, first in the single column. */
+  @media (min-width: 900px) {
+    .post-body {
+      grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    /* With no TOC the prose takes the full width rather than leaving a gap. */
+    .post-body > .prose:only-child {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

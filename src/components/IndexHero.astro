@@ -1,0 +1,208 @@
+---
+/*
+ * The index hero — the `featured` PostCard's page-level treatment.
+ *
+ * Split, edge to edge: sage text panel and image. At --bp-desktop the split is
+ * 50/50 (§1.4); below that it stacks with the text panel first, because the
+ * headline is the thing a reader arriving from search needs.
+ */
+import type { Post } from "../lib/types";
+import { formatDate, getReadTime, initials } from "../lib/derive";
+import { postHref } from "../lib/site";
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const readTime = getReadTime(post);
+const href = postHref(post.category.slug, post.slug);
+---
+
+<section class="hero-split">
+  <div class="hero-split__panel">
+    <div class="hero-split__kicker">
+      <span class="label">{post.category.title}</span>
+      <span class="hero-split__dash" aria-hidden="true"></span>
+      <span class="hero-split__featured">Featured</span>
+    </div>
+
+    <h1 class="hero-split__title">
+      <a href={href}>{post.title}</a>
+    </h1>
+
+    <p class="hero-split__dek">{post.dek}</p>
+
+    <div class="hero-split__byline">
+      {
+        post.author.avatar ? (
+          <img src={post.author.avatar.src} alt={post.author.avatar.alt} width="40" height="40" />
+        ) : (
+          <span class="hero-split__initials" aria-hidden="true">
+            {initials(post.author.name)}
+          </span>
+        )
+      }
+      <span class="hero-split__byline-text">
+        <span class="hero-split__author">{post.author.name}</span>
+        <span class="hero-split__meta">
+          {formatDate(post.publishedAt)}{readTime && ` · ${readTime} min read`}
+        </span>
+      </span>
+    </div>
+
+    <a class="link-underline" href={href}>Read the guide →</a>
+  </div>
+
+  {/*
+   * §3.7 rules the article hero; here the index hero uses the same tolerance
+   * well. With no heroImage the sage panel simply spans the full width — the
+   * fallback tile is a card device, not a hero one.
+   */}
+  {
+    post.heroImage && (
+      <div class="hero-split__media">
+        <img src={post.heroImage.src} alt={post.heroImage.alt} fetchpriority="high" decoding="async" />
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .hero-split {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-split__panel {
+    background: var(--surface-accent);
+    padding: clamp(30px, 5cqw, 76px) clamp(20px, 4cqw, 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-5);
+  }
+
+  .hero-split__kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .hero-split__dash {
+    height: 1px;
+    width: 28px;
+    background: var(--monogram);
+  }
+
+  .hero-split__featured {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-on-accent-muted);
+  }
+
+  .hero-split__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(31px, 4.7cqw, 60px);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-wrap: balance;
+  }
+
+  .hero-split__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .hero-split__title a:hover {
+    color: var(--accent);
+  }
+
+  .hero-split__dek {
+    margin: 0;
+    font-size: clamp(15px, 1.5cqw, 19.5px);
+    line-height: 1.6;
+    color: var(--text-on-accent-body);
+    max-width: 46ch;
+  }
+
+  .hero-split__byline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
+  }
+
+  .hero-split__byline img,
+  .hero-split__initials {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--radius-round);
+    object-fit: cover;
+  }
+
+  .hero-split__initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-accent-soft);
+    color: var(--brand-green);
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .hero-split__byline-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .hero-split__author {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .hero-split__meta {
+    font-family: var(--font-mono);
+    font-size: var(--type-meta-size);
+    letter-spacing: var(--type-meta-ls);
+    text-transform: uppercase;
+    color: var(--text-on-accent-muted);
+  }
+
+  .hero-split__media {
+    min-height: clamp(240px, 34cqw, 520px);
+    background: var(--surface-sunken);
+    overflow: hidden;
+  }
+
+  .hero-split__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Stacked below --bp-desktop: text panel first. */
+  @media (max-width: 899px) {
+    .hero-split {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-split__panel {
+      order: 1;
+    }
+
+    .hero-split__media {
+      order: 2;
+    }
+  }
+</style>
