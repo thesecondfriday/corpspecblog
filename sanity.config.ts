@@ -13,8 +13,10 @@ export default defineConfig({
   name: "default",
   title: "The Swag Desk",
 
-  projectId: process.env.PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.PUBLIC_SANITY_DATASET!,
+  // Same reasoning as sanity.cli.ts: public identifiers, defaulted so a Studio
+  // build never fails on a missing env var.
+  projectId: process.env.PUBLIC_SANITY_PROJECT_ID ?? "8og1x4eu",
+  dataset: process.env.PUBLIC_SANITY_DATASET ?? "production",
 
   plugins: [structureTool({ structure }), visionTool({ defaultApiVersion: "2026-08-24" })],
 

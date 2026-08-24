@@ -13,8 +13,10 @@ import { defineCliConfig } from "sanity/cli";
  */
 export default defineCliConfig({
   api: {
-    projectId: process.env.PUBLIC_SANITY_PROJECT_ID,
-    dataset: process.env.PUBLIC_SANITY_DATASET,
+    // Defaulted, not required from the environment: the Sanity CLI does not
+    // reliably load .env.local, and these are public identifiers anyway.
+    projectId: process.env.PUBLIC_SANITY_PROJECT_ID ?? "8og1x4eu",
+    dataset: process.env.PUBLIC_SANITY_DATASET ?? "production",
   },
   /*
    * Pinned so `sanity deploy` never prompts and lands on a predictable URL:
