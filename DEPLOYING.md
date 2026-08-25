@@ -70,10 +70,21 @@ does not apply.
 
 ## 7 · Custom domain
 
-Project → **Settings → Domains** → add it, follow the DNS instructions. Then add
-that origin to CORS as well (step 6), and update `site` in `astro.config.mjs` —
-it is currently `https://corporatespecialties.com` and it feeds the canonical
-URLs and structured data. Wrong value there means wrong canonicals.
+Can be done at any point, before or after the webhook.
+
+Project → **Settings → Domains** → add it, follow the DNS instructions. Then two
+follow-ups, both easy to forget:
+
+1. **Add the new origin to CORS** (as in step 6) — otherwise the embedded
+   `/studio` on your domain breaks.
+2. **Update `site` in `astro.config.mjs`.** It is currently
+   `https://corporatespecialties.com`, and it feeds every canonical URL, the
+   `og:url` tag and the JSON-LD. A wrong value here means every page tells
+   Google it is a copy of a page that does not exist — the kind of bug that
+   costs rankings quietly. Change it, push, and the deploy takes care of itself.
+
+Nothing about the Deploy Hook or the Sanity webhook changes when a domain is
+added.
 
 ---
 
@@ -82,6 +93,17 @@ URLs and structured data. Wrong value there means wrong canonicals.
 **Without this, publishing in the Studio changes nothing on the live site.**
 The site is built statically: content is baked in at build time. The webhook is
 what tells Vercel to rebuild when content changes.
+
+**Do this as soon as the Vercel project exists — do not wait for a custom
+domain.** A Deploy Hook URL is tied to the project and branch, not the domain,
+so pointing a domain at the project later does not change or break it. Setting
+it up early also means you find out whether publishing triggers a build while
+you are still on a throwaway `*.vercel.app` URL.
+
+**The hook is branch-specific.** Create it for whichever branch Vercel is
+building as production — `main`, unless you changed it. If you later switch the
+production branch, create a new hook and update the Sanity webhook to match; the
+old one will keep building the old branch silently.
 
 ## 1 · Create a Deploy Hook in Vercel
 
