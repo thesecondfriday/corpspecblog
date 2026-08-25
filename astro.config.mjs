@@ -83,6 +83,69 @@ async function redirectsFromSanity() {
   }
 }
 
+/*
+ * A build-time content check, printed at the very top of the build log.
+ *
+ * The site is prerendered: if the Content Lake returns nothing, every
+ * getStaticPaths returns an empty array and the build SUCCEEDS while producing
+ * a site with no posts in it. That is the one failure mode here that looks
+ * exactly like success, and it is the reason this function exists — so the log
+ * always states, in one line, how much content the build actually saw.
+ *
+ * Fails soft. This is a diagnostic; it must never be the thing that breaks a
+ * deploy.
+ */
+async function reportContent() {
+  const target = `project ${PUBLIC_SANITY_PROJECT_ID}, dataset ${PUBLIC_SANITY_DATASET}`;
+
+  try {
+    const client = createClient({
+      projectId: PUBLIC_SANITY_PROJECT_ID,
+      dataset: PUBLIC_SANITY_DATASET,
+      apiVersion: "2026-08-24",
+      useCdn: false,
+      perspective: "published",
+      ...(PUBLIC_SANITY_API_HOST
+        ? { apiHost: PUBLIC_SANITY_API_HOST, useProjectHostname: false }
+        : {}),
+    });
+
+    const counts = await client.fetch(`{
+      "posts": count(*[_type == "post" && defined(slug.current)]),
+      "categories": count(*[_type == "category" && defined(slug.current)]),
+      "orphans": count(*[_type == "post" && defined(slug.current) && !defined(category->slug.current)])
+    }`);
+
+    console.log(`[content] ${target}`);
+    console.log(
+      `[content] ${counts.posts} post(s), ${counts.categories} category/ies published`,
+    );
+
+    if (counts.posts === 0) {
+      console.warn(
+        `[content] NO POSTS FOUND. The build will produce a site with an empty feed.\n` +
+          `[content] The dataset above is what this build read. If your content is\n` +
+          `[content] elsewhere, set PUBLIC_SANITY_PROJECT_ID / PUBLIC_SANITY_DATASET.`,
+      );
+    }
+
+    // A post whose category reference is missing or unpublished has no URL to
+    // live at, so it is silently dropped from the routes. Say so.
+    if (counts.orphans > 0) {
+      console.warn(
+        `[content] ${counts.orphans} post(s) have no published category and will NOT get a page.`,
+      );
+    }
+  } catch (error) {
+    console.warn(
+      `[content] Could not reach Sanity (${target}): ${error.message}\n` +
+        `[content] The build will continue and produce an empty feed.`,
+    );
+  }
+}
+
+await reportContent();
+
 /**
  * The hub is a static site: Astro ships HTML with no client framework, which is
  * what the brief means by "needs to be read by ai bots".
