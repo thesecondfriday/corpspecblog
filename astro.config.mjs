@@ -3,7 +3,7 @@ import { defineConfig } from "astro/config";
 import { loadEnv } from "vite";
 import sanity from "@sanity/astro";
 import react from "@astrojs/react";
-import node from "@astrojs/node";
+import vercel from "@astrojs/vercel";
 import { createClient } from "@sanity/client";
 
 /*
@@ -85,14 +85,18 @@ async function redirectsFromSanity() {
  * The hub is a static site: Astro ships HTML with no client framework, which is
  * what the brief means by "needs to be read by ai bots".
  *
- * The Node adapter is here for the draft preview routes only — everything else
- * is prerendered. See src/pages/preview/. That does mean the deployment target
- * has to run Node rather than being pure static hosting; if you would rather
- * deploy to a CDN, drop the adapter and the preview routes together.
+ * The adapter is here for the draft preview routes only — every other page is
+ * prerendered to static HTML at build time. See src/pages/preview/.
+ *
+ * Swapping hosts is a one-line change: @astrojs/netlify, @astrojs/cloudflare
+ * and @astrojs/node all drop in here. If you decide you do not need to preview
+ * unpublished drafts, delete src/pages/preview/ and src/pages/api/preview*.ts,
+ * remove the adapter entirely, and the output becomes pure static — deployable
+ * to any CDN or object store.
  */
 export default defineConfig({
   site: "https://corporatespecialties.com",
-  adapter: node({ mode: "standalone" }),
+  adapter: vercel(),
   redirects: {
     // The hub lives under /blog; the storefront owns the real root.
     "/": "/blog",
