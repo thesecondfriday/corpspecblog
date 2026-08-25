@@ -12,11 +12,17 @@ import { createClient } from "@sanity/client";
  * PUBLIC_ variables the pages use. Inside .astro files, keep using
  * import.meta.env directly — this shim is config-only.
  */
-const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET, PUBLIC_SANITY_API_HOST } = loadEnv(
-  process.env.NODE_ENV ?? "development",
-  process.cwd(),
-  "",
-);
+const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
+
+/*
+ * Defaulted rather than required. A host that builds this repo without env vars
+ * set would otherwise fail with an opaque error from inside the Sanity
+ * integration. These are public identifiers — they ship in the client bundle —
+ * so a default costs nothing and removes a first-deploy failure.
+ */
+const PUBLIC_SANITY_PROJECT_ID = env.PUBLIC_SANITY_PROJECT_ID ?? "8og1x4eu";
+const PUBLIC_SANITY_DATASET = env.PUBLIC_SANITY_DATASET ?? "production";
+const PUBLIC_SANITY_API_HOST = env.PUBLIC_SANITY_API_HOST;
 
 /*
  * Flag 7 — `redirectFrom` is the one field no component can render: it is a
