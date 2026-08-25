@@ -1,25 +1,71 @@
-# CODING AGENTS: READ THIS FIRST
+# The Swag Desk
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+Content hub for Corporate Specialties — an education-first blog for B2B swag
+buyers. Astro front end, Sanity CMS.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+- **Studio (edit content):** https://corpspecblog.sanity.studio
+- **Sanity project:** CSBLOG · `8og1x4eu` · dataset `production`
 
-## What you should do — IMPORTANT
+## Quick start
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+```bash
+nvm use 22.20                # 22.20+ required
+npm install
+printf 'PUBLIC_SANITY_PROJECT_ID=8og1x4eu\nPUBLIC_SANITY_DATASET=production\n' > .env.local
+npm run dev
+```
 
-**Read `project/Component Spec.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+- Blog → http://localhost:4321/blog
+- Studio, embedded → http://localhost:4321/studio
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+| Command | |
+| --- | --- |
+| `npm run dev` | site + embedded Studio |
+| `npm run build` | static build (fetches content from Sanity) |
+| `npm run check` | typecheck — currently 0 errors |
+| `npm run verify` | walk the built HTML, assert every component rendered |
+| `npm run seed` | write placeholder content + images (needs `SANITY_WRITE_TOKEN`) |
+| `npm run studio:deploy` | redeploy the hosted Studio |
+| `npm run schema:validate` | validate the schema without deploying |
 
-## About the design files
+## Layout
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+```
+src/
+  components/        page components (§3) and article body blocks (§4)
+  layouts/           the page shell
+  pages/blog/        index, category archive, single post
+  pages/preview/     draft preview — the only non-prerendered route
+  sanity/schemaTypes/  the CMS schema
+  sanity/lib/        client, GROQ queries, image builder
+  styles/tokens.css  every colour, type step and space in the design system
+scripts/             seed, offline verification harness
+project/, chats/     the original Claude Design handoff bundle
+```
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+## Docs
 
-## Bundle contents
+| File | |
+| --- | --- |
+| [`DEPLOYING.md`](DEPLOYING.md) | deploy, **and the rebuild webhook** |
+| [`GETTING-STARTED.md`](GETTING-STARTED.md) | Studio setup from a cold terminal |
+| [`IMPLEMENTATION-NOTES.md`](IMPLEMENTATION-NOTES.md) | how the design spec maps onto the code |
+| [`FIELD-INVENTORY.md`](FIELD-INVENTORY.md) | every component prop → schema field |
+| [`project/README.md`](project/README.md) | the original design handoff |
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `Corporate swag content hub` project files (HTML prototypes, assets, components)
+The design spec these were built from is
+[`project/Component Spec.dc.html`](project/Component%20Spec.dc.html). Section
+references throughout the code (§3.1, §4.6…) point at it.
+
+## Outstanding
+
+- **The rebuild webhook is not wired.** Until it is, publishing in the Studio
+  does not change the live site — see `DEPLOYING.md` part 2.
+- **Forms 404.** `/api/subscribe`, `/api/strategist`, `/api/resource` do not
+  exist. The forms are built; they need an ESP and three endpoints.
+- **Dead links:** `/quote`, `/products`, `/guides`, `/search`, `/authors/{slug}`.
+  `/quote` matters most — it is the primary CTA on every page.
+- **Images.** Seeded content is text-only; run `npm run seed` or add real
+  photography in the Studio.
+- **All seeded copy is placeholder** (Component Spec §6). Author names are
+  fictional; prices and lead times are invented. The five categories are real.
