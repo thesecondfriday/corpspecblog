@@ -130,9 +130,16 @@ async function checkPost(route, expected) {
 
   // Images
   if (expected.hero) {
-    record(route, "hero picture with 3 breakpoint crops", count(h, "<source") >= 2, `${count(h, "<source")} sources`);
+    /*
+     * §3.7 — two crops, not three. The hero is a contained split beside the
+     * headline: square at 900px and up, 3:2 stacked below. The old full-bleed
+     * hero carried a third, tablet-only 16:9 crop; the split has no width where
+     * that ratio applies.
+     */
+    record(route, "hero picture with 2 breakpoint crops", count(h, "<source") >= 1, `${count(h, "<source")} sources`);
+    record(route, "hero is contained, not full-bleed", h.includes("art-head__media"));
   } else {
-    record(route, "hero correctly absent", !h.includes("hero__well"));
+    record(route, "hero correctly absent", !h.includes("art-head__well"));
   }
   record(route, "no unresolved image URLs", !h.includes("undefined") || !/src="[^"]*undefined/.test(h));
 }

@@ -49,6 +49,14 @@
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --type-display-size: clamp(32px, 4.6cqw, 62px);
+  /*
+   * The article headline. Smaller than --type-display-size because §3.7's split
+   * hero gives it roughly half the container rather than the full width: at 62px
+   * in a half-width column a normal headline ran to six or seven lines and
+   * overpowered the page. --type-display-size still drives full-width display
+   * type such as the index hero.
+   */
+  --type-headline-size: clamp(28px, 2.7cqw, 42px);
   --type-display-lh: 1.02;
   --type-display-ls: -0.03em;
   --type-display-weight: 800;
@@ -128,6 +136,11 @@
   --measure: 72ch; /* ≈68 chars rendered — the article column */
   --measure-narrow: 66ch; /* FAQ answers, callout body */
 
+  /* Article grid (see .article-grid in base.css). */
+  --toc-col-min: 210px;
+  --toc-col-max: 260px;
+  --article-gap: clamp(24px, 4cqw, 64px);
+
   --radius-0: 0; /* Default for cards, image wells, blocks */
   --radius-1: 2px; /* Buttons, inputs, framed chips */
   --radius-pill: 999px; /* Tag chips, search field */
@@ -136,6 +149,9 @@
   --shadow-none: none; /* Nothing in the content system casts a shadow */
   --shadow-1: 0 2px 24px rgba(20, 23, 15, 0.07); /* Overlays only */
 
+  --ratio-hero-split: 1 / 1; /* §3.7 article hero, beside the headline */
+  /* Full-bleed ratios. Unused since §3.7's hero became a contained split;
+     kept because they are part of the documented scale. */
   --ratio-hero: 21 / 9;
   --ratio-hero-tablet: 16 / 9;
   --ratio-hero-mobile: 3 / 2; /* §7: 21:9 at 390px is a 167px strip */

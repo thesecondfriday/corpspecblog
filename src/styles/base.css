@@ -76,6 +76,65 @@ img {
   padding-block: var(--section-y);
 }
 
+/*
+ * The article measure grid — §3.7 / §3.8.
+ *
+ * Three columns at desktop: the sticky TOC, the text column, and a spacer that
+ * mirrors the TOC. Both outer tracks are 1fr, so free space is split evenly and
+ * the text column lands CENTRED IN THE VIEWPORT rather than shunted right by
+ * the sidebar. The TOC keeps its own left position either way.
+ *
+ * Text alignment is untouched: this centres the column, not the copy. Long-form
+ * body copy stays ragged-right, which is what keeps it readable.
+ *
+ * Applied to the header, the body and the FAQ alike, so all three share one
+ * left edge. Below 900px it collapses to a single column and the TOC becomes
+ * the sticky top bar.
+ */
+.article-grid {
+  display: grid;
+  gap: var(--article-gap);
+}
+
+@media (min-width: 900px) {
+  .article-grid {
+    grid-template-columns:
+      minmax(var(--toc-col-min), var(--toc-col-max))
+      minmax(0, 1fr);
+    align-items: start;
+  }
+
+  /*
+   * Everything in an article is text and belongs in the text column. The TOC is
+   * the sole exception and opts into column 1 itself, so a page with no TOC
+   * still holds the same left edge instead of leaving a hole where the sidebar
+   * would be.
+   */
+  .article-grid > * {
+    grid-column: 2;
+    min-width: 0;
+  }
+}
+
+/*
+ * Wide desktop only: a third track mirrors the TOC, so the free space splits
+ * evenly and the text column sits centred in the viewport.
+ *
+ * Held back to 1200px deliberately. The mirroring spacer is bought out of the
+ * text column's width, and below this the measure pays too much for it — at
+ * 1024px it falls to about 44 characters, well under the readable range. Under
+ * 1200px the article stays left-aligned beside the TOC, which is the better
+ * trade at that size.
+ */
+@media (min-width: 1200px) {
+  .article-grid {
+    grid-template-columns:
+      minmax(var(--toc-col-min), 1fr)
+      minmax(0, var(--measure))
+      minmax(var(--toc-col-min), 1fr);
+  }
+}
+
 /* Section eyebrow + rule, used above every feed and module. */
 .rule-head {
   display: flex;

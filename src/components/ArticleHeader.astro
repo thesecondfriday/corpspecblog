@@ -25,16 +25,15 @@ const hero = post.heroImage;
 const caption = [hero?.caption, hero?.credit && `Photo: ${hero.credit}.`].filter(Boolean).join(" ");
 
 /*
- * §3.7 / §7 — the hero crop changes by breakpoint: 3:2 on mobile (a 21:9 strip
- * at 390px is 167px tall), 16:9 on tablet, 21:9 on desktop. Each is a separate
- * crop from Sanity rather than one image letterboxed by CSS, so the hotspot
- * decides what survives at every width.
+ * §3.7 / §7 — two crops, not one image letterboxed by CSS, so the hotspot
+ * decides what survives at each width. Square in the split (it sits beside the
+ * headline and wants height), 3:2 stacked on mobile, where a full-width square
+ * would push the headline below the fold.
  */
 const heroSources = hero
   ? {
       mobile: responsive(hero, { ratio: 3 / 2, max: 900 }),
-      tablet: responsive(hero, { ratio: 16 / 9, max: 1400 }),
-      desktop: responsive(hero, { ratio: 21 / 9, max: 2000 }),
+      split: responsive(hero, { ratio: 1, max: 1200 }),
     }
   : null;
 
@@ -43,8 +42,48 @@ const avatarSrc = post.author.avatar
   : null;
 ---
 
-<header class="container art-head">
-  <div class="art-head__titleblock">
+<header class:list={["container", "art-head", hero && "art-head--split"]}>
+  {
+    hero && (
+      <figure
+        class="art-head__media"
+        itemprop="image"
+        itemscope
+        itemtype="https://schema.org/ImageObject"
+      >
+        <div
+          class="art-head__well"
+          style={hero.lqip ? `background-image: url(${hero.lqip})` : undefined}
+        >
+          <picture>
+            <source
+              media="(min-width: 900px)"
+              srcset={heroSources!.split.srcset}
+              sizes={SIZES.heroSplit}
+            />
+            <img
+              src={heroSources!.mobile.src}
+              srcset={heroSources!.mobile.srcset}
+              sizes={SIZES.heroSplit}
+              alt={hero.alt}
+              itemprop="contentUrl"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
+        </div>
+        {caption && (
+          <figcaption class="art-head__caption">
+            <span class="art-head__flag" aria-hidden="true" />
+            <span itemprop="caption">{caption}</span>
+          </figcaption>
+        )}
+      </figure>
+    )
+  }
+
+  <div class="art-head__text">
+    <div class="art-head__titleblock">
     <Chip
       title={post.category.title}
       href={categoryHref(post.category.slug)}
@@ -86,52 +125,70 @@ const avatarSrc = post.author.avatar
     </time>
     {readTime && <span class="art-head__meta-item">{readTime} min read</span>}
     {post.reviewedBy && <span class="art-head__meta-item">Reviewed by {post.reviewedBy}</span>}
+    </div>
   </div>
 </header>
 
-{
-  hero && (
-    <figure class="hero" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
-      <div class="hero__well" style={hero.lqip ? `background-image: url(${hero.lqip})` : undefined}>
-        <picture>
-          <source media="(min-width: 900px)" srcset={heroSources!.desktop.srcset} sizes={SIZES.hero} />
-          <source media="(min-width: 600px)" srcset={heroSources!.tablet.srcset} sizes={SIZES.hero} />
-          <img
-            src={heroSources!.mobile.src}
-            srcset={heroSources!.mobile.srcset}
-            sizes={SIZES.hero}
-            alt={hero.alt}
-            itemprop="contentUrl"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </picture>
-      </div>
-      {caption && (
-        <figcaption class="container hero__caption">
-          <span class="hero__flag" aria-hidden="true" />
-          <span itemprop="caption">{caption}</span>
-        </figcaption>
-      )}
-    </figure>
-  )
-}
 
 <style>
+  /*
+   * §3.7 — the split hero. Image left, headline right, both above the fold,
+   * directly under the masthead and category nav.
+   *
+   * The image is CONTAINED, not full-bleed: it shares the container with the
+   * text so the two read as one unit. A full-width strip pushed the headline
+   * down the page and gave the photograph more weight than the words.
+   *
+   * With no hero the whole split collapses to a single column (§3.7: absent
+   * heroImage skips the figure entirely — never a fallback tile at hero scale).
+   */
   .art-head {
     padding-top: clamp(28px, 3.6cqw, 56px);
     padding-bottom: clamp(22px, 2.6cqw, 34px);
+    display: grid;
+    gap: clamp(24px, 3.4cqw, 56px);
   }
 
-  .art-head__titleblock {
-    /* §3.7 — title capped at 44ch for a 2–3 line ragged block, not centred. */
-    max-width: 44ch;
+  @media (min-width: 900px) {
+    .art-head--split {
+      /*
+       * The image takes slightly more than half. Even columns made the
+       * headline's ragged edge fight the photograph's hard one.
+       */
+      grid-template-columns: 1.15fr 1fr;
+      align-items: center;
+    }
   }
 
+  .art-head__text {
+    min-width: 0;
+  }
+
+  /*
+   * No hero: the text is the whole header. Hold it to the article measure and
+   * centre it over the body's column — left to itself a headline would run the
+   * full container width, far past a comfortable line length.
+   */
+  .art-head:not(.art-head--split) .art-head__text {
+    max-width: var(--measure);
+    margin-inline: auto;
+  }
+
+  /*
+   * §3.7 — title capped at 44ch for a 2–3 line ragged block, not centred.
+   *
+   * The cap belongs on the h1, not on this wrapper. `ch` resolves against the
+   * element's OWN font-size: on the wrapper it measured against the ~19px body
+   * size and came out near 400px, which wrapped a 62px display headline over
+   * six or seven lines. On the h1 it measures against the display size, the way
+   * the dek's 52ch already measures against the dek's. The text column caps the
+   * result, giving the 2–3 lines the spec asks for.
+   */
   .art-head__title {
+    max-width: 44ch;
     margin: var(--space-5) 0 0;
     font-family: var(--font-sans);
-    font-size: var(--type-display-size);
+    font-size: var(--type-headline-size);
     line-height: var(--type-display-lh);
     letter-spacing: var(--type-display-ls);
     font-weight: var(--type-display-weight);
@@ -212,31 +269,35 @@ const avatarSrc = post.author.avatar
     font-size: 11px;
   }
 
-  /* ---- Hero figure ------------------------------------------------------ */
-  .hero {
-    margin: 0 0 clamp(28px, 3.4cqw, 48px);
+  /* ---- Split hero media -------------------------------------------------- */
+  .art-head__media {
+    margin: 0;
+    min-width: 0;
   }
 
-  .hero__well {
-    /* §3.7 Responsive / §7 — mobile relaxes to 3/2 with a 200px min-height. */
+  .art-head__well {
+    /*
+     * §3.7 Responsive / §7 — 3:2 stacked on mobile. A full-width square there
+     * costs the headline its place above the fold.
+     */
     aspect-ratio: var(--ratio-hero-mobile);
-    min-height: 200px;
     background-color: var(--surface-sunken);
     background-size: cover;
     background-position: center;
+    border-radius: var(--radius-0);
     overflow: hidden;
   }
 
-  .hero__well picture,
-  .hero__well img {
+  .art-head__well picture,
+  .art-head__well img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  /* Caption sits back inside the container with a 2px --accent flag. The accent
-     flag is reserved for the hero; inline images use --border-accent (§4.3). */
-  .hero__caption {
+  /* 2px --accent flag. The accent flag is reserved for the hero; inline images
+     use --border-accent (§4.3). */
+  .art-head__caption {
     margin-top: var(--space-3);
     display: flex;
     gap: 10px;
@@ -245,27 +306,31 @@ const avatarSrc = post.author.avatar
     color: var(--text-caption);
   }
 
-  .hero__flag {
+  .art-head__flag {
     width: 2px;
     flex-shrink: 0;
     background: var(--accent);
   }
 
-  /* §3.7 Responsive — tablet: hero 16/9. */
-  @media (min-width: 600px) {
-    .hero__well {
-      aspect-ratio: var(--ratio-hero-tablet);
+  @media (min-width: 900px) {
+    /* Square in the split — it sits beside the headline and wants the height. */
+    .art-head__well {
+      aspect-ratio: var(--ratio-hero-split);
     }
   }
 
-  /* desktop+: hero 21/9, meta on one line. */
-  @media (min-width: 900px) {
-    .hero__well {
-      aspect-ratio: var(--ratio-hero);
-    }
+  /*
+   * The meta row wraps at every width. It used to be held on one line at 900px
+   * and up, which worked while the header spanned the container; in the split
+   * it has about half that, and nowrap broke the author's name across two lines
+   * before it would let the row wrap.
+   */
+  .art-head__meta {
+    flex-wrap: wrap;
+  }
 
-    .art-head__meta {
-      flex-wrap: nowrap;
-    }
+  .art-head__byline {
+    /* Keep the avatar and name together when the rest of the row wraps past. */
+    flex: 0 0 auto;
   }
 </style>

@@ -43,7 +43,7 @@ const documentFaq = hasBodyFaq ? undefined : post.faq;
 <article itemscope itemtype="https://schema.org/BlogPosting">
   <ArticleHeader post={post} />
 
-  <div class="container post-body">
+  <div class="container article-grid post-body">
     {withToc && <TableOfContents headings={headings} shareUrl={url} shareTitle={post.title} />}
 
     <div class="prose" itemprop="articleBody" data-article-body>
@@ -54,7 +54,7 @@ const documentFaq = hasBodyFaq ? undefined : post.faq;
 
   {
     documentFaq && documentFaq.length > 0 && (
-      <section class="container post-faq">
+      <section class="container article-grid post-faq">
         <FaqBlock items={documentFaq} standalone />
       </section>
     )
@@ -75,30 +75,26 @@ const documentFaq = hasBodyFaq ? undefined : post.faq;
 <style>
   .post-body {
     padding-bottom: var(--section-y);
-    display: grid;
-    gap: clamp(24px, 4cqw, 64px);
   }
 
   .post-faq {
     padding-bottom: clamp(34px, 4.4cqw, 60px);
   }
 
-  .post-faq :global(.faq) {
-    max-width: 78ch;
-  }
-
-  /* §3.8 Responsive — at 900px and up the TOC becomes a 210–260px sticky
-     sidebar left of the prose. Below that it is the sticky bar, first in the
-     single column. */
+  /*
+   * Column placement. Layout lives in .article-grid (base.css); this is only
+   * the TOC opting out of the centre column into the sidebar.
+   *
+   * §3.8 Responsive — at 900px and up the TOC is a 210–260px sticky sidebar
+   * left of the prose. Below that it is the sticky bar, first in the single
+   * column, and the grid is one column, so no placement is needed.
+   */
   @media (min-width: 900px) {
-    .post-body {
-      grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
-      align-items: start;
-    }
-
-    /* With no TOC the prose takes the full width rather than leaving a gap. */
-    .post-body > .prose:only-child {
-      grid-column: 1 / -1;
+    .post-body > :global(.toc) {
+      grid-column: 1;
+      /* The track is 1fr and can outgrow the sidebar's specified width. */
+      max-width: var(--toc-col-max);
+      justify-self: start;
     }
   }
 </style>
