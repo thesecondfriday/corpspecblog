@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "The Swag Desk — Corporate Specialties content hub. Astro front end built to Component Spec v1.0.",
+  "description": "The Swag Desk \u2014 Corporate Specialties content hub. Astro front end built to Component Spec v1.0.",
+  "engines": {
+    "node": ">=22.20.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
