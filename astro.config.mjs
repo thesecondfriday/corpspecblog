@@ -20,9 +20,11 @@ const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
  * integration. These are public identifiers — they ship in the client bundle —
  * so a default costs nothing and removes a first-deploy failure.
  */
-const PUBLIC_SANITY_PROJECT_ID = env.PUBLIC_SANITY_PROJECT_ID ?? "8og1x4eu";
-const PUBLIC_SANITY_DATASET = env.PUBLIC_SANITY_DATASET ?? "production";
-const PUBLIC_SANITY_API_HOST = env.PUBLIC_SANITY_API_HOST;
+const PUBLIC_SANITY_PROJECT_ID =
+  env.PUBLIC_SANITY_PROJECT_ID ?? env.SANITY_PROJECT_ID ?? "8og1x4eu";
+const PUBLIC_SANITY_DATASET =
+  env.PUBLIC_SANITY_DATASET ?? env.SANITY_DATASET ?? "production";
+const PUBLIC_SANITY_API_HOST = env.PUBLIC_SANITY_API_HOST ?? env.SANITY_API_HOST;
 
 /*
  * Flag 7 — `redirectFrom` is the one field no component can render: it is a

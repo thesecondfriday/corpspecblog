@@ -12,8 +12,31 @@ import { createClient, type ClientPerspective } from "@sanity/client";
  * prerendered page, so the token cannot leak into built HTML.
  */
 
-export const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
-export const dataset = import.meta.env.PUBLIC_SANITY_DATASET;
+/*
+ * Resolved in three steps, so the build works whatever the host is configured
+ * with:
+ *
+ *   1. PUBLIC_SANITY_PROJECT_ID — Astro's convention. The PUBLIC_ prefix is
+ *      what makes a variable available to client-side code as well as the
+ *      server. Prefer this one.
+ *   2. SANITY_PROJECT_ID — server-only, for hosts whose UI discourages a
+ *      PUBLIC_ prefix. Everything here runs at build time, so this is enough.
+ *   3. A literal default. These are public identifiers — they ship in the
+ *      built output regardless — so hard-defaulting them costs no secrecy and
+ *      turns a failed deploy into a working one.
+ *
+ * Without step 3 a host with neither variable set fails the build with
+ * "Configuration must contain `projectId`", which names nothing useful.
+ */
+export const projectId =
+  import.meta.env.PUBLIC_SANITY_PROJECT_ID ??
+  import.meta.env.SANITY_PROJECT_ID ??
+  "8og1x4eu";
+
+export const dataset =
+  import.meta.env.PUBLIC_SANITY_DATASET ??
+  import.meta.env.SANITY_DATASET ??
+  "production";
 
 /** Pinned: a floating version would let a dated API change break a build silently. */
 export const apiVersion = "2026-08-24";
@@ -24,7 +47,8 @@ export const apiVersion = "2026-08-24";
  * the real queries can be verified without network access. Unset in every
  * normal build and deploy.
  */
-const apiHost = import.meta.env.PUBLIC_SANITY_API_HOST || undefined;
+const apiHost =
+  import.meta.env.PUBLIC_SANITY_API_HOST || import.meta.env.SANITY_API_HOST || undefined;
 
 export const client = createClient({
   projectId,
