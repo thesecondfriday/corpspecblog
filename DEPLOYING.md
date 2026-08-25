@@ -36,6 +36,7 @@ Project → **Settings → Environment Variables**. Add to **Production** *and*
 | --- | --- | --- |
 | `PUBLIC_SANITY_PROJECT_ID` | `8og1x4eu` | the site |
 | `PUBLIC_SANITY_DATASET` | `production` | the site |
+| `SANITY_READ_TOKEN` | a **Viewer** token | **the site, if the dataset is private** |
 | `SANITY_VIEWER_TOKEN` | a **Viewer** token | draft preview only |
 | `PREVIEW_SECRET` | any random string | draft preview only |
 
@@ -43,6 +44,29 @@ The first two are defaulted in the config, so the build succeeds without them �
 set them anyway, so pointing at a different dataset is a config change rather
 than a code change. The last two are only needed if you want `/preview/…` to
 work; leave them out and the rest of the site is unaffected.
+
+### `SANITY_READ_TOKEN` — read this if your site builds green but has no posts
+
+A **private** dataset does not reject an unauthenticated request. Per Sanity's
+docs it answers with **HTTP 200 and an empty result** in the shape you asked
+for. Nothing errors. So the build fetches zero posts, every page still
+generates, the deploy goes green, and you get a site with an empty feed and no
+explanation anywhere.
+
+If that is happening, set `SANITY_READ_TOKEN` to a **Viewer** token from
+https://www.sanity.io/manage/project/8og1x4eu/api#tokens and redeploy.
+
+The build log says which case you are in, near the top:
+
+```
+[content] project 8og1x4eu, dataset production, token sent
+[content] 5 post(s), 5 category/ies published
+```
+
+`0 post(s)` together with `token NOT sent` is this exact problem.
+
+**Do not give it a `PUBLIC_` prefix.** That prefix is what exposes a variable to
+browser code. Without it the token stays server-side, where the build uses it.
 
 Viewer token: https://www.sanity.io/manage/project/8og1x4eu/api#tokens —
 **Viewer**, not Editor. It only needs to read drafts.

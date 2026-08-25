@@ -27,6 +27,13 @@ const PUBLIC_SANITY_DATASET =
 const PUBLIC_SANITY_API_HOST = env.PUBLIC_SANITY_API_HOST ?? env.SANITY_API_HOST;
 
 /*
+ * Optional read token, needed only for a private dataset. Never PUBLIC_
+ * prefixed — it must not reach the browser. See src/sanity/lib/client.ts for
+ * why a missing token here is so easy to misdiagnose.
+ */
+const SANITY_READ_TOKEN = env.SANITY_READ_TOKEN || env.SANITY_VIEWER_TOKEN || undefined;
+
+/*
  * Flag 7 — `redirectFrom` is the one field no component can render: it is a
  * routing concern, so it is consumed here.
  *
@@ -44,6 +51,7 @@ async function redirectsFromSanity() {
       apiVersion: "2026-08-24",
       useCdn: false,
       perspective: "published",
+      ...(SANITY_READ_TOKEN ? { token: SANITY_READ_TOKEN } : {}),
       ...(PUBLIC_SANITY_API_HOST
         ? { apiHost: PUBLIC_SANITY_API_HOST, useProjectHostname: false }
         : {}),
@@ -105,6 +113,7 @@ async function reportContent() {
       apiVersion: "2026-08-24",
       useCdn: false,
       perspective: "published",
+      ...(SANITY_READ_TOKEN ? { token: SANITY_READ_TOKEN } : {}),
       ...(PUBLIC_SANITY_API_HOST
         ? { apiHost: PUBLIC_SANITY_API_HOST, useProjectHostname: false }
         : {}),
@@ -116,17 +125,30 @@ async function reportContent() {
       "orphans": count(*[_type == "post" && defined(slug.current) && !defined(category->slug.current)])
     }`);
 
-    console.log(`[content] ${target}`);
+    console.log(`[content] ${target}, token ${SANITY_READ_TOKEN ? "sent" : "NOT sent"}`);
     console.log(
       `[content] ${counts.posts} post(s), ${counts.categories} category/ies published`,
     );
 
     if (counts.posts === 0) {
       console.warn(
-        `[content] NO POSTS FOUND. The build will produce a site with an empty feed.\n` +
-          `[content] The dataset above is what this build read. If your content is\n` +
-          `[content] elsewhere, set PUBLIC_SANITY_PROJECT_ID / PUBLIC_SANITY_DATASET.`,
+        `[content] NO POSTS FOUND. The build will produce a site with an empty feed.`,
       );
+      if (!SANITY_READ_TOKEN) {
+        // The likeliest cause by far, and the one that gives no other signal:
+        // an unauthenticated read of a private dataset returns 200 + nothing.
+        console.warn(
+          `[content] This build sent NO TOKEN. A private dataset answers an\n` +
+            `[content] unauthenticated query with HTTP 200 and an empty result — it\n` +
+            `[content] does not error. If the dataset above is private, set\n` +
+            `[content] SANITY_READ_TOKEN to a Viewer token and redeploy.`,
+        );
+      } else {
+        console.warn(
+          `[content] A token was sent, so the dataset above genuinely has no\n` +
+            `[content] published posts. Check you are pointed at the right dataset.`,
+        );
+      }
     }
 
     // A post whose category reference is missing or unpublished has no URL to

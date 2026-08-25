@@ -50,11 +50,40 @@ export const apiVersion = "2026-08-24";
 const apiHost =
   import.meta.env.PUBLIC_SANITY_API_HOST || import.meta.env.SANITY_API_HOST || undefined;
 
+/*
+ * A read token for the published content fetch.
+ *
+ * Optional, and only needed when the dataset is private. It matters more than
+ * it looks: an unauthenticated request to a PRIVATE dataset does not fail. Per
+ * Sanity's docs it returns HTTP 200 with an empty result in the requested
+ * shape — so the build succeeds, every getStaticPaths gets an empty array, and
+ * you ship a site with no content and no error anywhere to explain it.
+ *
+ * Not PUBLIC_ prefixed, deliberately: that prefix is what would expose it to
+ * client-side code. Every use of this client is build-time and server-side, so
+ * the token never reaches the browser.
+ *
+ * Read from both import.meta.env and process.env because non-prefixed
+ * variables reach these two differently depending on whether the code is
+ * running under Vite's transform or plain Node.
+ */
+function readEnv(name: string): string | undefined {
+  return (
+    (import.meta.env as Record<string, string | undefined>)[name] ??
+    (typeof process !== "undefined" ? process.env?.[name] : undefined) ??
+    undefined
+  );
+}
+
+/** SANITY_VIEWER_TOKEN is the draft-preview token; reuse it rather than demand a second one. */
+export const readToken = readEnv("SANITY_READ_TOKEN") ?? readEnv("SANITY_VIEWER_TOKEN");
+
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
   ...(apiHost ? { apiHost, useProjectHostname: false } : {}),
+  ...(readToken ? { token: readToken } : {}),
   // Content is fetched at build time, so the CDN would only serve staleness.
   useCdn: false,
   perspective: "published" satisfies ClientPerspective,
