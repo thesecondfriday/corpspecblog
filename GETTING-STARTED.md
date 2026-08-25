@@ -17,10 +17,15 @@ seven steps run on **your** machine. Budget five minutes.
 node -v
 ```
 
-Must be **v22.12 or higher** — both Astro 7 and Sanity 6 require it. If it's
-older, install a current Node (`nvm install 22 && nvm use 22`, or download from
-nodejs.org) before continuing. Everything below fails in confusing ways on an
-old Node.
+Use **v22.20 or higher**. Astro 7 and Sanity 6 themselves only require 22.12,
+but two transitive dependencies want more: `undici` (which is what
+`@sanity/client` actually makes HTTP calls through) needs 22.19+, and `skills`
+needs 22.20+. On 22.14 you get EBADENGINE warnings at install and a real risk of
+a runtime failure inside the Sanity client.
+
+```bash
+nvm install 22.20 && nvm use 22.20     # or install Node 24 LTS
+```
 
 ---
 
@@ -30,7 +35,12 @@ old Node.
 git clone https://github.com/thesecondfriday/corpspecblog
 cd corpspecblog
 git checkout claude/swag-content-hub-6ferhj
+git pull                                # essential if the clone already existed
 ```
+
+**If the clone already existed**, `git clone` fails with "destination path
+already exists" and you keep whatever that directory had — which may predate the
+commits that add the deploy script. `git pull` is what makes that safe.
 
 Confirm you're on the right commit:
 
@@ -178,6 +188,11 @@ MCP connection) can read the field definitions. Harmless, and useful later.
 ---
 
 ## Troubleshooting
+
+**`npm error Missing script: "studio:deploy"`** — one of two things. Either
+you're not in the repo directory (`pwd` should end in `/corpspecblog`), or your
+checkout predates the commit that added the script. `git pull`, then
+`npm run` on its own to list what's available.
 
 **`sanity: command not found`** — use `npx sanity …` or the `npm run` scripts;
 the CLI is a local dependency, not global.
