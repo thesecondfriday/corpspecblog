@@ -239,7 +239,7 @@ export const post = defineType({
       group: "media",
       options: { hotspot: true },
       description:
-        "Upload wide — 21:9 or wider. It's cropped narrower on phones, so set the hotspot on the part that must stay visible. No image is fine: cards fall back to a monogram tile and the article just leads with the headline.",
+        "Upload roughly square to 4:3, at least 1600px on the long edge. It sits beside the headline as a square on desktop and is cropped to a 3:2 letterbox on phones, so set the hotspot on what has to survive both. Avoid very wide panoramas — the square crop throws most of one away. No image is fine: cards fall back to a monogram tile and the article just leads with the headline.",
       fields: [
         defineField({
           name: "alt",
