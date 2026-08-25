@@ -1,13 +1,25 @@
-# Get the Studio on the web — from a cold terminal
+# The Swag Desk — Studio and blog
 
-Your content is **already in Sanity**: 31 published documents in CSBLOG
-(`8og1x4eu` / `production`). What's missing is the Studio — the app you edit
-content in. `sanity.io/manage` is only the admin console (datasets, tokens,
-members); it has no editor. That's why you saw nothing.
+**The Studio is live: https://corpspecblog.sanity.studio**
 
-A Studio has to be built and uploaded from a machine that can reach sanity.io.
-This build environment can't (its egress policy blocks the domain), so these
-seven steps run on **your** machine. Budget five minutes.
+It holds 31 published documents in CSBLOG (`8og1x4eu` / `production`):
+5 posts (one per category), 5 categories, 9 tags, 4 authors, 2 products.
+
+Note that `sanity.io/manage` is only the admin console — datasets, tokens,
+members. It has no content editor, which is why the Studio was not visible
+there before it was deployed.
+
+Steps 0–4 below are the deploy, kept for when you need to redeploy after a
+schema change. **Steps 5–7 are what's left to do.**
+
+To redeploy after editing a schema:
+
+```bash
+npm run studio:deploy
+```
+
+The hostname and application id are both pinned in `sanity.cli.ts`, so it
+redeploys over the same Studio without prompting.
 
 ---
 

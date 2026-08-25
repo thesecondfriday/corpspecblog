@@ -24,4 +24,14 @@ export default defineCliConfig({
    * origins, so the hosted Studio works on the first deploy.
    */
   studioHost: "corpspecblog",
+
+  deployment: {
+    /*
+     * Assigned by Sanity on the first `sanity deploy`. Pinning it here stops
+     * the CLI prompting for an application id on every subsequent deploy, and
+     * guarantees redeploys land on the same hosted Studio rather than creating
+     * a second one. Not a secret — it is an application identifier.
+     */
+    appId: "ehrtep6gqamckiyfh0pkzqls",
+  },
 });
