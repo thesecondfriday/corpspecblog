@@ -73,6 +73,19 @@
   --type-h3-lh: 1.28;
   --type-h3-ls: -0.014em;
 
+  --type-h4-size: clamp(17px, 1.7cqw, 20px);
+  --type-h4-lh: 1.35;
+  --type-h4-ls: -0.008em;
+
+  /*
+   * H5 lands at or below body size, where a bigger-and-bolder treatment stops
+   * reading as a heading. Uppercase and letterspaced instead, so the level is
+   * legible without the scale.
+   */
+  --type-h5-size: clamp(14.5px, 1.35cqw, 16px);
+  --type-h5-lh: 1.4;
+  --type-h5-ls: 0.08em;
+
   --type-card-lg-size: clamp(23px, 1.9cqw, 25px);
   --type-card-lg-lh: 1.16;
   --type-card-lg-ls: -0.02em;

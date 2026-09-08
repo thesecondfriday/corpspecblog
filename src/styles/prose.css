@@ -4,9 +4,9 @@
  * inserting anything. Insertable blocks (§4.2–§4.8) are components, not rules
  * in here; the only thing this file says about them is the spacing law.
  *
- * Allowed styles: normal, h2, h3, blockquote. Lists: bullet, number.
- * Marks: strong, em, link, code. No h1, no h4+, no underline, no text colour,
- * no font-size overrides, no centred text.
+ * Allowed styles: normal, h2, h3, h4, h5, blockquote. Lists: bullet, number.
+ * Marks: strong, em, link, code. No h1 (the page owns it), no underline, no
+ * text colour, no font-size overrides, no centred text.
  */
 
 .prose {
@@ -47,6 +47,30 @@
   scroll-margin-top: 90px;
 }
 
+.prose > h4 {
+  margin: 26px 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--type-h4-size);
+  line-height: var(--type-h4-lh);
+  letter-spacing: var(--type-h4-ls);
+  font-weight: 800;
+  color: var(--text-primary);
+  scroll-margin-top: 90px;
+}
+
+/* Uppercase rather than larger — see --type-h5-size in tokens.css. */
+.prose > h5 {
+  margin: 24px 0 var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--type-h5-size);
+  line-height: var(--type-h5-lh);
+  letter-spacing: var(--type-h5-ls);
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-primary);
+  scroll-margin-top: 90px;
+}
+
 /* Heading spacing scales down ~20% below 600px (§4.1 Responsive). */
 @media (max-width: 599px) {
   .prose > h2 {
@@ -55,6 +79,11 @@
 
   .prose > h3 {
     margin-top: var(--space-6);
+  }
+
+  .prose > h4,
+  .prose > h5 {
+    margin-top: var(--space-5);
   }
 }
 
@@ -156,7 +185,9 @@
 }
 
 .prose > h2 + .block,
-.prose > h3 + .block {
+.prose > h3 + .block,
+.prose > h4 + .block,
+.prose > h5 + .block {
   margin-top: var(--block-y-after-heading);
 }
 

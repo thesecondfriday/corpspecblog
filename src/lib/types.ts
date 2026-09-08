@@ -229,7 +229,8 @@ export type BodyNode = PortableTextBlock | CustomBlock;
 
 /** §3.8 — derived from body at build; the CMS never authors these. */
 export interface Heading {
-  level: 2 | 3;
+  /** h2-h5. The TOC lists 2 and 3; 4 and 5 exist for their anchor ids. */
+  level: 2 | 3 | 4 | 5;
   text: string;
   slug: string;
 }

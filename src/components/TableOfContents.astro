@@ -33,6 +33,12 @@ interface Props {
 }
 
 const { headings, shareUrl, shareTitle } = Astro.props;
+
+/*
+ * h4 and h5 are rendered and anchored, but not listed here — a four-level
+ * contents list is noise, and the sidebar only has two indent steps.
+ */
+const listed = headings.filter((heading) => heading.level <= 3);
 const sectionCount = headings.filter((h) => h.level === 2).length;
 ---
 
@@ -55,7 +61,7 @@ const sectionCount = headings.filter((h) => h.level === 2).length;
     hidden
   >
     {
-      headings.map((heading) => (
+      listed.map((heading) => (
         <a
           class:list={["toc__row", heading.level === 3 && "toc__row--sub"]}
           href={`#${heading.slug}`}

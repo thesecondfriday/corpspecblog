@@ -1,0 +1,5 @@
+---
+/* §4.1 H4. Same slug contract as H2 — id comes from PortableText.astro. */
+const { node } = Astro.props;
+---
+<h4 id={node._slug}><slot /></h4>

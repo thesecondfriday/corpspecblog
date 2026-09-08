@@ -56,7 +56,7 @@ const BATCH_SIZE = 50;
  * below re-reads the real file and fails loudly if the two ever drift apart.
  */
 const PT_SOURCE = path.join(ROOT, "src/sanity/schemaTypes/objects/portableText.ts");
-const STYLES = ["normal", "h2", "h3", "blockquote"];
+const STYLES = ["normal", "h2", "h3", "h4", "h5", "blockquote"];
 const LISTS = ["bullet", "number"];
 const DECORATORS = ["strong", "em", "code"];
 

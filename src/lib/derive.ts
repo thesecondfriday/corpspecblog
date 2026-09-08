@@ -35,9 +35,20 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+const HEADING_STYLES = ["h2", "h3", "h4", "h5"] as const;
+
 /**
- * §3.8 — headings derived from the body. H4+ is ignored (the schema doesn't
- * offer them). List items carry `listItem` and are never headings.
+ * §3.8 — headings derived from the body, h2 through h5.
+ *
+ * Every heading level gets an entry, so every heading gets a stable anchor id
+ * and can be linked to directly. Which of them the table of contents actually
+ * lists is TableOfContents.astro's decision, not this function's.
+ *
+ * PortableText.astro consumes this list positionally, so the set of styles
+ * matched here and the set it annotates have to stay identical — otherwise the
+ * cursor slips and every heading after the first h4 gets the wrong anchor.
+ *
+ * List items carry `listItem` and are never headings.
  */
 export function getHeadings(body: BodyNode[] = []): Heading[] {
   const seen = new Map<string, number>();
@@ -45,7 +56,7 @@ export function getHeadings(body: BodyNode[] = []): Heading[] {
   return body.flatMap((node) => {
     if (!isProse(node)) return [];
     if (node.listItem) return [];
-    if (node.style !== "h2" && node.style !== "h3") return [];
+    if (!HEADING_STYLES.includes(node.style as (typeof HEADING_STYLES)[number])) return [];
 
     const text = plainText(node);
     if (!text) return [];
@@ -56,7 +67,7 @@ export function getHeadings(body: BodyNode[] = []): Heading[] {
     seen.set(slug, priorCount + 1);
     if (priorCount > 0) slug = `${slug}-${priorCount + 1}`;
 
-    return [{ level: node.style === "h2" ? 2 : 3, text, slug } as Heading];
+    return [{ level: Number(node.style!.slice(1)), text, slug } as Heading];
   });
 }
 

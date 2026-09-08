@@ -32,6 +32,8 @@ import ResourceDownload from "./blocks/ResourceDownload.astro";
 
 import Heading2 from "./prose/Heading2.astro";
 import Heading3 from "./prose/Heading3.astro";
+import Heading4 from "./prose/Heading4.astro";
+import Heading5 from "./prose/Heading5.astro";
 import Paragraph from "./prose/Paragraph.astro";
 import ProseLink from "./prose/ProseLink.astro";
 import UnknownType from "./prose/UnknownType.astro";
@@ -61,10 +63,17 @@ const dropcapKey =
 /*
  * Heading slugs are consumed in document order, matching getHeadings(), so the
  * anchor a heading renders is by construction the one the TOC links to.
+ *
+ * This list must stay identical to HEADING_STYLES in lib/derive.ts. They are
+ * two halves of one positional contract: getHeadings() produces the slugs and
+ * this consumes them in the same order, so a style matched in one place and not
+ * the other slides every subsequent anchor onto the wrong heading.
  */
+const HEADING_STYLES = ["h2", "h3", "h4", "h5"];
+
 let cursor = 0;
 const annotated = body.map((node) => {
-  if (isProse(node) && !isListItem(node) && (styleOf(node) === "h2" || styleOf(node) === "h3")) {
+  if (isProse(node) && !isListItem(node) && HEADING_STYLES.includes(styleOf(node) ?? "")) {
     return { ...node, _slug: headings[cursor++]?.slug };
   }
   if ((node as { _key?: string })._key === dropcapKey) {
@@ -77,7 +86,7 @@ const annotated = body.map((node) => {
 <PortableText
   value={annotated}
   components={{
-    block: { h2: Heading2, h3: Heading3, normal: Paragraph },
+    block: { h2: Heading2, h3: Heading3, h4: Heading4, h5: Heading5, normal: Paragraph },
     mark: { link: ProseLink },
     type: {
       pullQuote: PullQuote,
