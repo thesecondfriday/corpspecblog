@@ -132,6 +132,49 @@ function deriveSlug(rawUrl) {
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const escAttr = (s) => esc(s).replace(/"/g, "&quot;");
 
+/*
+ * The old site ran Cloudflare email obfuscation and the scrape captured the
+ * debris rather than the address: a literal "[email protected]" placeholder,
+ * in 22 cases wrapped in a broken markdown link whose href is the character
+ * "x". All 69 occurrences sit in the same closing CTA shape —
+ *
+ *   "Contact us at [email protected] or book an appointment at <url> today."
+ *
+ * so the dead email clause is cut and the booking half of the sentence kept,
+ * which leaves real prose rather than a gap:
+ *
+ *   "Book an appointment at <url> today."
+ *
+ * verifyNoPlaceholders() below is the backstop: if a shape ever turns up that
+ * these rules do not cover, the run aborts rather than importing the debris.
+ */
+const EMAIL_PLACEHOLDER = /\[\[email protected\]\]\(x\)|\[email protected\]/gi;
+const EMAIL_CTA =
+  /\b(?:contact us|reach out|drop us a line|drop a line|shoot us a note|email us|e-mail us)\s+(?:at|to)\s+(?:\[\[email protected\]\]\(x\)|\[email protected\])\s+or\s+(book\b)/gi;
+
+function stripEmailPlaceholders(text, stats) {
+  return text.replace(EMAIL_CTA, (match, book, offset, full) => {
+    stats.emailCtasCleaned += 1;
+    // Cutting the lead-in can leave "book" starting the sentence.
+    const before = full.slice(0, offset).replace(/[ \t]+$/, "");
+    const startsSentence = before === "" || /[.!?:]["'”’)]?$/.test(before) || before.endsWith("\n");
+    return startsSentence ? "Book" : book;
+  });
+}
+
+/* Hard stop: never import the debris just because a shape was missed. */
+function verifyNoPlaceholders(text, row) {
+  EMAIL_PLACEHOLDER.lastIndex = 0;
+  const left = text.match(EMAIL_PLACEHOLDER);
+  if (!left) return;
+  const sample = text.slice(Math.max(0, text.indexOf(left[0]) - 90), text.indexOf(left[0]) + 90);
+  throw new Error(
+    `Row ${row.rowNumber} (${row.url}) still has ${left.length} email placeholder(s) after cleanup.\n` +
+      `Context: ...${sample.replace(/\n/g, " ")}...\n` +
+      `Add the surrounding phrasing to EMAIL_CTA in this script, then re-run. Nothing was written.`,
+  );
+}
+
 const BULLET_RE = /^[-*•]\s+(.+)$/;
 const NUMBER_RE = /^\d+[.)]\s+(.+)$/;
 const URL_RE = /https?:\/\/[^\s<>"'\)\]]+/g;
@@ -332,15 +375,18 @@ async function main() {
 
     const stats = {
       headings: 0, paragraphs: 0, bulletLists: 0, numberLists: 0, links: 0, oldDomainLinks: 0,
+      emailCtasCleaned: 0,
     };
-    const html = textToHtml(row.body, stats);
+    const cleanedBody = stripEmailPlaceholders(row.body, stats);
+    verifyNoPlaceholders(cleanedBody, row);
+    const html = textToHtml(cleanedBody, stats);
     const blocks = htmlToBlocks(html, blockContentType, {
       parseHtml,
       keyGenerator: makeKeyGenerator(),
     });
 
     // Images: log, never upload. The source has none, but a later sheet might.
-    const found = [...row.body.matchAll(/https?:\/\/[^\s<>"'\)\]]+\.(?:jpe?g|png|gif|webp|svg|avif)/gi)].map((m) => m[0]);
+    const found = [...cleanedBody.matchAll(/https?:\/\/[^\s<>"'\)\]]+\.(?:jpe?g|png|gif|webp|svg|avif)/gi)].map((m) => m[0]);
     if (found.length) imageAudit.push({ url: row.url, slug: row.slug, images: found });
 
     if (!blocks.length) {
@@ -349,21 +395,10 @@ async function main() {
       continue;
     }
 
-    /*
-     * The old site ran Cloudflare email obfuscation and the scrape captured the
-     * debris: a literal "[email protected]" placeholder, sometimes wrapped in a
-     * broken markdown link whose href is the single character "x". It is real
-     * text in the source, so it is imported verbatim rather than guessed at —
-     * but every affected post is flagged here for a manual pass.
-     */
-    const emailDebris = (row.body.match(/\[email protected\]/g) ?? []).length;
-    const brokenLinks = (row.body.match(/\]\(x\)/g) ?? []).length;
-    if (emailDebris) warnings.push(`REVIEW:obfuscated-email-placeholder:${emailDebris}`);
-    if (brokenLinks) warnings.push(`REVIEW:broken-markdown-link:${brokenLinks}`);
-
+    if (stats.emailCtasCleaned) warnings.push(`cleaned-email-cta:${stats.emailCtasCleaned}`);
     if (stats.headings === 0) warnings.push("no-h2-detected");
-    if (row.body.length > 25000) warnings.push("very-long-body");
-    if (!row.body.includes("\n\n")) warnings.push("single-paragraph-body");
+    if (cleanedBody.length > 25000) warnings.push("very-long-body");
+    if (!cleanedBody.includes("\n\n")) warnings.push("single-paragraph-body");
     if (stats.oldDomainLinks > 0) warnings.push(`old-domain-links:${stats.oldDomainLinks}`);
     if (found.length) warnings.push(`images-found:${found.length}`);
 
@@ -383,7 +418,7 @@ async function main() {
     });
 
     reportRows.push([
-      row.rowNumber, row.url, row.slug, row.heading, row.body.length, blocks.length,
+      row.rowNumber, row.url, row.slug, row.heading, cleanedBody.length, blocks.length,
       stats.headings, stats.bulletLists + stats.numberLists, stats.links, found.length,
       warnings.join(" | "),
     ]);
