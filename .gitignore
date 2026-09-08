@@ -14,3 +14,6 @@ npm-debug.log*
 .sanity/
 
 .vercel/
+
+# Migration: regenerated build artifact, ~1MB. The CSV reports are committed.
+migration/output/preview.ndjson
