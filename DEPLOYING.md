@@ -40,6 +40,10 @@ Project → **Settings → Environment Variables**. Add to **Production** *and*
 | `SANITY_VIEWER_TOKEN` | a **Viewer** token | draft preview only |
 | `PREVIEW_SECRET` | any random string | draft preview only |
 
+**No write token belongs here.** The deployed site only ever reads. Scripts that
+change content run from your machine and read `.env.local` — see
+[WRITING-TO-SANITY.md](WRITING-TO-SANITY.md).
+
 The first two are defaulted in the config, so the build succeeds without them —
 set them anyway, so pointing at a different dataset is a config change rather
 than a code change. The last two are only needed if you want `/preview/…` to

@@ -1,8 +1,11 @@
 /*
  * Migrates the legacy corporatespecialties.com/blog posts into Sanity as DRAFTS.
  *
- *   node scripts/migrate-blog.mjs --dry-run     write the report, touch nothing
- *   SANITY_WRITE_TOKEN=sk... node scripts/migrate-blog.mjs
+ *   npm run migrate:blog:dry      write the report, touch nothing
+ *   npm run migrate:blog          the real import
+ *
+ * Both read .env.local automatically (see .env.local.example). Add
+ * --dataset=<name> to rehearse against a scratch dataset before production.
  *
  * Source: migration/source/corporate_specialties_blogs.xlsx — three columns,
  * URL / H1 / Body Copy. Nothing else. Fields the sheet does not contain (dek,
@@ -32,6 +35,12 @@ const SOURCE = path.join(ROOT, "migration/source/corporate_specialties_blogs.xls
 const OUT_DIR = path.join(ROOT, "migration/output");
 
 const DRY_RUN = process.argv.includes("--dry-run");
+
+/** --dataset=staging / --project=abc123 override the env, for a rehearsal run. */
+const flag = (name) => {
+  const hit = process.argv.find((arg) => arg.startsWith(`--${name}=`));
+  return hit ? hit.slice(name.length + 3) : undefined;
+};
 
 /* A numbered chunk longer than this is prose that happens to start with a
  * digit, not a listicle heading. Every real heading in the source is <= 91. */
@@ -314,15 +323,19 @@ async function main() {
   await assertSchemaInSync();
   await mkdir(OUT_DIR, { recursive: true });
 
-  const projectId = process.env.PUBLIC_SANITY_PROJECT_ID ?? "8og1x4eu";
-  const dataset = process.env.PUBLIC_SANITY_DATASET ?? "production";
+  const projectId = flag("project") ?? process.env.PUBLIC_SANITY_PROJECT_ID ?? "8og1x4eu";
+  const dataset = flag("dataset") ?? process.env.PUBLIC_SANITY_DATASET ?? "production";
   const token = process.env.SANITY_WRITE_TOKEN;
 
   if (!token && !DRY_RUN) {
-    console.error("Missing SANITY_WRITE_TOKEN (needs Editor permission).");
-    console.error(`Create one at https://www.sanity.io/manage/project/${projectId}/api#tokens`);
-    console.error("Then:  SANITY_WRITE_TOKEN=sk... node scripts/migrate-blog.mjs");
-    console.error("Or preview without writing:  node scripts/migrate-blog.mjs --dry-run");
+    console.error("Missing SANITY_WRITE_TOKEN (needs the Editor role).\n");
+    console.error("Set it up once and every script here picks it up automatically:");
+    console.error("  1. cp .env.local.example .env.local");
+    console.error(`  2. Create an Editor token at https://www.sanity.io/manage/project/${projectId}/api#tokens`);
+    console.error("  3. Paste it after SANITY_WRITE_TOKEN= in .env.local");
+    console.error("  4. npm run migrate:blog\n");
+    console.error(".env.local is gitignored, so the token never reaches GitHub.");
+    console.error("Preview without writing anything:  npm run migrate:blog:dry");
     process.exit(1);
   }
 
