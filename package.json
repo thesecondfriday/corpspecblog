@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "The Swag Desk — Corporate Specialties content hub. Astro front end built to Component Spec v1.0.",
+  "description": "The Swag Desk \u2014 Corporate Specialties content hub. Astro front end built to Component Spec v1.0.",
   "engines": {
     "node": ">=22.20.0"
   },
@@ -14,6 +14,8 @@
     "check": "astro check",
     "seed": "node scripts/seed.mjs",
     "seed:dry": "node scripts/seed.mjs --dry-run",
+    "migrate:blog": "node scripts/migrate-blog.mjs",
+    "migrate:blog:dry": "node scripts/migrate-blog.mjs --dry-run",
     "verify": "node scripts/verify.mjs dist/client",
     "studio:deploy": "sanity deploy",
     "schema:deploy": "sanity schema deploy",
