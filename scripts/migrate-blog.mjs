@@ -133,45 +133,70 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 const escAttr = (s) => esc(s).replace(/"/g, "&quot;");
 
 /*
- * The old site ran Cloudflare email obfuscation and the scrape captured the
- * debris rather than the address: a literal "[email protected]" placeholder,
- * in 22 cases wrapped in a broken markdown link whose href is the character
- * "x". All 69 occurrences sit in the same closing CTA shape —
+ * Contact details are stripped from every imported body, so the articles carry
+ * the booking link as their only call to action.
  *
- *   "Contact us at [email protected] or book an appointment at <url> today."
+ * Two shapes appear in the source. Most posts end with
  *
- * so the dead email clause is cut and the booking half of the sentence kept,
- * which leaves real prose rather than a gap:
+ *   "Contact us at <address> or book an appointment at <url> today."
+ *
+ * where <address> is either a real hello@ address or, in 69 cases, the debris
+ * Cloudflare's email obfuscation left behind when the old site was scraped —
+ * a literal "[email protected]" placeholder, 22 times wrapped in a broken
+ * markdown link whose href is the single character "x". For those the dead
+ * clause is cut and the booking half kept, recapitalised where the cut leaves
+ * it starting a sentence:
  *
  *   "Book an appointment at <url> today."
  *
- * verifyNoPlaceholders() below is the backstop: if a shape ever turns up that
- * these rules do not cover, the run aborts rather than importing the debris.
+ * One post instead ends on a contact sentence with no booking clause at all
+ * ("...drop us a note at <address>."). There is nothing to keep, so the whole
+ * sentence goes.
+ *
+ * verifyNoContactDebris() is the backstop: if either rule misses a shape, the
+ * run aborts rather than importing an address or a mangled sentence.
  */
-const EMAIL_PLACEHOLDER = /\[\[email protected\]\]\(x\)|\[email protected\]/gi;
-const EMAIL_CTA =
-  /\b(?:contact us|reach out|drop us a line|drop a line|shoot us a note|email us|e-mail us)\s+(?:at|to)\s+(?:\[\[email protected\]\]\(x\)|\[email protected\])\s+or\s+(book\b)/gi;
+const ADDRESS = String.raw`(?:\[\[email protected\]\]\(x\)|\[email protected\]|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})`;
+const CONTACT_VERB = String.raw`(?:contact us|reach out|drop us a line|drop a line|drop us a note|drop a note|shoot us a note|email us|e-mail us|write us|get in touch)`;
 
-function stripEmailPlaceholders(text, stats) {
-  return text.replace(EMAIL_CTA, (match, book, offset, full) => {
+/* "<lead-in> at <address> or book ..." -> "book ..." */
+const EMAIL_CTA = new RegExp(String.raw`\b${CONTACT_VERB}\s+(?:at|to)\s+${ADDRESS}\s+or\s+(book\b)`, "gi");
+
+/* A whole sentence whose only purpose is the address, with no booking clause. */
+const ORPHAN_CONTACT_SENTENCE = new RegExp(
+  String.raw`(^|[.!?]["'”’)]?\s+)[^.!?]*?\b${CONTACT_VERB}\s+(?:at|to)\s+${ADDRESS}\s*[.!?]\s*`,
+  "gi",
+);
+
+const ANY_ADDRESS = new RegExp(ADDRESS, "gi");
+
+function stripContactDetails(text, stats) {
+  let out = text.replace(EMAIL_CTA, (match, book, offset, full) => {
     stats.emailCtasCleaned += 1;
     // Cutting the lead-in can leave "book" starting the sentence.
     const before = full.slice(0, offset).replace(/[ \t]+$/, "");
     const startsSentence = before === "" || /[.!?:]["'”’)]?$/.test(before) || before.endsWith("\n");
     return startsSentence ? "Book" : book;
   });
+
+  out = out.replace(ORPHAN_CONTACT_SENTENCE, (match, lead) => {
+    stats.contactSentencesRemoved += 1;
+    return lead;
+  });
+
+  return out.replace(/[ \t]+\n/g, "\n").replace(/[ \t]{2,}/g, " ").trimEnd();
 }
 
-/* Hard stop: never import the debris just because a shape was missed. */
-function verifyNoPlaceholders(text, row) {
-  EMAIL_PLACEHOLDER.lastIndex = 0;
-  const left = text.match(EMAIL_PLACEHOLDER);
+/* Hard stop: never import an address or debris just because a shape was missed. */
+function verifyNoContactDebris(text, row) {
+  ANY_ADDRESS.lastIndex = 0;
+  const left = text.match(ANY_ADDRESS);
   if (!left) return;
-  const sample = text.slice(Math.max(0, text.indexOf(left[0]) - 90), text.indexOf(left[0]) + 90);
+  const at = text.indexOf(left[0]);
   throw new Error(
-    `Row ${row.rowNumber} (${row.url}) still has ${left.length} email placeholder(s) after cleanup.\n` +
-      `Context: ...${sample.replace(/\n/g, " ")}...\n` +
-      `Add the surrounding phrasing to EMAIL_CTA in this script, then re-run. Nothing was written.`,
+    `Row ${row.rowNumber} (${row.url}) still has ${left.length} contact address(es) after cleanup.\n` +
+      `Context: ...${text.slice(Math.max(0, at - 90), at + 90).replace(/\n/g, " ")}...\n` +
+      `Add the surrounding phrasing to CONTACT_VERB / EMAIL_CTA in this script, then re-run. Nothing was written.`,
   );
 }
 
@@ -375,10 +400,10 @@ async function main() {
 
     const stats = {
       headings: 0, paragraphs: 0, bulletLists: 0, numberLists: 0, links: 0, oldDomainLinks: 0,
-      emailCtasCleaned: 0,
+      emailCtasCleaned: 0, contactSentencesRemoved: 0,
     };
-    const cleanedBody = stripEmailPlaceholders(row.body, stats);
-    verifyNoPlaceholders(cleanedBody, row);
+    const cleanedBody = stripContactDetails(row.body, stats);
+    verifyNoContactDebris(cleanedBody, row);
     const html = textToHtml(cleanedBody, stats);
     const blocks = htmlToBlocks(html, blockContentType, {
       parseHtml,
@@ -396,6 +421,7 @@ async function main() {
     }
 
     if (stats.emailCtasCleaned) warnings.push(`cleaned-email-cta:${stats.emailCtasCleaned}`);
+    if (stats.contactSentencesRemoved) warnings.push(`removed-contact-sentence:${stats.contactSentencesRemoved}`);
     if (stats.headings === 0) warnings.push("no-h2-detected");
     if (cleanedBody.length > 25000) warnings.push("very-long-body");
     if (!cleanedBody.includes("\n\n")) warnings.push("single-paragraph-body");
